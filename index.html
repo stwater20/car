@@ -153,19 +153,17 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
 body.is-touch{touch-action:none;overscroll-behavior:none}
 .touch{position:fixed;inset:0;display:none;z-index:4;pointer-events:none}
 body.is-touch .touch.on{display:block}
-.steer{position:absolute;left:0;top:22%;bottom:0;width:48%;pointer-events:auto;touch-action:none}
-.steer-base{position:absolute;left:calc(max(16px,env(safe-area-inset-left,0px)) + 20px);bottom:calc(env(safe-area-inset-bottom,0px) + 34px);width:150px;height:56px;border-radius:28px;border:2px solid rgba(255,255,255,.35);background:rgba(11,12,28,.3);transition:opacity .2s}
-.steer-knob{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px;border-radius:50%;background:rgba(255,248,242,.85);box-shadow:0 4px 16px rgba(0,0,0,.4);display:grid;place-items:center;color:var(--ink);font-weight:900;font-size:18px}
-.steer-label{position:absolute;left:calc(max(16px,env(safe-area-inset-left,0px)) + 20px);bottom:calc(env(safe-area-inset-bottom,0px) + 96px);font-family:var(--f-zh);font-weight:700;font-size:12px;letter-spacing:.2em;color:var(--mute)}
-.pedals{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;gap:10px;align-items:flex-end;pointer-events:auto}
-.tb{border-radius:50%;border:2px solid rgba(255,255,255,.55);background:rgba(11,12,28,.4);color:var(--paper);font-family:var(--f-display);font-weight:800;font-style:italic;font-size:15px;letter-spacing:.06em;line-height:1.05;touch-action:none;-webkit-user-select:none;user-select:none;padding:0}
-.tb[data-k="boost"]{order:1;width:62px;height:62px;border-color:var(--sky);color:var(--sky);margin-bottom:22px}
-.tb[data-k="brake"]{order:2;width:78px;height:78px}
-.tb[data-k="hand"]{order:3;width:78px;height:78px;margin-bottom:18px}
-.tb[data-k="gas"]{order:4;width:98px;height:98px;background:rgba(255,46,106,.45);border-color:var(--hot);font-size:18px}
+.steer{position:absolute;left:0;top:22%;bottom:0;width:44%;pointer-events:auto;touch-action:none}
+.steer-base{position:absolute;left:calc(max(16px,env(safe-area-inset-left,0px)) + 20px);bottom:calc(env(safe-area-inset-bottom,0px) + 34px);width:190px;height:70px;border-radius:35px;border:2px solid rgba(255,255,255,.35);background:rgba(11,12,28,.3);transition:opacity .2s}
+.steer-knob{position:absolute;left:50%;top:50%;width:82px;height:82px;margin:-41px;border-radius:50%;background:rgba(255,248,242,.85);box-shadow:0 4px 16px rgba(0,0,0,.4);display:grid;place-items:center;color:var(--ink);font-weight:900;font-size:18px}
+.steer-label{position:absolute;left:calc(max(16px,env(safe-area-inset-left,0px)) + 20px);bottom:calc(env(safe-area-inset-bottom,0px) + 116px);font-family:var(--f-zh);font-weight:700;font-size:12px;letter-spacing:.2em;color:var(--mute)}
+.pedals{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;gap:clamp(8px,2.4vh,14px);align-items:flex-end;pointer-events:auto}
+.tb{border-radius:50%;border:3px solid rgba(255,255,255,.6);background:rgba(11,12,28,.45);color:var(--paper);font-family:var(--f-display);font-weight:800;font-style:italic;font-size:clamp(15px,4.6vh,20px);letter-spacing:.06em;line-height:1.05;touch-action:none;-webkit-user-select:none;user-select:none;padding:0}
+.tb[data-k="boost"]{order:1;width:clamp(68px,20vh,92px);height:clamp(68px,20vh,92px);border-color:var(--sky);color:var(--sky);margin-bottom:clamp(14px,6vh,30px)}
+.tb[data-k="brake"]{order:2;width:clamp(86px,26vh,118px);height:clamp(86px,26vh,118px)}
+.tb[data-k="hand"]{order:3;width:clamp(86px,26vh,118px);height:clamp(86px,26vh,118px);margin-bottom:clamp(14px,6vh,30px)}
+.tb[data-k="gas"]{order:4;width:clamp(104px,32vh,144px);height:clamp(104px,32vh,144px);background:rgba(255,46,106,.45);border-color:var(--hot);font-size:18px}
 .tb.act{background:rgba(255,255,255,.4);transform:scale(.94)}
-.autogas{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 124px);pointer-events:auto;font-family:var(--f-display);font-weight:800;font-style:italic;font-size:12px;letter-spacing:.14em;color:var(--paper);background:rgba(11,12,28,.55);border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:2px}
-.autogas[aria-pressed="true"]{background:var(--hot);border-color:var(--hot)}
 .pausebtn{position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 14px);width:44px;height:44px;pointer-events:auto;border:2px solid rgba(255,255,255,.5);background:rgba(11,12,28,.5);color:var(--paper);font-family:var(--f-display);font-weight:900;font-size:16px;letter-spacing:.1em;border-radius:50%}
 body.is-touch .region{top:calc(env(safe-area-inset-top,0px) + 66px)}
 .rotate{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 120px);transform:translateX(-50%);z-index:7;background:var(--ink-2);padding:8px 14px;font-family:var(--f-zh);font-weight:700;font-size:13px;letter-spacing:.12em;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .4s}
@@ -176,7 +174,7 @@ body.is-touch .speedo .kmh{font-size:clamp(30px,4.6vw,44px)}
 body.is-touch .speedo .unit{font-size:9px}
 body.is-touch .speedo .gear{width:24px;height:24px;font-size:15px;margin-top:4px}
 body.is-touch .boost{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 84px + clamp(100px,14vw,140px));width:clamp(100px,14vw,140px)}
-body.is-touch .mini{bottom:calc(env(safe-area-inset-bottom,0px) + 122px);width:84px}
+body.is-touch .mini{bottom:calc(env(safe-area-inset-bottom,0px) + 142px);width:84px}
 body.is-touch .total .logo{display:none}
 body.is-touch .event,body.is-touch .live-zone{top:24%}
 
@@ -318,7 +316,6 @@ body.is-touch .tut p{font-size:13px;line-height:1.5}
     <div class="steer-base" id="steerBase"><div class="steer-knob" id="steerKnob">◀▶</div></div>
   </div>
   <button class="pausebtn" id="pauseBtn" aria-label="暫停 Pause">II</button>
-  <button class="autogas" id="autoGas" aria-pressed="true">AUTO GAS</button>
   <div class="pedals">
     <button class="tb" data-k="boost">BOOST</button>
     <button class="tb" data-k="hand">DRIFT<br>甩尾</button>
@@ -1504,7 +1501,6 @@ const audio = {
    ========================================================= */
 const keys = {}; const touch = { steer: 0, gas: 0, brake: 0, hand: 0, boost: 0 };
 const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-let autoGas = store.get('autoGas', true);
 addEventListener('keydown', e => {
   if (e.repeat) { keys[e.code] = true; return; }
   keys[e.code] = true;
@@ -1555,15 +1551,12 @@ document.querySelectorAll('.tb').forEach(b => {
   const end = e => { if (e.pointerId !== id) return; id = null; touch.steer = 0; knob.style.transform = ''; base.style.left = base.style.top = base.style.bottom = ''; };
   zone.addEventListener('pointerup', end); zone.addEventListener('pointercancel', end); zone.addEventListener('lostpointercapture', end);
 }
-const setAutoGas = v => { autoGas = v; store.set('autoGas', v); $('autoGas').setAttribute('aria-pressed', v); $('autoGas').textContent = v ? 'AUTO GAS · ON' : 'AUTO GAS · OFF'; };
-$('autoGas').onclick = () => setAutoGas(!autoGas);
-setAutoGas(autoGas);
 function readInput() {
   const k = keys; let steer = 0, thr = 0, brk = 0, hand = false, boost = false;
   if (k.KeyA || k.ArrowLeft) steer -= 1;
   if (k.KeyD || k.ArrowRight) steer += 1;
   steer = clamp(steer + touch.steer, -1, 1);
-  if (k.KeyW || k.ArrowUp || touch.gas || (isTouch && autoGas && !touch.brake)) thr = 1;
+  if (k.KeyW || k.ArrowUp || touch.gas) thr = 1;
   if (k.KeyS || k.ArrowDown || touch.brake) brk = 1;
   if (k.Space || touch.hand) hand = true;
   if (k.ShiftLeft || k.ShiftRight || touch.boost) boost = true;
@@ -1988,7 +1981,7 @@ const tutorial = (() => {
   const K = t => `<kbd>${t}</kbd>`;
   const steps = [
     { t: '歡迎來到花蓮', b: '這是一條約 5 公里的環島公路：花蓮市區、七星潭、蘇花公路清水斷崖，再到太魯閣峽谷。先花一分鐘學會怎麼開，隨時可以跳過。' },
-    { t: '踩油門', b: isTouch ? '自動油門已經打開，車子會自己往前開，先衝到時速 60 公里。右上角可以關掉自動油門，改用「油門」鍵。' : `按住 ${K('W')} 或 ${K('↑')} 踩油門，先衝到時速 60 公里。`,
+    { t: '踩油門', b: isTouch ? '按住右下角最大的「油門」鍵前進，先衝到時速 60 公里。放開就會慢慢減速。' : `按住 ${K('W')} 或 ${K('↑')} 踩油門，先衝到時速 60 公里。`,
       goal: () => car.speed * 3.6 / 60 },
     { t: '轉彎', b: isTouch ? '在畫面左半邊按住並左右拖曳來轉向，拖越遠轉越多。左右各轉一下試試。' : `用 ${K('A')} ${K('D')}（或 ${K('←')} ${K('→')}）轉向，左右各轉一下試試。`,
       goal: (st, inp, dt) => { if (inp.steer < -0.4) st.l = Math.min(1, (st.l || 0) + dt * 2); if (inp.steer > 0.4) st.r = Math.min(1, (st.r || 0) + dt * 2); return ((st.l || 0) + (st.r || 0)) / 2; } },
