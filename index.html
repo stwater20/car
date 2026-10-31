@@ -1,4 +1,4 @@
-<title>Formosa Festival</title>
+<title>Formosa Drive</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,7 @@
   --sky:#3fe0ff;          /* pacific cyan for info and boost */
   --gold:#ffd23f;         /* temple gold: stars / ratings */
   --mute:rgba(255,248,242,.62);
-  --f-display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --f-display:'Barlow Condensed','Noto Sans TC','Arial Narrow',sans-serif;
   --f-zh:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
   color-scheme:dark;
 }
@@ -166,6 +166,8 @@ body.is-touch .touch.on{display:block}
 .tb.act{background:rgba(255,255,255,.4);transform:scale(.94)}
 .autogas{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 124px);pointer-events:auto;font-family:var(--f-display);font-weight:800;font-style:italic;font-size:12px;letter-spacing:.14em;color:var(--paper);background:rgba(11,12,28,.55);border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:2px}
 .autogas[aria-pressed="true"]{background:var(--hot);border-color:var(--hot)}
+.pausebtn{position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 14px);width:44px;height:44px;pointer-events:auto;border:2px solid rgba(255,255,255,.5);background:rgba(11,12,28,.5);color:var(--paper);font-family:var(--f-display);font-weight:900;font-size:16px;letter-spacing:.1em;border-radius:50%}
+body.is-touch .region{top:calc(env(safe-area-inset-top,0px) + 66px)}
 .rotate{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 120px);transform:translateX(-50%);z-index:7;background:var(--ink-2);padding:8px 14px;font-family:var(--f-zh);font-weight:700;font-size:13px;letter-spacing:.12em;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .4s}
 .rotate.show{opacity:1}
 body.is-touch .hint,body.is-touch .clock{display:none}
@@ -178,6 +180,25 @@ body.is-touch .mini{bottom:calc(env(safe-area-inset-bottom,0px) + 122px);width:8
 body.is-touch .total .logo{display:none}
 body.is-touch .event,body.is-touch .live-zone{top:24%}
 
+
+/* ---------- tutorial card ---------- */
+.tut{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);width:min(460px,calc(100vw - 32px));display:flex;flex-direction:column;gap:6px;padding:14px 18px 14px 20px;background:rgba(11,12,28,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-left:5px solid var(--hot);pointer-events:auto;font-family:var(--f-zh);z-index:3;transition:opacity .3s,transform .3s}
+.tut.done{border-left-color:#3fdc8a}
+.tut .k{font-family:var(--f-display);font-weight:800;font-style:italic;font-size:12px;letter-spacing:.24em;color:var(--hot)}
+.tut h3{margin:0;font-weight:900;font-size:22px;line-height:1.2;text-wrap:balance}
+.tut p{margin:0;font-weight:500;font-size:14px;line-height:1.65;color:rgba(255,248,242,.85)}
+.tut p kbd{font-family:var(--f-display);font-weight:800;background:rgba(255,255,255,.16);padding:0 6px;border-radius:2px;margin:0 2px}
+.tut .bar{height:5px;background:rgba(255,255,255,.14);overflow:hidden}
+.tut .bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--hot),var(--sun));transform-origin:left;transform:scaleX(0);transition:transform .15s}
+.tut.done .bar i{background:#3fdc8a}
+.tut .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:2px}
+.tut button{font-family:var(--f-zh);font-weight:700;font-size:14px;border:0;cursor:pointer;padding:8px 16px;color:var(--paper);background:rgba(255,255,255,.12)}
+.tut button.primary{background:var(--hot)}
+.tut button:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+body.is-touch .tut{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 64px);width:min(400px,52vw);padding:10px 14px 10px 16px}
+body.is-touch .tut h3{font-size:18px}
+body.is-touch .tut p{font-size:13px;line-height:1.5}
+.hud.tutoring .hint{display:none}
 @media (max-width:760px){
   .title{grid-template-columns:1fr;align-items:end;align-content:end;overflow:auto}
   .title .right{align-items:flex-start}
@@ -190,6 +211,7 @@ body.is-touch .event,body.is-touch .live-zone{top:24%}
   .total .val{font-size:24px}
   .region .name{font-size:28px}
   .hint{display:none}
+  .tut{width:min(360px,calc(100vw - 32px))}
 }
 @media (max-height:620px){
   .title{overflow:auto;padding-top:calc(env(safe-area-inset-top,0px) + 16px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 16px);gap:12px}
@@ -212,19 +234,26 @@ body.is-touch .event,body.is-touch .live-zone{top:24%}
   <div class="region" id="region"><span class="eyebrow">Now entering</span><span class="name" id="regionName">Hualien City</span><span class="zh" id="regionZh">花蓮市區</span></div>
   <div class="clock" id="clock"><b id="clockTime">SUNSET</b><span id="clockCam">CHASE CAM</span></div>
 
-  <div class="total"><span class="lbl">SKILL POINTS</span><span class="val" id="total">0</span><span class="logo"><i>花</i>FORMOSA FESTIVAL</span></div>
+  <div class="total"><span class="lbl">STYLE POINTS 風格分</span><span class="val" id="total">0</span><span class="logo"><i>花</i>FORMOSA DRIVE</span></div>
 
   <div class="chain" id="chain">
     <div class="chain-box"><div class="chain-score"><span id="chainScore">0</span></div><div class="chain-mult"><span id="chainMult">×1</span></div></div>
     <div class="chain-timer"><i id="chainTimer"></i></div>
     <div class="feed" id="feed"></div>
   </div>
-  <div class="banked" id="banked"><div class="v" id="bankedV">+0</div><div class="l" id="bankedL">SKILL CHAIN BANKED</div></div>
+  <div class="banked" id="banked"><div class="v" id="bankedV">+0</div><div class="l" id="bankedL">COMBO BANKED</div></div>
 
   <div class="event" id="event"><span class="t" id="eventT">SPEED CAMERA</span><span class="v" id="eventV">0</span><span class="stars" id="eventStars"></span><span class="pb" id="eventPb"></span></div>
-  <div class="live-zone" id="liveZone"><span class="t">DRIFT ZONE · 甩尾區</span><span class="v" id="liveZoneV">0</span></div>
+  <div class="live-zone" id="liveZone"><span class="t">DRIFT CHALLENGE · 甩尾挑戰</span><span class="v" id="liveZoneV">0</span></div>
 
   <div class="toast" id="toast"></div>
+  <div class="tut" id="tut" hidden role="dialog" aria-live="polite" aria-labelledby="tutTitle">
+    <span class="k" id="tutStep">TUTORIAL 1/7 · 操作教學</span>
+    <h3 id="tutTitle">歡迎來到花蓮</h3>
+    <p id="tutBody"></p>
+    <div class="bar" id="tutBarWrap"><i id="tutBar"></i></div>
+    <div class="row"><button id="tutSkip">跳過教學</button><button class="primary" id="tutNext">下一步</button></div>
+  </div>
 
   <div class="mini"><canvas id="mini" width="420" height="420"></canvas><span class="n" id="miniN">N</span></div>
 
@@ -249,8 +278,8 @@ body.is-touch .event,body.is-touch .live-zone{top:24%}
 <div class="title" id="title">
   <div class="glyph" aria-hidden="true">花</div>
   <div class="left">
-    <div class="tag"><span>OPEN ROAD FESTIVAL</span><span>花蓮 · TAIWAN</span></div>
-    <h1><em>FORMOSA</em><br>FESTIVAL</h1>
+    <div class="tag"><span>OPEN ROAD · 公路之旅</span><span>花蓮 · TAIWAN</span></div>
+    <h1><em>FORMOSA</em><br>DRIVE</h1>
     <div class="sub">花蓮 ・ 七星潭 ・ 清水斷崖 ・ 太魯閣</div>
     <p>從花蓮市區的直立招牌和夜市燈籠出發，沿著七星潭的太平洋海岸北上，穿過蘇花公路清水斷崖的明隧道，再從牌樓開進太魯閣的大理石峽谷。小心測速照相，也小心路邊的機車。</p>
   </div>
@@ -278,6 +307,7 @@ body.is-touch .event,body.is-touch .live-zone{top:24%}
   <button id="pTime">Time of day <em id="pTimeV">Sunset</em></button>
   <button id="pCam">Camera <em id="pCamV">Chase</em></button>
   <button id="pSound">Sound <em id="pSoundV">On</em></button>
+  <button id="pTut">操作教學 <em>Tutorial</em></button>
   <button id="pReset">Reset car to road <em>R</em></button>
   <button id="pTitle">Change livery</button>
 </div>
@@ -287,6 +317,7 @@ body.is-touch .event,body.is-touch .live-zone{top:24%}
     <span class="steer-label">左右拖曳轉向 · DRAG TO STEER</span>
     <div class="steer-base" id="steerBase"><div class="steer-knob" id="steerKnob">◀▶</div></div>
   </div>
+  <button class="pausebtn" id="pauseBtn" aria-label="暫停 Pause">II</button>
   <button class="autogas" id="autoGas" aria-pressed="true">AUTO GAS</button>
   <div class="pedals">
     <button class="tb" data-k="boost">BOOST</button>
@@ -645,7 +676,7 @@ const driftB = (driftA + 220) % M;
 const zones = [
   { type: 'trap', name: 'SPEED CAMERA', zh: '測速照相', i: trapIdx, key: 'trapA', thr: [150, 200, 250] },
   { type: 'trap', name: 'SPEED CAMERA', zh: '測速照相', i: trap2Idx, key: 'trapB', thr: [140, 190, 240] },
-  { type: 'drift', name: 'DRIFT ZONE', zh: '甩尾區', a: driftA, b: driftB, key: 'drift', thr: [6000, 15000, 30000] }
+  { type: 'drift', name: 'DRIFT CHALLENGE', zh: '甩尾挑戰', a: driftA, b: driftB, key: 'drift', thr: [6000, 15000, 30000] }
 ];
 const regionOfIdx = i => regionAt(rx[i], rz[i]);
 const idxDist = (a, b) => Math.abs(((a - b + M + M / 2) % M) - M / 2);
@@ -1002,8 +1033,8 @@ function makeGate(i, zh, en, colorHex) {
 }
 makeGate(trapIdx, '測速照相', 'SPEED CAMERA', '#ff2e6a');
 makeGate(trap2Idx, '測速照相', 'SPEED CAMERA', '#ff2e6a');
-makeGate(driftA, '甩尾區', 'DRIFT ZONE', '#3fe0ff');
-makeGate(driftB, '甩尾區', 'DRIFT ZONE', '#3fe0ff');
+makeGate(driftA, '甩尾挑戰', 'DRIFT CHALLENGE', '#3fe0ff');
+makeGate(driftB, '甩尾挑戰', 'DRIFT CHALLENGE', '#3fe0ff');
 { // green highway signs before each region
   const DEST = [[['花蓮市', 'Hualien City', '↑'], ['七星潭', 'Qixingtan', '→']], [['七星潭', 'Qixingtan', '↑'], ['台9線 蘇花', 'Prov. Hwy 9 Su-Hua', '↑']], [['清水斷崖', 'Qingshui Cliffs', '↑'], ['太魯閣', 'Taroko', '←']], [['太魯閣', 'Taroko Gorge', '↑'], ['台8線 中橫', 'Prov. Hwy 8', '↑']], [['中央山脈', 'Central Range', '↑'], ['花蓮市', 'Hualien City', '↑']]];
   const texs = DEST.map(l => roadSignTex(l));
@@ -1484,6 +1515,7 @@ addEventListener('keydown', e => {
     if (e.code === 'KeyT') applyTime((timeIdx + 1) % TIMES.length);
     if (e.code === 'KeyR') resetCar();
     if (e.code === 'KeyM') audio.setOn(!audio.on);
+    if (e.code === 'Enter') tutorial.next();
   } else if (state === 'title' && e.code === 'Enter') startGame();
   if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
 });
@@ -1707,7 +1739,7 @@ function updateTraffic(dt, time) {
     const d = Math.hypot(car.x - t.x, car.z - t.z);
     if (state === 'drive') {
       if (d < 4.4 && car.speed > 16) t.near = true;
-      else if (d > 7 && t.near) { t.near = false; if (t.hit <= 0) instantSkill(t.kind === 'scooter' ? 'SCOOTER DODGE' : 'NEAR MISS', 450); }
+      else if (d > 7 && t.near) { t.near = false; if (t.hit <= 0) instantSkill(t.kind === 'scooter' ? '閃過機車 SCOOTER DODGE' : '驚險閃過 CLOSE CALL', 450); }
       if (d > 20) t.near = false;
     }
   }
@@ -1721,9 +1753,9 @@ const chain = { score: 0, count: 0, timer: 0 };
 const CHAIN_T = 3.2;
 const cont = { drift: { on: false, pts: 0, grace: 0, el: null }, speed: { on: false, pts: 0, grace: 0, el: null }, air: { on: false, pts: 0, grace: 0, el: null } };
 const TIERS = {
-  drift: [[0, 'DRIFT'], [1800, 'GREAT DRIFT'], [5000, 'EPIC DRIFT'], [12000, 'LEGENDARY DRIFT']],
-  speed: [[0, 'SPEED'], [1500, 'GREAT SPEED'], [4000, 'INSANE SPEED']],
-  air: [[0, 'AIR'], [1200, 'GREAT AIR'], [3000, 'EPIC AIR']]
+  drift: [[0, '甩尾 DRIFT'], [1800, '漂亮甩尾 CLEAN DRIFT'], [5000, '超長甩尾 LONG SLIDE'], [12000, '峽谷甩尾王 GORGE KING']],
+  speed: [[0, '飆速 SPEED'], [1500, '高速 HIGH SPEED'], [4000, '極速 TOP SPEED']],
+  air: [[0, '騰空 AIR'], [1200, '大飛躍 BIG AIR'], [3000, '飛天 SKY HIGH']]
 };
 const tierName = (k, p) => { let n = TIERS[k][0][1]; for (const [t, s] of TIERS[k]) if (p >= t) n = s; return n; };
 const mult = () => Math.min(10, 1 + Math.floor(chain.count / 2));
@@ -1754,7 +1786,7 @@ function bankChain() {
   total += v; store.set('total', total);
   car.boost = Math.min(1, car.boost + v / 40000);
   const b = $('banked'); b.classList.remove('show', 'broken'); void b.offsetWidth;
-  $('bankedV').textContent = '+' + fmt(v); $('bankedL').textContent = 'SKILL CHAIN BANKED · 入帳'; b.classList.add('show');
+  $('bankedV').textContent = '+' + fmt(v); $('bankedL').textContent = 'COMBO BANKED · 連段入帳'; b.classList.add('show');
   audio.blip([523, 659, 784, 1047], 0.08, 'triangle', 0.16);
   chain.score = 0; chain.count = 0;
 }
@@ -1764,7 +1796,7 @@ function breakChain() {
   if (!had) return;
   chain.score = 0; chain.count = 0; chain.timer = 0;
   const b = $('banked'); b.classList.remove('show'); void b.offsetWidth; b.classList.add('broken', 'show');
-  $('bankedV').textContent = 'CHAIN BROKEN'; $('bankedL').textContent = '連段中斷';
+  $('bankedV').textContent = 'COMBO BROKEN'; $('bankedL').textContent = '連段中斷';
   audio.blip([300, 200], 0.12, 'sawtooth', 0.12);
 }
 function updateSkills(dt) {
@@ -1801,7 +1833,7 @@ function zoneResult(z, val, txt, unit) {
   $('eventStars').innerHTML = '<b>' + '★'.repeat(stars) + '</b>' + '★'.repeat(3 - stars);
   $('eventPb').textContent = isPB ? 'NEW PERSONAL BEST' : 'BEST ' + fmt(pb) + ' ' + unit;
   const e = $('event'); e.classList.add('show'); clearTimeout(eventTO); eventTO = setTimeout(() => e.classList.remove('show'), 4200);
-  if (stars) instantSkill((z.type === 'trap' ? 'SPEED CAMERA ' : 'DRIFT ZONE ') + '★'.repeat(stars), 400 * stars);
+  if (stars) instantSkill((z.type === 'trap' ? '測速照相 ' : '甩尾挑戰 ') + '★'.repeat(stars), 400 * stars);
   audio.blip(isPB ? [784, 988, 1175, 1568] : [660, 880], 0.09);
 }
 
@@ -1948,6 +1980,57 @@ function syncCar(dt) {
   for (const f of flames) { f.visible = car.boosting; f.scale.set(1, 1, 0.7 + Math.random() * 0.6); }
 }
 
+
+/* =========================================================
+   tutorial: a short interactive walkthrough in Chinese, shown on the first drive
+   ========================================================= */
+const tutorial = (() => {
+  const K = t => `<kbd>${t}</kbd>`;
+  const steps = [
+    { t: '歡迎來到花蓮', b: '這是一條約 5 公里的環島公路：花蓮市區、七星潭、蘇花公路清水斷崖，再到太魯閣峽谷。先花一分鐘學會怎麼開，隨時可以跳過。' },
+    { t: '踩油門', b: isTouch ? '自動油門已經打開，車子會自己往前開，先衝到時速 60 公里。右上角可以關掉自動油門，改用「油門」鍵。' : `按住 ${K('W')} 或 ${K('↑')} 踩油門，先衝到時速 60 公里。`,
+      goal: () => car.speed * 3.6 / 60 },
+    { t: '轉彎', b: isTouch ? '在畫面左半邊按住並左右拖曳來轉向，拖越遠轉越多。左右各轉一下試試。' : `用 ${K('A')} ${K('D')}（或 ${K('←')} ${K('→')}）轉向，左右各轉一下試試。`,
+      goal: (st, inp, dt) => { if (inp.steer < -0.4) st.l = Math.min(1, (st.l || 0) + dt * 2); if (inp.steer > 0.4) st.r = Math.min(1, (st.r || 0) + dt * 2); return ((st.l || 0) + (st.r || 0)) / 2; } },
+    { t: '煞車', b: isTouch ? '按住「煞車」把車速降下來。停下來之後繼續按會倒車。' : `按 ${K('S')} 或 ${K('↓')} 煞車。停下來之後繼續按會倒車。`,
+      goal: (st, inp, dt) => { if (inp.brk && car.speed > 2) st.v = (st.v || 0) + dt / 0.8; return st.v || 0; } },
+    { t: '甩尾', b: isTouch ? '時速 60 以上轉彎時，按住「甩尾」讓車尾滑出去，然後放開，往反方向拖曳把車身拉回來。' : `時速 60 以上轉彎時按住 ${K('空白鍵')}（手煞車），車尾滑出去後放開，再往反方向打方向盤穩住車身。`,
+      goal: (st, inp, dt) => { if (cont.drift.on) st.v = (st.v || 0) + car.speed * 3.6 * Math.abs(car.slip) * 57.3 * 0.11 * dt / 400; return st.v || 0; } },
+    { t: '連段得分', b: '甩尾、飆速、騰空，還有驚險閃過汽車或機車，都會累積風格分。連續做技巧會提高倍率；3 秒內沒有新技巧就會入帳，撞車的話整段歸零。' },
+    { t: '地圖上的挑戰', b: `小地圖上的粉紅色圓點是「測速照相」，越快通過星星越多；藍色路段是「甩尾挑戰」。${isTouch ? '按「BOOST」' : `按 ${K('Shift')} `}可以噴射加速，${isTouch ? '' : `${K('C')} 換視角、${K('T')} 換時段、`}卡住了就${isTouch ? '從暫停選單' : `按 ${K('R')} `}回到路上。`, last: true }
+  ];
+  let i = -1, st = {}, doneT = 0;
+  const el = $('tut');
+  function render() {
+    const s = steps[i];
+    $('tutStep').textContent = `TUTORIAL ${i + 1}/${steps.length} · 操作教學`;
+    $('tutTitle').textContent = s.t; $('tutBody').innerHTML = s.b;
+    $('tutBarWrap').hidden = !s.goal; $('tutBar').style.transform = 'scaleX(0)';
+    $('tutNext').hidden = !!s.goal; $('tutNext').textContent = s.last ? '開始兜風' : '下一步';
+    el.classList.remove('done');
+  }
+  function show(k) { i = k; st = {}; doneT = 0; el.hidden = false; $('hud').classList.add('tutoring'); render(); }
+  function finish(skipped) {
+    i = -1; el.hidden = true; $('hud').classList.remove('tutoring'); store.set('tutDone', true);
+    toast(skipped ? 'GOOD LUCK' : 'READY TO DRIVE', skipped ? '隨時可以在暫停選單重看教學' : '教學完成，一路順風');
+  }
+  $('tutNext').onclick = () => tutorial.next();
+  $('tutSkip').onclick = () => finish(true);
+  return {
+    get on() { return i >= 0; },
+    start(force) { if (!force && store.get('tutDone', false)) return false; show(0); return true; },
+    next() { if (i < 0 || steps[i].goal) return; if (steps[i].last) finish(false); else show(i + 1); },
+    update(dt, inp) {
+      if (i < 0) return; const s = steps[i]; if (!s.goal) return;
+      if (doneT > 0) { doneT -= dt; if (doneT <= 0) show(i + 1); return; }
+      const p = clamp(s.goal(st, inp, dt), 0, 1);
+      $('tutBar').style.transform = `scaleX(${p.toFixed(3)})`;
+      if (p >= 1) { doneT = 0.9; el.classList.add('done'); $('tutStep').textContent = '✓ 完成 · NICE'; audio.blip([880, 1320], 0.06); }
+    }
+  };
+})();
+$('pauseBtn').onclick = () => togglePause();
+$('pTut').onclick = () => { togglePause(); tutorial.start(true); };
 /* =========================================================
    game state + loop
    ========================================================= */
@@ -1959,7 +2042,7 @@ function startGame() {
   $('title').classList.add('hide'); $('hud').classList.remove('off'); $('touch').classList.add('on');
   cam.yaw = car.heading; cam.pos.set(car.x - Math.sin(car.heading) * 6, car.y + 2.2, car.z - Math.cos(car.heading) * 6);
   lastRegion = -1;
-  toast('WELCOME TO HUALIEN', '歡迎來到花蓮');
+  if (!tutorial.start()) toast('WELCOME TO HUALIEN', '歡迎來到花蓮');
   setTimeout(() => $('hint').classList.add('fade'), 9000);
   if (isTouch && innerHeight > innerWidth) { $('rotate').classList.add('show'); setTimeout(() => $('rotate').classList.remove('show'), 4500); }
 }
@@ -2001,7 +2084,7 @@ function frame() {
   const inp = state === 'drive' ? readInput() : { steer: 0, thr: 0, brk: 0, hand: false, boost: false };
   for (let s = 0; s < 2; s++) updateCar(dt / 2, inp);
   updateTraffic(dt, elapsed);
-  if (state === 'drive') { updateSkills(dt); updateHud(); }
+  if (state === 'drive') { updateSkills(dt); updateHud(); tutorial.update(dt, inp); }
   syncCar(dt);
   updateSmoke(dt);
   updateCamera(dt, elapsed);

@@ -23,13 +23,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Build site
         run: |
-          mkdir -p _site
-          # index.html is authored without a document skeleton (artifact format); add one for standalone hosting
-          { echo '<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"></head><body>'; cat index.html; echo '</body></html>'; } > _site/index.html
+          # site/ is the searchable intro page; the game lives at /play/
+          mkdir -p _site/play
+          cp -r site/. _site/
+          # index.html is authored without a document skeleton (artifact format); wrap it with a full head for hosting
+          {
+            echo '<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8">'
+            echo '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">'
+            echo '<title>開始遊戲｜Formosa Drive 花蓮公路行</title>'
+            echo '<meta name="description" content="在瀏覽器裡開車環花蓮：花蓮市區、七星潭、清水斷崖、太魯閣。免費、免下載，支援鍵盤、手把與手機觸控。">'
+            echo '<link rel="canonical" href="https://stwater20.github.io/car/play/">'
+            echo '<meta property="og:title" content="Formosa Drive 花蓮公路行">'
+            echo '<meta property="og:image" content="https://stwater20.github.io/car/assets/city-sunset.jpg">'
+            echo '<meta name="theme-color" content="#0b0c1c">'
+            echo '</head><body>'
+            sed '1{/<title>/d}' index.html
+            echo '</body></html>'
+          } > _site/play/index.html
       - uses: actions/upload-pages-artifact@v3
       - id: deployment
         uses: actions/deploy-pages@v4

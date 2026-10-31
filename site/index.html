@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Formosa Drive 花蓮公路行｜免下載的花蓮開放世界賽車網頁遊戲</title>
+<meta name="description" content="Formosa Drive（花蓮公路行）是免費、免下載的開放世界駕駛網頁遊戲。從花蓮市區夜市出發，沿七星潭海岸、蘇花公路清水斷崖的明隧道，一路開進太魯閣峽谷。支援電腦鍵盤、手把與手機觸控。">
+<link rel="canonical" href="https://stwater20.github.io/car/">
+<meta name="theme-color" content="#0b0c1c">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="Formosa Drive 花蓮公路行">
+<meta property="og:title" content="Formosa Drive 花蓮公路行｜在瀏覽器裡開車環花蓮">
+<meta property="og:description" content="免費網頁賽車遊戲：花蓮市區、七星潭、清水斷崖、太魯閣，一條路開完。電腦、手機都能玩。">
+<meta property="og:url" content="https://stwater20.github.io/car/">
+<meta property="og:image" content="https://stwater20.github.io/car/assets/city-sunset.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="黃昏的花蓮市區街道，兩旁是直立招牌和紅燈籠，一輛藍色跑車在雙黃線旁行駛">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Formosa Drive 花蓮公路行">
+<meta name="twitter:description" content="免費、免下載的花蓮開放世界駕駛網頁遊戲。">
+<meta name="twitter:image" content="https://stwater20.github.io/car/assets/city-sunset.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Formosa Drive 花蓮公路行",
+  "alternateName": ["花蓮公路行", "Formosa Drive"],
+  "url": "https://stwater20.github.io/car/",
+  "description": "免費、免下載的開放世界駕駛網頁遊戲，場景以台灣花蓮東海岸為靈感：花蓮市區、七星潭、蘇花公路清水斷崖、太魯閣峽谷。",
+  "image": "https://stwater20.github.io/car/assets/city-sunset.jpg",
+  "genre": ["Racing", "Driving", "Open world"],
+  "gamePlatform": ["Web browser", "PC", "Mobile"],
+  "applicationCategory": "Game",
+  "operatingSystem": "Any (WebGL browser)",
+  "inLanguage": ["zh-Hant", "en"],
+  "playMode": "SinglePlayer",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" },
+  "contentLocation": { "@type": "Place", "name": "花蓮縣, 台灣" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "要付費或下載嗎？", "acceptedAnswer": { "@type": "Answer", "text": "不用。這是完全免費的網頁遊戲，用瀏覽器打開就能玩，不需要安裝或註冊。" } },
+    { "@type": "Question", "name": "手機可以玩嗎？", "acceptedAnswer": { "@type": "Answer", "text": "可以。建議把手機橫放：左半邊拖曳轉向，右邊有煞車、甩尾和渦輪按鈕，預設會自動踩油門。" } },
+    { "@type": "Question", "name": "地圖是真實的花蓮嗎？", "acceptedAnswer": { "@type": "Answer", "text": "不是。地形與道路是以花蓮東海岸為靈感、縮小並簡化後的虛構版本，地標的位置與比例都和現實不同。" } },
+    { "@type": "Question", "name": "電腦需要什麼配備？", "acceptedAnswer": { "@type": "Answer", "text": "支援 WebGL 的新版 Chrome、Edge、Safari 或 Firefox 即可。內顯也能跑，畫面卡頓時可以把瀏覽器視窗縮小一些。" } }
+  ]
+}
+</script>
+<style>
+/* Layout: one long scroll; full-bleed hero screenshot with the headline over it, then places in a 2-up grid, then controls and FAQ in a narrow column. */
+:root{
+  --ink:#0b0c1c;      /* night navy page */
+  --ink-2:#14162b;    /* raised panels */
+  --line:rgba(255,248,242,.14);
+  --paper:#fff8f2;    /* text */
+  --mute:rgba(255,248,242,.66);
+  --hot:#ff2e6a;      /* night-market neon accent */
+  --sun:#ff9a2e;      /* flame-tree orange */
+  --sky:#3fe0ff;      /* pacific cyan */
+  --f-display:'Barlow Condensed','Noto Sans TC','Arial Narrow',sans-serif;
+  --f-body:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--f-body);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.narrow{max-width:760px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--paper);color:var(--ink);padding:6px 12px;z-index:20}
+.skip:focus{left:12px}
+
+header.top{position:absolute;inset:0 0 auto 0;z-index:5;padding-top:calc(env(safe-area-inset-top,0px) + 16px)}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;font-style:italic;font-size:20px;letter-spacing:.08em;text-decoration:none}
+.brand i{font-family:var(--f-body);font-style:normal;font-weight:900;background:var(--hot);width:32px;height:32px;display:grid;place-items:center;font-size:18px}
+nav.links{display:flex;gap:20px;font-size:14px;font-weight:700}
+nav.links a{text-decoration:none;color:var(--mute)}
+nav.links a:hover,nav.links a:focus-visible{color:var(--paper)}
+
+.hero{position:relative;min-height:min(92vh,760px);display:flex;align-items:flex-end;overflow:hidden}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,12,28,.92) 0%,rgba(11,12,28,.6) 45%,rgba(11,12,28,.1) 75%),linear-gradient(0deg,var(--ink) 0%,rgba(11,12,28,0) 35%)}
+.hero .wrap{position:relative;z-index:1;width:100%;padding-block:120px 64px}
+.eyebrow{display:inline-flex;font-family:var(--f-display);font-weight:800;font-style:italic;font-size:14px;letter-spacing:.22em}
+.eyebrow span{background:var(--hot);padding:4px 12px}
+.eyebrow span+span{background:var(--paper);color:var(--ink)}
+.hero h1{margin:18px 0 0;font-weight:900;font-size:clamp(40px,7vw,84px);line-height:1.05;letter-spacing:-.01em;max-width:12em;text-wrap:balance}
+.hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--hot),var(--sun));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .en{font-family:var(--f-display);font-weight:800;font-style:italic;font-size:clamp(18px,2.4vw,26px);letter-spacing:.12em;color:var(--mute);margin-top:6px}
+.hero p.lead{max-width:34em;margin:20px 0 0;font-size:clamp(16px,1.8vw,18px);color:rgba(255,248,242,.86)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-body);font-weight:900;font-size:18px;text-decoration:none;padding:14px 30px;transform:skewX(-10deg);transition:transform .2s,box-shadow .2s}
+.btn span{display:inline-block;transform:skewX(10deg)}
+.btn.primary{background:linear-gradient(110deg,var(--hot),var(--sun));box-shadow:0 12px 36px rgba(255,46,106,.4)}
+.btn.primary:hover{transform:skewX(-10deg) translateY(-2px);box-shadow:0 16px 44px rgba(255,46,106,.55)}
+.btn.ghost{border:2px solid var(--line);font-size:16px;padding:12px 24px}
+.btn:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-size:14px;color:var(--mute)}
+.facts b{color:var(--paper);font-weight:700}
+
+section{padding-block:72px}
+h2{margin:0 0 8px;font-weight:900;font-size:clamp(28px,4vw,40px);line-height:1.2;text-wrap:balance}
+h2 small{display:block;font-family:var(--f-display);font-weight:800;font-style:italic;font-size:14px;letter-spacing:.26em;color:var(--hot);margin-bottom:6px}
+.sub{color:var(--mute);max-width:38em;margin:0}
+
+.places{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:36px}
+.place{background:var(--ink-2);display:flex;flex-direction:column;min-width:0}
+.place img{aspect-ratio:1200/630;object-fit:cover;width:100%}
+.place .body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:6px}
+.place h3{margin:0;font-size:22px;font-weight:900;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.place h3 span{font-family:var(--f-display);font-style:italic;font-weight:800;font-size:15px;letter-spacing:.14em;color:var(--mute)}
+.place p{margin:0;color:rgba(255,248,242,.8);font-size:15px}
+
+.features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);margin-top:36px;border:1px solid var(--line)}
+.feature{background:var(--ink);padding:22px 22px 24px;min-width:0}
+.feature h3{margin:0 0 6px;font-size:18px;font-weight:900}
+.feature p{margin:0;font-size:15px;color:var(--mute)}
+.feature .tag{display:inline-block;font-family:var(--f-display);font-weight:800;font-style:italic;font-size:12px;letter-spacing:.18em;color:var(--sky);margin-bottom:6px}
+
+.table-wrap{overflow-x:auto;margin-top:28px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-family:var(--f-display);font-weight:800;font-style:italic;letter-spacing:.14em;color:var(--mute);font-size:13px;background:var(--ink-2)}
+tbody th{font-weight:700;white-space:nowrap}
+kbd{font-family:var(--f-display);font-weight:800;background:rgba(255,255,255,.12);padding:1px 7px;border-radius:2px;white-space:nowrap}
+
+.faq{margin-top:28px;display:flex;flex-direction:column}
+.faq details{border-top:1px solid var(--line);padding:16px 0}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--f-display);font-weight:800;color:var(--hot);font-size:22px;line-height:1}
+.faq details[open] summary::after{content:"−"}
+.faq summary:focus-visible{outline:2px solid var(--sky);outline-offset:4px}
+.faq p{margin:10px 0 0;color:var(--mute)}
+
+.final{text-align:left;background:linear-gradient(110deg,rgba(255,46,106,.16),rgba(255,154,46,.08));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.final .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.final h2{margin:0}
+
+footer{padding-block:36px calc(env(safe-area-inset-bottom,0px) + 36px);color:var(--mute);font-size:14px}
+footer p{margin:0 0 8px;max-width:60em}
+
+@media (max-width:820px){
+  .places{grid-template-columns:1fr}
+  .features{grid-template-columns:1fr}
+  nav.links{display:none}
+  .hero{min-height:auto}
+  .hero::after{background:linear-gradient(0deg,var(--ink) 8%,rgba(11,12,28,.72) 55%,rgba(11,12,28,.35) 100%)}
+  .hero .wrap{padding-block:200px 40px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./"><i>花</i>FORMOSA DRIVE</a>
+    <nav class="links" aria-label="頁面導覽">
+      <a href="#places">四個地點</a>
+      <a href="#play">玩法</a>
+      <a href="#controls">操作方式</a>
+      <a href="#faq">常見問題</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="hero">
+    <img src="assets/city-sunset.jpg" width="1200" height="630" alt="遊戲畫面：黃昏的花蓮市區，街道兩旁是直立招牌與紅燈籠，一輛藍色跑車開在雙黃線旁">
+    <div class="wrap">
+      <div class="eyebrow"><span>免費網頁遊戲</span><span>花蓮 · TAIWAN</span></div>
+      <h1>開一台車，<em>繞花蓮一圈。</em></h1>
+      <div class="en">FORMOSA DRIVE · 花蓮公路行</div>
+      <p class="lead">從花蓮市區的直立招牌和夜市燈籠出發，沿著七星潭的太平洋海岸北上，穿過蘇花公路清水斷崖的明隧道，再從牌樓開進太魯閣的大理石峽谷。打開瀏覽器就能玩，不用下載。</p>
+      <div class="cta">
+        <a class="btn primary" href="play/"><span>立即開玩 →</span></a>
+        <a class="btn ghost" href="#controls"><span>看操作方式</span></a>
+      </div>
+      <div class="facts"><span><b>免費</b>・免安裝・免註冊</span><span><b>電腦</b>鍵盤／手把</span><span><b>手機</b>觸控（建議橫放）</span><span><b>約 5 公里</b>環島公路</span></div>
+    </div>
+  </div>
+
+  <section id="places">
+    <div class="wrap">
+      <h2><small>FOUR STOPS</small>一條路，四個花蓮</h2>
+      <p class="sub">地圖是以花蓮東海岸為靈感、縮小簡化過的虛構版本。開過每一段都會跳出地名，小地圖會告訴你下一個挑戰在哪裡。</p>
+      <div class="places">
+        <article class="place">
+          <img src="assets/city-night.jpg" width="1200" height="630" loading="lazy" alt="夜晚的花蓮市區，招牌和窗戶全亮，紅燈籠沿街排開">
+          <div class="body"><h3>花蓮市區<span>HUALIEN CITY</span></h3><p>兩排透天厝，牛肉麵、扁食、麻糬、藥局的直立招牌伸到路上，屋頂一顆顆不鏽鋼水塔。切到「夜市」時段，整條街的燈籠和招牌都會亮起來，路邊還有一間燕尾脊的宮廟。</p></div>
+        </article>
+        <article class="place">
+          <img src="assets/qixingtan.jpg" width="1200" height="630" loading="lazy" alt="七星潭海岸公路，右邊是太平洋，左邊有檳榔樹和鳳凰木">
+          <div class="body"><h3>七星潭<span>QIXINGTAN</span></h3><p>礫石海灘配上太平洋的淺藍海水，路邊是檳榔樹、鳳凰木和稻田，還有亮著霓虹框的檳榔攤。選「日出」時段，太陽會從海面升起。</p></div>
+        </article>
+        <article class="place">
+          <img src="assets/qingshui.jpg" width="1200" height="630" loading="lazy" alt="清水斷崖的明隧道，水泥頂棚與柱子一路延伸">
+          <div class="body"><h3>清水斷崖<span>QINGSHUI CLIFFS</span></h3><p>蘇花公路貼著山壁走，靠海那側是護欄，一段水泥柱撐起的明隧道把陽光切成一格一格。這裡車道筆直，很適合衝測速照相。</p></div>
+        </article>
+        <article class="place">
+          <img src="assets/taroko.jpg" width="1200" height="630" loading="lazy" alt="太魯閣入口的牌樓，後方是白色大理石峽谷">
+          <div class="body"><h3>太魯閣<span>TAROKO GORGE</span></h3><p>穿過「東西橫貫公路」的牌樓，兩側變成白灰色的大理石峭壁，山腰上有一座綠瓦涼亭。往山裡的連續彎是甩尾挑戰的地方。</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="play">
+    <div class="wrap">
+      <h2><small>HOW IT PLAYS</small>怎麼玩</h2>
+      <p class="sub">沒有終點，也沒有倒數計時。想慢慢兜風看風景可以，想衝分數也可以。</p>
+      <div class="features">
+        <div class="feature"><span class="tag">COMBO</span><h3>連段得分</h3><p>甩尾、飆速、騰空、驚險閃過汽車或機車都會得到風格分。連續做技巧倍率會往上加，撞車就整段歸零。</p></div>
+        <div class="feature"><span class="tag">SPEED CAMERA</span><h3>測速照相</h3><p>路上有兩座測速門，通過時記錄時速，拿一到三顆星，最佳紀錄會存在你的瀏覽器裡。</p></div>
+        <div class="feature"><span class="tag">DRIFT CHALLENGE</span><h3>甩尾挑戰</h3><p>山路的連續彎是計分路段，在區間內甩得越久越快，分數越高。</p></div>
+        <div class="feature"><span class="tag">TRAFFIC</span><h3>靠右行駛的車流</h3><p>路上有黃色計程車和一群機車，機車騎在外側的機慢車道上。閃過去有分，撞上去就扣連段。</p></div>
+        <div class="feature"><span class="tag">TIME OF DAY</span><h3>四種時段</h3><p>太平洋日出、晴天、黃昏、夜市。隨時按 <kbd>T</kbd> 切換，夜裡會自動開大燈。</p></div>
+        <div class="feature"><span class="tag">TUTORIAL</span><h3>中文操作教學</h3><p>第一次開會有一步一步的教學：油門、轉彎、煞車、甩尾，每一步做到了才會往下，隨時可以跳過。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="controls">
+    <div class="wrap narrow">
+      <h2><small>CONTROLS</small>操作方式</h2>
+      <p class="sub">鍵盤、手把、手機觸控都支援。手機請橫放，畫面會自動調整按鈕位置。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">動作</th><th scope="col">鍵盤</th><th scope="col">手機</th><th scope="col">手把</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">油門</th><td><kbd>W</kbd> 或 <kbd>↑</kbd></td><td>預設自動油門，也可以按「油門」</td><td>RT</td></tr>
+            <tr><th scope="row">轉向</th><td><kbd>A</kbd> <kbd>D</kbd> 或 <kbd>←</kbd> <kbd>→</kbd></td><td>左半邊螢幕左右拖曳</td><td>左搖桿</td></tr>
+            <tr><th scope="row">煞車／倒車</th><td><kbd>S</kbd> 或 <kbd>↓</kbd></td><td>「煞車」</td><td>LT</td></tr>
+            <tr><th scope="row">手煞車（甩尾）</th><td><kbd>空白鍵</kbd></td><td>「甩尾」</td><td>A</td></tr>
+            <tr><th scope="row">渦輪</th><td><kbd>Shift</kbd></td><td>「BOOST」</td><td>B 或 RB</td></tr>
+            <tr><th scope="row">換視角／時段</th><td><kbd>C</kbd>／<kbd>T</kbd></td><td>暫停選單</td><td>—</td></tr>
+            <tr><th scope="row">回到路上</th><td><kbd>R</kbd></td><td>暫停選單</td><td>—</td></tr>
+            <tr><th scope="row">暫停</th><td><kbd>Esc</kbd></td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap narrow">
+      <h2><small>FAQ</small>常見問題</h2>
+      <div class="faq">
+        <details open><summary>要付費或下載嗎？</summary><p>不用。這是完全免費的網頁遊戲，用瀏覽器打開就能玩，不需要安裝或註冊。</p></details>
+        <details><summary>手機可以玩嗎？</summary><p>可以。建議把手機橫放：左半邊拖曳轉向，右邊有煞車、甩尾和渦輪按鈕，預設會自動踩油門。</p></details>
+        <details><summary>地圖是真實的花蓮嗎？</summary><p>不是。地形與道路是以花蓮東海岸為靈感、縮小並簡化後的虛構版本，地標的位置與比例都和現實不同，請不要拿來當導航參考。</p></details>
+        <details><summary>電腦需要什麼配備？</summary><p>支援 WebGL 的新版 Chrome、Edge、Safari 或 Firefox 即可。內顯也能跑，畫面卡頓時可以把瀏覽器視窗縮小一些。</p></details>
+        <details><summary>分數會存在哪裡？</summary><p>只存在你自己的瀏覽器裡（localStorage），不會上傳到任何伺服器。清除瀏覽器資料就會歸零。</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <h2>準備好了就出發。</h2>
+      <a class="btn primary" href="play/"><span>立即開玩 →</span></a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Formosa Drive（花蓮公路行）是獨立製作的非商業網頁遊戲。車輛、地形、建築與音效都是用程式即時產生的原創內容，沒有使用其他遊戲的模型、圖片、音效或商標，也與任何遊戲公司或品牌無關。</p>
+    <p>使用 <a href="https://threejs.org/">three.js</a>（MIT 授權）繪製 3D 畫面，字型為 Google Fonts 的 Barlow Condensed 與 Noto Sans TC（SIL Open Font License）。地名僅用於描述場景靈感。</p>
+  </div>
+</footer>
+</body>
+</html>
