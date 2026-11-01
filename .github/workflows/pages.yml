@@ -26,22 +26,26 @@ jobs:
       - name: Build site
         run: |
           # site/ is the searchable intro page; the game lives at /play/
-          mkdir -p _site/play
+          mkdir -p _site
           cp -r site/. _site/
-          # index.html is authored without a document skeleton (artifact format); wrap it with a full head for hosting
-          {
-            echo '<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8">'
-            echo '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">'
-            echo '<title>開始遊戲｜Formosa Drive 花蓮公路行</title>'
-            echo '<meta name="description" content="在瀏覽器裡開車環花蓮：花蓮市區、七星潭、清水斷崖、太魯閣。免費、免下載，支援鍵盤、手把與手機觸控。">'
-            echo '<link rel="canonical" href="https://stwater20.github.io/car/play/">'
-            echo '<meta property="og:title" content="Formosa Drive 花蓮公路行">'
-            echo '<meta property="og:image" content="https://stwater20.github.io/car/assets/city-sunset.jpg">'
-            echo '<meta name="theme-color" content="#0b0c1c">'
-            echo '</head><body>'
-            sed '1{/<title>/d}' index.html
-            echo '</body></html>'
-          } > _site/play/index.html
+          # game pages are authored without a document skeleton (artifact format); wrap each with a full head for hosting
+          wrap() { # $1 source, $2 output, $3 title, $4 description, $5 canonical path
+            mkdir -p "$(dirname "$2")"
+            {
+              echo '<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8">'
+              echo '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">'
+              echo "<title>$3</title>"
+              echo "<meta name=\"description\" content=\"$4\">"
+              echo "<link rel=\"canonical\" href=\"https://stwater20.github.io/car/$5\">"
+              echo '<meta property="og:image" content="https://stwater20.github.io/car/assets/nightmarket.jpg">'
+              echo '<meta name="theme-color" content="#0b0c1c">'
+              echo '</head><body>'
+              sed '1{/<title>/d}' "$1"
+              echo '</body></html>'
+            } > "$2"
+          }
+          wrap index.html _site/play/index.html '開始停車｜停好停滿 Park Formosa' '高難度停車網頁遊戲：倒車入庫、路邊停車、曲線進退、夜市巷口、地下停車場、透天厝車庫，共 8 關。' 'play/'
+          wrap drive.html _site/drive/index.html '花蓮公路行｜開放世界模式' '在瀏覽器裡開車環花蓮：花蓮市區、七星潭、清水斷崖、太魯閣。' 'drive/'
       - uses: actions/upload-pages-artifact@v3
       - id: deployment
         uses: actions/deploy-pages@v4
