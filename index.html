@@ -199,10 +199,67 @@ body.is-touch .exam .status{top:calc(env(safe-area-inset-top,0px) + 62px)}
   .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (prefers-reduced-motion:reduce){.btn,.lv{transition:none}.bigstars span.on{animation:none}}
+/* ---------- in-HUD checklist of required actions ---------- */
+.status{flex-wrap:wrap;justify-content:center}
+.checklist{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}
+.checklist:empty{display:none}
+.ck{font-size:13px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3)}
+.ck.done{background:var(--go);color:var(--ink);border-color:var(--go)}
+.ck.next{border-color:var(--warn);color:var(--warn)}
+.pgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pgrid .btn{width:100%}
+/* ---------- first-time coach marks (touch) ---------- */
+.coach{position:fixed;inset:0;z-index:15;background:rgba(11,12,28,.74)}
+.coach .tag{position:absolute;background:var(--paper);color:var(--ink);font-weight:900;font-size:18px;padding:10px 14px;border-radius:12px;max-width:min(280px,38vw);line-height:1.35;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.coach .tag small{display:block;font-weight:600;font-size:14px;color:#3b3d48;margin-top:2px}
+.coach .ok{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) skewX(-10deg)}
+/* ---------- portrait blocker while driving on a phone ---------- */
+.rotateblock{display:none;position:fixed;inset:0;z-index:20;background:var(--ink);flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;font-weight:900;font-size:24px;line-height:1.4}
+.rotateblock i{font-style:normal;font-size:64px;display:inline-block;animation:tilt 1.6s ease-in-out infinite}
+.rotateblock small{font-size:16px;font-weight:600;color:var(--mute)}
+@keyframes tilt{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait){body.is-touch.playing .rotateblock{display:flex}}
+@media (prefers-reduced-motion:reduce){.rotateblock i{animation:none}}
+.status{font-size:16px}
+/* ---------- touch-first sizing: every target ≥ 44 px, text ≥ 14 px ---------- */
+body.is-touch .hb{font-size:15px;padding:10px 14px;min-height:46px;min-width:58px;border-radius:10px;border-width:2px}
+body.is-touch #hRetry,body.is-touch #hGiveUp{display:none}
+body.is-touch .hb.hint{min-width:96px}
+body.is-touch .eb{min-width:70px;min-height:52px;font-size:16px;padding:6px 10px;border-radius:10px;white-space:nowrap}
+body.is-touch #inVeh{display:none}
+body.is-touch .exam #exLog{right:auto;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 60px);bottom:auto;align-items:flex-start}
+body.is-touch .eb small{font-size:0}
+body.is-touch .lvchip .a{font-size:17px}
+body.is-touch .lvchip .rules{display:none}
+body.is-touch .status{font-size:16px;line-height:1.4;padding:8px 14px;max-width:min(560px,58vw)}
+body.is-touch .ck{font-size:14px;padding:4px 10px}
+body.is-touch .exam-log div{font-size:15px;padding:6px 12px}
+body.is-touch .exam-score span{font-size:13px}
+body.is-touch .timer span{font-size:13px}
+body.is-touch .center{font-size:16px;padding:12px 14px;min-height:46px}
+body.is-touch .small{font-size:14px}
+body.is-touch .card{padding:18px 20px;gap:12px}
+body.is-touch .card p{font-size:16px}
+body.is-touch .card ul{font-size:15px}
+body.is-touch .chip{font-size:13px;padding:5px 10px}
+body.is-touch .btn{min-height:52px;font-size:18px;padding:12px 26px}
+body.is-touch .lv{min-height:120px;padding:14px}
+body.is-touch .lv .t{font-size:19px}
+body.is-touch .lv .d{font-size:13px}
+body.is-touch .exam-item{padding:14px;min-height:56px}
+body.is-touch .exam-item .t{font-size:18px}
+body.is-touch .exam-item .d{font-size:13px}
+body.is-touch .sheet{font-size:15px}
+body.is-touch .veh .d{font-size:14px}
+body.is-touch .sw{width:44px;height:44px}
+body.is-touch .note{font-size:13px}
+@media (max-height:440px){ body.is-touch .screen{align-items:flex-start} body.is-touch #title h1{font-size:clamp(44px,15vh,80px)} }
 </style>
 
 <canvas id="gl"></canvas>
 <div class="flash" id="flash"></div>
+<div class="coach" id="coach" hidden></div>
+<div class="rotateblock" id="rotateBlock" role="alert"><i aria-hidden="true">📱</i>請把手機橫放<small>方向盤在左、踏板在右，橫著拿比較好開</small></div>
 <div class="toast" id="toast"></div>
 
 <!-- title -->
@@ -289,7 +346,15 @@ body.is-touch .exam .status{top:calc(env(safe-area-inset-top,0px) + 62px)}
   <div class="card">
     <div class="eyebrow">PAUSED</div>
     <h2>暫停</h2>
-    <div class="row"><button class="btn primary" id="pResume"><span>繼續</span></button><button class="btn" id="pRetry"><span>重來</span></button><button class="btn" id="pList"><span>關卡列表</span></button><button class="btn" id="pSound"><span>聲音：開</span></button></div>
+    <div class="pgrid">
+      <button class="btn primary" id="pResume"><span>繼續</span></button>
+      <button class="btn" id="pRetry"><span>重來本關</span></button>
+      <button class="btn" id="pCam"><span>視角：追車</span></button>
+      <button class="btn" id="pHint"><span>提示路線</span></button>
+      <button class="btn" id="pGiveUp"><span>放棄本項</span></button>
+      <button class="btn" id="pSound"><span>聲音：開</span></button>
+      <button class="btn" id="pList"><span>關卡列表</span></button>
+    </div>
   </div>
 </div>
 
@@ -307,7 +372,7 @@ body.is-touch .exam .status{top:calc(env(safe-area-inset-top,0px) + 62px)}
   </div>
   <div class="legend" id="legend" hidden><span><i style="background:#2fe08a"></i>前進</span><span><i style="background:#3fe0ff"></i>倒車</span><span><i style="background:#ffc23a"></i>換檔點</span></div>
   <div class="pip" id="pip" hidden><span>REAR CAM 後方顯影</span><canvas id="guides"></canvas></div>
-  <div class="status" id="status"><svg class="ring" id="ring" viewBox="0 0 22 22" hidden><circle cx="11" cy="11" r="9" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="3"/><circle id="ringArc" cx="11" cy="11" r="9" fill="none" stroke="#2fe08a" stroke-width="3" stroke-dasharray="0 57" transform="rotate(-90 11 11)"/></svg><span id="statusTxt">把車停進綠色框</span></div>
+  <div class="status" id="status"><svg class="ring" id="ring" viewBox="0 0 22 22" hidden><circle cx="11" cy="11" r="9" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="3"/><circle id="ringArc" cx="11" cy="11" r="9" fill="none" stroke="#2fe08a" stroke-width="3" stroke-dasharray="0 57" transform="rotate(-90 11 11)"/></svg><span id="statusTxt">把車停進綠色框</span><div class="checklist" id="checklist"></div></div>
   <div class="keys" id="keys"><span><kbd>W</kbd>前進</span><span><kbd>S</kbd>倒車</span><span><kbd>A</kbd><kbd>D</kbd>方向盤</span><span><kbd>空白鍵</kbd>煞車</span><span><kbd>C</kbd>換視角</span><span><kbd>R</kbd>重來</span><span><kbd>Esc</kbd>暫停</span></div>
   <div class="dash"><svg class="mini-wheel" id="miniWheel" viewBox="-30 -30 60 60"><circle r="26" fill="none" stroke="#fff8f2" stroke-width="5"/><circle r="7" fill="#fff8f2"/><path d="M-24 0 H24 M0 0 V24" stroke="#fff8f2" stroke-width="5"/><circle cy="-26" r="4" fill="#ff2e6a"/></svg><div class="sp"><span id="hSpeed">0</span><small>KM/H</small></div><div class="gear" id="hGear">N</div></div>
   <div class="exam-score" id="exScoreBox" hidden><span>場考成績</span><b id="exScore">100</b><span>70 分及格</span></div>
@@ -315,11 +380,11 @@ body.is-touch .exam .status{top:calc(env(safe-area-inset-top,0px) + 62px)}
   <div class="exam-bar" id="exBar" hidden>
     <button class="eb" id="ebBelt">安全帶<small>B</small></button>
     <button class="eb" id="ebLookL">看左後<small>Z</small></button>
-    <button class="eb" id="ebSigL">◀ 方向燈<small>Q</small></button>
-    <button class="eb" id="ebSigR">方向燈 ▶<small>E</small></button>
+    <button class="eb" id="ebSigL" aria-label="左方向燈">◀ 左燈<small>Q</small></button>
+    <button class="eb" id="ebSigR" aria-label="右方向燈">右燈 ▶<small>E</small></button>
     <button class="eb" id="ebLookR">看右後<small>X</small></button>
   </div>
-  <div class="hudbtns"><button class="hb hint" id="hHint">提示路線</button><button class="hb" id="hGiveUp" hidden>放棄本項</button><button class="hb" id="hCam">視角 C</button><button class="hb" id="hRetry">重來 R</button><button class="hb" id="hPause">暫停</button></div>
+  <div class="hudbtns"><button class="hb hint" id="hHint">提示路線</button><button class="hb" id="hGiveUp" hidden>放棄本項</button><button class="hb" id="hCam">視角 C</button><button class="hb" id="hRetry">重來 R</button><button class="hb" id="hPause">☰ 選單</button></div>
 </div>
 
 <!-- touch -->
@@ -1382,7 +1447,7 @@ const totalStars = () => LEVELS.reduce((a, _, i) => a + starsOf(i), 0);
 const failsOf = i => store.get('fails2', {})[LEVELS[i].id] || 0;
 function unlocked(i) { if (i === 0) return true; return starsOf(i - 1) > 0 || failsOf(i - 1) >= 3 || starsOf(i) > 0; }
 const canUse = (lv, v) => !(lv.noVeh || []).includes(v.id);
-function show(id) { for (const s of ['title', 'garage', 'levelsScreen', 'intro', 'result', 'pause', 'examMenu', 'report']) $(s).hidden = s !== id; }
+function show(id) { for (const s of ['title', 'garage', 'levelsScreen', 'intro', 'result', 'pause', 'examMenu', 'report']) $(s).hidden = s !== id; document.body.classList.toggle('playing', !id); if (id) $('coach').hidden = true; }
 function renderLevels() {
   let tot = 0;
   $('levels').innerHTML = '';
@@ -1430,10 +1495,17 @@ function beginDrive() {
   $('hPar').textContent = `目標 ${fmtT(lv.par)} · 上限 ${fmtT(lv.time)}`; $('hCam').textContent = '視角：' + CAMS[camMode]; updateHintBtn();
   setStatus(L.target.rev ? '倒車入庫：把車倒進綠色框，車頭朝外' : '把車停進綠色框', null, null);
   setTimeout(() => $('keys').classList.add('fade'), 8000);
+  maybeCoach(); renderChecklist(null);
 }
 function startLevel(i) { loadLevel(i); beginDrive(); }
 function pause(on) {
-  if (on && state === 'play') { state = 'pause'; show('pause'); $('pResume').focus(); }
+  if (on && state === 'play') {
+    state = 'pause'; show('pause'); $('pResume').focus();
+    const ex = mode === 'exam';
+    $('pRetry').firstElementChild.textContent = ex ? '重考本項' : '重來本關'; $('pList').firstElementChild.textContent = ex ? '考照選單' : '關卡列表';
+    $('pHint').hidden = ex; $('pGiveUp').hidden = !ex; $('pCam').firstElementChild.textContent = '視角：' + CAMS[camMode];
+    if (!ex) $('pHint').firstElementChild.textContent = `提示路線 ×${hintsLeft()}`;
+  }
   else if (!on && state === 'pause') { state = 'play'; show(null); }
 }
 function finish(success, reason) {
@@ -1631,7 +1703,7 @@ function look(side) {
 }
 function toggleBelt() { if (state !== 'play' || mode !== 'exam') return; X.belt = !X.belt; audio.tone(X.belt ? 900 : 500, 0.08, 0.1, 'triangle'); paintExamBar(); }
 function paintExamBar() {
-  $('ebBelt').classList.toggle('on', X.belt); $('ebBelt').classList.toggle('warn', !X.belt);
+  $('ebBelt').classList.toggle('on', X.belt); $('ebBelt').classList.toggle('warn', !X.belt); $('ebBelt').firstChild.textContent = X.belt ? '✓ 安全帶' : '安全帶';
   $('ebSigL').classList.toggle('blink', X.sig === -1); $('ebSigR').classList.toggle('blink', X.sig === 1);
 }
 // moving off after a stop or from the start: seat belt, turn signal and a look over the shoulder
@@ -1909,6 +1981,7 @@ function beginStation() {
   for (const id of ['exScoreBox', 'exLog', 'exBar', 'hGiveUp']) $(id).hidden = false;
   $('hLv').textContent = `${X.idx + 1}/${EXAM.length}`; $('hName').textContent = EXAM[X.idx].name; $('hRules').innerHTML = '';
   setStatus(EXAM[X.idx].desc, null, null); paintExamBar(); $('pip').hidden = true;
+  maybeCoach();
 }
 function endStation(gaveUp) {
   const st = EXAM[X.idx];
@@ -1952,6 +2025,7 @@ function examFrame(dt) {
   if (!X.moved && Math.abs(car.v) > 0.05) { X.moved = true; if (!X.belt) deduct(32, '未繫安全帶', 'belt'); }
   if (X.sig && Math.abs(wrapAngle(car.h - (X.sigH ?? car.h))) > 1.1 && Math.abs(car.steer) < 0.15) { X.sig = 0; paintExamBar(); }
   if (lookAnim > 0) { lookAnim -= dt; if (lookAnim <= 0) lookYaw = 0; } else lookYaw = damp(lookYaw, 0, 6, dt);
+  renderChecklist(examSteps());
   const done = st.update(S, dt);
   if (done) { audio.tone(988, 0.1, 0.12, 'triangle'); audio.tone(1319, 0.2, 0.12, 'triangle', 0.1); return endStation(false); }
   if (S.t > st.limit) return endStation('time');
@@ -1966,8 +2040,55 @@ $('exFull').onclick = () => startExam(0, true);
 $('repAgain').onclick = () => startExam(X.full ? 0 : X.idx, X.full);
 $('repMenu').onclick = () => { leaveExam(); openExamMenu(); };
 $('hGiveUp').onclick = () => { if (state === 'play' && mode === 'exam') endStation('giveup'); };
-const tap = (id, fn) => $(id).addEventListener('pointerdown', e => { e.preventDefault(); fn(); });
+const tap = (id, fn) => $(id).addEventListener('pointerdown', e => { e.preventDefault(); if (navigator.vibrate) navigator.vibrate(10); fn(); });
 tap('ebBelt', toggleBelt); tap('ebSigL', () => setSignal(-1)); tap('ebSigR', () => setSignal(1)); tap('ebLookL', () => look('L')); tap('ebLookR', () => look('R'));
+
+/* ---------- guidance: checklist of the next required actions, and first-run coach marks ---------- */
+let ckKey = '';
+function renderChecklist(items) {
+  const key = items ? items.map(i => i.t + (i.done ? 1 : 0)).join('|') : '';
+  if (key === ckKey) return; ckKey = key;
+  const el = $('checklist'); el.innerHTML = '';
+  if (!items) return;
+  let nextMarked = false;
+  for (const it of items) { const c = document.createElement('span'); c.className = 'ck' + (it.done ? ' done' : !nextMarked ? ' next' : ''); if (!it.done) nextMarked = true; c.textContent = (it.done ? '✓ ' : '') + it.t; el.append(c); }
+}
+function examSteps() {
+  const st = EXAM[X.idx], S = X.S; if (!S) return null;
+  const belt = { t: '安全帶', done: X.belt };
+  switch (st.id) {
+    case 'start': return S.off ? null : [belt, { t: '轉頭看左後', done: lookedWithin(6, 'L') }, { t: '左方向燈', done: X.sig === -1 }, { t: '起步', done: false }];
+    case 'cross': return S.ped && S.ped.done ? null : [{ t: '減速到 10 km/h 以下', done: Math.abs(car.v) <= 2.8 }, { t: '停止線前停讓行人', done: false }];
+    case 'signal': return S.turnSeen ? null : S.light !== 'green' ? [{ t: '停止線前停車', done: Math.abs(car.v) < 0.05 }, { t: '等綠燈', done: false }] : S.cycled ? [{ t: '轉頭看右後', done: lookedWithin(5, 'R') }, { t: '右方向燈', done: X.sig === 1 }, { t: '右轉', done: false }] : null;
+    case 'rail': return S.phase === 'approach' ? [{ t: '停止線前停車', done: false }, { t: '看左', done: false }, { t: '看右', done: false }] : (S.pt < 14 ? [{ t: '停車', done: true }, { t: '看左', done: !!S.lookL }, { t: '看右', done: !!S.lookR }, { t: '等柵欄升起', done: false }] : null);
+    case 'hill': return S.phase === 'approach' ? [{ t: '車頭停在兩條白線間', done: S.hold > 0 }, { t: '踩住煞車 2 秒', done: false }] : S.phase === 'restart' ? [{ t: '放煞車立刻踩油門', done: false }] : null;
+    case 'parallel': case 'bay': return S.phase === 'leave' && !S.left ? [belt, { t: '轉頭查看', done: lookedWithin(6) }, { t: st.id === 'parallel' ? '左方向燈' : '右方向燈', done: X.sig !== 0 }, { t: '起步駛出', done: false }] : null;
+    case 'curve': return [{ t: '前進到出口', done: S.phase === 'rev' }, { t: '倒車回起點', done: false }];
+  }
+  return null;
+}
+function maybeCoach() {
+  const key = mode === 'exam' ? 'coachExam' : 'coach';
+  if (!isTouch || store.get(key, false)) return;
+  requestAnimationFrame(() => showCoach(key));
+}
+function showCoach(key) {
+  const c = $('coach'); c.innerHTML = ''; c.hidden = false;
+  const add = (el, title, sub, place) => {
+    if (!el) return; const r = el.getBoundingClientRect(); if (!r.width) return;
+    const t = document.createElement('div'); t.className = 'tag'; t.textContent = title; const sm = document.createElement('small'); sm.textContent = sub; t.append(sm); c.append(t);
+    const tw = t.offsetWidth, th = t.offsetHeight;
+    let x = r.left + r.width / 2 - tw / 2, y = r.top - th - 10;
+    if (place === 'below') y = r.bottom + 10; else if (place === 'left') { x = r.left - tw - 10; y = r.top + r.height / 2 - th / 2; } else if (place === 'right') { x = r.right + 10; y = r.top + r.height / 2 - th / 2; }
+    t.style.left = clamp(x, 8, innerWidth - tw - 8) + 'px'; t.style.top = clamp(y, 8, innerHeight - th - 8) + 'px';
+  };
+  add($('wheel'), '① 方向盤', '按住轉動，放開會停在原位', 'above');
+  add(document.querySelector('.pedals'), '② 踏板', '按住「前進」或「倒車」才會動', 'above');
+  if (mode === 'exam') add($('exBar'), '③ 考照動作', '安全帶、看後方、方向燈都要自己按', 'below');
+  else add($('hHint'), '③ 提示路線', '卡住時畫出可以停進去的路線', 'left');
+  const ok = document.createElement('button'); ok.className = 'btn primary ok'; ok.style.cssText = 'left:50%;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);transform:translateX(-50%) skewX(-10deg)'; const sp = document.createElement('span'); sp.textContent = '知道了，開始'; ok.append(sp);
+  ok.onclick = () => { c.hidden = true; store.set(key, true); }; c.append(ok);
+}
 /* =========================================================
    menus
    ========================================================= */
@@ -2005,6 +2126,9 @@ $('pResume').onclick = () => pause(false);
 $('pRetry').onclick = () => (mode === 'exam' ? openStation(X.idx) : startLevel(curLevel));
 $('pList').onclick = () => { $('hud').hidden = true; $('touch').classList.remove('on'); if (mode === 'exam') { leaveExam(); openExamMenu(); } else { state = 'levels'; renderLevels(); show('levelsScreen'); } };
 $('pSound').onclick = () => audio.setOn(!audio.on); audio.setOn(audio.on);
+$('pCam').onclick = () => { cycleCam(); $('pCam').firstElementChild.textContent = '視角：' + CAMS[camMode]; };
+$('pHint').onclick = () => { pause(false); useHint(); };
+$('pGiveUp').onclick = () => { pause(false); if (mode === 'exam') endStation('giveup'); };
 $('hCam').onclick = cycleCam; $('hRetry').onclick = () => (mode === 'exam' ? openStation(X.idx) : startLevel(curLevel)); $('hPause').onclick = () => pause(true);
 
 /* =========================================================
