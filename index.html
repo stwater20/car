@@ -154,7 +154,46 @@ body.is-touch .timer b{font-size:32px}
 .hb.hint{border-color:var(--warn);color:var(--warn)}
 .legend{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translateX(-50%);background:var(--ink-2);padding:6px 12px;font-size:13px;font-weight:700;display:flex;gap:12px;align-items:center}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.exam-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.exam-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);background:rgba(11,12,28,.72);text-align:left;cursor:pointer;min-width:0}
+.exam-item:hover{border-color:var(--go)}
+.exam-item .n{font-family:var(--f-display);font-weight:900;font-style:italic;font-size:24px;color:var(--go);width:30px}
+.exam-item .t{font-weight:900;font-size:16px}
+.exam-item .d{font-size:12px;color:var(--mute)}
+.note{font-size:12px;line-height:1.7;color:var(--mute);border-left:3px solid var(--warn);padding-left:10px}
+.sheet{width:100%;border-collapse:collapse;font-size:14px}
+.sheet th,.sheet td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.sheet td.pts{font-family:var(--f-display);font-weight:900;font-size:18px;color:#ff8aa8;text-align:right;white-space:nowrap}
+.sheet .tag{font-size:11px;color:var(--warn);margin-left:6px}
+.sheet-wrap{max-height:42vh;overflow:auto;border:1px solid var(--line)}
+.bigscore{font-family:var(--f-display);font-weight:900;font-style:italic;font-size:72px;line-height:1}
+.bigscore.pass{color:var(--go)} .bigscore.fail{color:var(--hot)}
+.rulelist{margin:0;padding-left:1.1em;font-size:14px;line-height:1.7;color:rgba(255,248,242,.85)}
+.rulelist b{color:#ff8aa8;font-family:var(--f-display);font-size:16px;margin-right:4px}
+.exam-score{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 12px);text-align:right;background:var(--ink-2);padding:8px 12px;min-width:120px}
+.exam-score b{display:block;font-family:var(--f-display);font-weight:900;font-style:italic;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.exam-score b.low{color:var(--hot)}
+.exam-score span{font-size:12px;color:var(--mute)}
+.exam-log{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 92px);display:flex;flex-direction:column;align-items:flex-end;gap:4px;max-width:46vw}
+.exam-log div{background:rgba(160,24,60,.9);padding:4px 10px;font-size:13px;font-weight:700;animation:pop .35s ease-out}
+.exam-bar{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translateX(-50%);display:flex;gap:6px;pointer-events:auto}
+.eb{border:2px solid rgba(255,255,255,.4);background:var(--ink-2);font-weight:900;font-size:14px;padding:6px 10px;min-width:58px;line-height:1.15;cursor:pointer}
+.eb small{display:block;font-family:var(--f-display);font-size:11px;letter-spacing:.1em;opacity:.7}
+.eb.on{background:var(--go);color:var(--ink);border-color:var(--go)}
+.eb.blink{background:#ffb21a;color:var(--ink);border-color:#ffb21a}
+.eb.warn{border-color:var(--hot)}
+.eb.flash{background:var(--sky);color:var(--ink)}
+.exam .sensors,.exam .timer,.exam #hHint,.exam .keys{display:none!important}
+.exam .status{bottom:calc(env(safe-area-inset-bottom,0px) + 74px)}
+body.is-touch .exam-bar{top:calc(env(safe-area-inset-top,0px) + 8px)}
+body.is-touch .eb{min-width:52px;padding:6px 7px;font-size:13px}
+body.is-touch .exam-score{top:calc(env(safe-area-inset-top,0px) + 8px);padding:6px 10px;min-width:0}
+body.is-touch .exam-score b{font-size:28px}
+body.is-touch .exam .hudbtns{top:calc(env(safe-area-inset-top,0px) + 90px)}
+body.is-touch .exam-log{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 190px)}
+body.is-touch .exam .status{top:calc(env(safe-area-inset-top,0px) + 62px)}
 @media (max-width:760px){
+  .exam-list{grid-template-columns:1fr}
   .vehs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .levels{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -173,7 +212,7 @@ body.is-touch .timer b{font-size:32px}
     <h1><span class="pmark">P</span>停好<em>停滿</em></h1>
     <div class="en">PARK FORMOSA</div>
     <p>從駕訓班的倒車入庫、路邊停車、曲線進退，到加油站、夜市巷口、斷崖觀景台、地下三樓、透天厝車庫。輪胎壓到線、車身擦到任何東西，這關就重來。四台車，從小車到發財車。</p>
-    <div class="row"><button class="btn primary" id="toLevels"><span>選擇關卡</span></button><button class="btn" id="toGarage"><span>車庫 · <span id="curVeh">跑車</span></span></button></div>
+    <div class="row"><button class="btn primary" id="toLevels"><span>選擇關卡</span></button><button class="btn" id="toGarage"><span>車庫 · <span id="curVeh">跑車</span></span></button><button class="btn" id="toExam" style="background:var(--warn);color:var(--ink)"><span>考照模擬 · 場考</span></button></div>
     <p class="small">電腦：<kbd>W</kbd> 前進 <kbd>S</kbd> 倒車 <kbd>A</kbd><kbd>D</kbd> 方向盤 <kbd>空白鍵</kbd> 煞車 <kbd>C</kbd> 視角 <kbd>R</kbd> 重來　手機：橫放，左邊轉方向盤、右邊踩踏板。</p>
   </div>
 </div>
@@ -185,6 +224,28 @@ body.is-touch .timer b{font-size:32px}
     <div class="vehs" id="vehs"></div>
     <div class="row"><span class="small">車色</span><div class="swatches" id="swatches"></div></div>
     <div class="row"><button class="btn primary" id="garageDone"><span>好了</span></button><span class="small">大車用星星解鎖。車越大越難停，有些車位大車根本停不進去。</span></div>
+  </div>
+</div>
+
+<!-- exam menu -->
+<div class="screen" id="examMenu" hidden>
+  <div class="panel">
+    <div class="head"><div><div class="eyebrow">DRIVING TEST · 小型車場考</div><h2>考照模擬</h2></div><div class="total" id="examBest">最佳 —</div></div>
+    <p class="small" style="font-size:15px;line-height:1.8;color:rgba(255,248,242,.85)">照著監理站小型車場考的項目和扣分標準，一站一站考下來：100 分起扣，70 分及格。車子是自排普通小型車，沒有倒車雷達和倒車顯影。</p>
+    <div class="row"><button class="btn primary" id="exFull"><span>開始完整模擬考</span></button><button class="btn" id="exBack"><span>← 返回</span></button></div>
+    <div class="exam-list" id="exList"></div>
+    <p class="note">扣分項目整理自交通部公路局「小型車駕駛人場考評分標準」與 2026 年 3 月 31 日起的新制（無號誌路口停讓行人、起步與打方向燈前轉頭確認死角）。考場配置、項目順序和部分細節各監理站不同，請以報考監理站公告為準。標「模擬」的扣分是這個遊戲為了判定方便自己加的規則。本模擬只能幫你熟悉流程，不能取代駕訓班的實車練習。</p>
+  </div>
+</div>
+
+<!-- exam report -->
+<div class="screen" id="report" hidden>
+  <div class="card" id="repCard" style="width:min(680px,100%)">
+    <div class="eyebrow" id="repTitle">場考成績</div>
+    <div class="row" style="align-items:flex-end;gap:18px"><div class="bigscore" id="repScore">100</div><h2 id="repVerdict" style="margin:0">及格</h2></div>
+    <p id="repMsg"></p>
+    <div class="sheet-wrap"><table class="sheet"><thead><tr><th>考驗項目</th><th>扣分原因</th><th style="text-align:right">扣分</th></tr></thead><tbody id="repRows"></tbody></table></div>
+    <div class="row"><button class="btn primary" id="repAgain"><span>再考一次</span></button><button class="btn" id="repMenu"><span>考照選單</span></button></div>
   </div>
 </div>
 
@@ -249,7 +310,16 @@ body.is-touch .timer b{font-size:32px}
   <div class="status" id="status"><svg class="ring" id="ring" viewBox="0 0 22 22" hidden><circle cx="11" cy="11" r="9" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="3"/><circle id="ringArc" cx="11" cy="11" r="9" fill="none" stroke="#2fe08a" stroke-width="3" stroke-dasharray="0 57" transform="rotate(-90 11 11)"/></svg><span id="statusTxt">把車停進綠色框</span></div>
   <div class="keys" id="keys"><span><kbd>W</kbd>前進</span><span><kbd>S</kbd>倒車</span><span><kbd>A</kbd><kbd>D</kbd>方向盤</span><span><kbd>空白鍵</kbd>煞車</span><span><kbd>C</kbd>換視角</span><span><kbd>R</kbd>重來</span><span><kbd>Esc</kbd>暫停</span></div>
   <div class="dash"><svg class="mini-wheel" id="miniWheel" viewBox="-30 -30 60 60"><circle r="26" fill="none" stroke="#fff8f2" stroke-width="5"/><circle r="7" fill="#fff8f2"/><path d="M-24 0 H24 M0 0 V24" stroke="#fff8f2" stroke-width="5"/><circle cy="-26" r="4" fill="#ff2e6a"/></svg><div class="sp"><span id="hSpeed">0</span><small>KM/H</small></div><div class="gear" id="hGear">N</div></div>
-  <div class="hudbtns"><button class="hb hint" id="hHint">提示路線</button><button class="hb" id="hCam">視角 C</button><button class="hb" id="hRetry">重來 R</button><button class="hb" id="hPause">暫停</button></div>
+  <div class="exam-score" id="exScoreBox" hidden><span>場考成績</span><b id="exScore">100</b><span>70 分及格</span></div>
+  <div class="exam-log" id="exLog" hidden></div>
+  <div class="exam-bar" id="exBar" hidden>
+    <button class="eb" id="ebBelt">安全帶<small>B</small></button>
+    <button class="eb" id="ebLookL">看左後<small>Z</small></button>
+    <button class="eb" id="ebSigL">◀ 方向燈<small>Q</small></button>
+    <button class="eb" id="ebSigR">方向燈 ▶<small>E</small></button>
+    <button class="eb" id="ebLookR">看右後<small>X</small></button>
+  </div>
+  <div class="hudbtns"><button class="hb hint" id="hHint">提示路線</button><button class="hb" id="hGiveUp" hidden>放棄本項</button><button class="hb" id="hCam">視角 C</button><button class="hb" id="hRetry">重來 R</button><button class="hb" id="hPause">暫停</button></div>
 </div>
 
 <!-- touch -->
@@ -608,17 +678,22 @@ const VEH = [
   { id: 'truck', name: '發財車', en: 'LIGHT TRUCK', need: 20, desc: '台灣街頭最常見的小貨車。軸距長、車斗後懸很長。', hw: 0.9, hl: 2.38, wb: 2.95, rear: 1.45, maxD: 0.6, tx: 0.72, fz: 1.5, rz: -1.45, wr: 0.3, eye: 1.75,
     build: c => buildTruck(c) }
 ];
+VEH.push({ id: 'school', hidden: true, name: '教練車', en: 'DRIVING SCHOOL', need: 0, desc: '', hw: 1.03, hl: 2.3, wb: 2.74, rear: 1.32, maxD: 0.58, tx: 0.88, fz: 1.42, rz: -1.32, wr: 0.34, eye: 1.25,
+  build: c => { const m = buildCar('#f4f3ee', { sedan: true, caliper: 0x333333 }); const sign = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.28, 0.3), new THREE.MeshBasicMaterial({ map: gateTex('教練車', 'DRIVING SCHOOL', '#ffd23f', '#1a1a1a') })); sign.position.set(0, 1.62, -0.2); m.body.add(sign); return m; } });
 const turnRadius = v => { const R = v.wb / Math.tan(v.maxD); return Math.hypot(R + v.hw, v.rear + v.hl); };
 let V = VEH[1], player = null;
 const headSpot = new THREE.SpotLight(0xfff1dd, 0, 60, 0.6, 0.5, 1.4); headSpot.target.position.set(0, 0, 14);
 const revLight = new THREE.PointLight(0xffffff, 0, 6, 2);
 function mountVehicle(v) {
   if (player) scene.remove(player.root);
-  V = v; store.set('veh', v.id);
+  V = v; if (!v.hidden) store.set('veh', v.id);
   player = v.build(LIVERIES[liv]); scene.add(player.root);
   headSpot.position.set(0, 0.8, v.hl - 0.1); revLight.position.set(0, 0.7, -v.hl - 0.3);
   player.body.add(headSpot, headSpot.target, revLight);
-  $('curVeh').textContent = v.name;
+  if (!v.hidden) { $('curVeh').textContent = v.name; }
+  const amber = new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 1.4, 0.1), toneMapped: false }), sig = { L: [], R: [] };
+  for (const [side, sx] of [['L', 1], ['R', -1]]) for (const z of [v.hl - 0.12, -v.hl + 0.12]) { const b = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 0.1), amber); b.position.set(sx * (v.hw - 0.15), 0.78, z); b.visible = false; player.body.add(b); sig[side].push(b); }
+  player.sig = sig;
 }
 const WHEEL_LOCK_DEG = 540;
 const car = { x: 0, z: 0, h: 0, v: 0, steer: 0, steerTarget: 0, gear: 'N', spin: 0, flash: 0 };
@@ -687,8 +762,8 @@ function newLevel() {
     ground(w, d, mat, x = 0, z = 0, y = 0) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat); m.rotation.x = -Math.PI / 2; m.position.set(x, y, z); m.receiveShadow = true; g.add(m); return m; },
     line(x1, z1, x2, z2, o = {}) {
       const w = o.w ?? 0.15, dx = x2 - x1, dz = z2 - z1, len = Math.hypot(dx, dz), rot = Math.atan2(dx, dz);
-      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, len), o.mat ?? MAT.white); m.rotation.set(-Math.PI / 2, rot, 0, 'YXZ'); m.position.set((x1 + x2) / 2, 0.012, (z1 + z2) / 2); m.receiveShadow = true; g.add(m);
-      if (o.fail) K.tire.push({ r: Rect((x1 + x2) / 2, (z1 + z2) / 2, w / 2, len / 2, rot), label: '壓線' });
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, len), o.mat ?? MAT.white); m.rotation.set(-Math.PI / 2, rot, 0, 'YXZ'); m.position.set((x1 + x2) / 2, (o.y ?? 0) + 0.012, (z1 + z2) / 2); m.receiveShadow = true; g.add(m);
+      if (o.fail) K.tire.push({ r: Rect((x1 + x2) / 2, (z1 + z2) / 2, w / 2, len / 2, rot), label: o.label ?? '壓線', pts: o.pts });
     },
     poly(pts, o = {}) { for (let i = 0; i < pts.length - 1; i++) K.line(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], { ...o, w: o.w ?? 0.15 }); },
     car(x, z, rot, color, o = {}) {
@@ -1091,22 +1166,23 @@ const audio = {
    input: W/S drive, A/D wheel, space brake; touch wheel + pedals; gamepad
    ========================================================= */
 const keys = {}, pedal = { fwd: 0, rev: 0, brake: 0 };
-let touchWheelDeg = 0, wheelHeld = false;
+let touchWheelDeg = 0, wheelHeld = false, devSteer = null; // devSteer: test harness override
 const WHEEL_LOCK = WHEEL_LOCK_DEG; // degrees lock-to-lock / 2, like a real car
 addEventListener('keydown', e => {
   keys[e.code] = true;
+  if (mode === 'exam' && state === 'play' && !e.repeat) { if (e.code === 'KeyB') toggleBelt(); if (e.code === 'KeyQ') setSignal(-1); if (e.code === 'KeyE') setSignal(1); if (e.code === 'KeyZ') look('L'); if (e.code === 'KeyX') look('R'); }
   if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
   if (e.repeat) return;
   if (state === 'play') {
     if (e.code === 'KeyC') cycleCam();
-    if (e.code === 'KeyR') startLevel(curLevel);
+    if (e.code === 'KeyR' && mode === 'game') startLevel(curLevel);
     if (e.code === 'Escape' || e.code === 'KeyP') pause(true);
     if (e.code === 'KeyM') audio.setOn(!audio.on);
-    if (e.code === 'KeyH') useHint();
+    if (e.code === 'KeyH' && mode === 'game') useHint();
   } else if (state === 'pause' && (e.code === 'Escape' || e.code === 'KeyP')) pause(false);
   else if ((state === 'result') && e.code === 'KeyR') startLevel(curLevel);
   else if (state === 'result' && e.code === 'KeyB' && !$('resRewind').hidden) rewind();
-  else if (state === 'intro' && e.code === 'Enter') beginDrive();
+  else if (state === 'intro' && e.code === 'Enter') (mode === 'exam' ? beginStation() : beginDrive());
 });
 addEventListener('keyup', e => { keys[e.code] = false; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
@@ -1137,7 +1213,8 @@ function readInput(dt) {
     if (!p) continue; const ax = p.axes[0] || 0; if (Math.abs(ax) > 0.1) padSteer = ax;
     if (p.buttons[7]?.value > 0.2) fwd = true; if (p.buttons[6]?.value > 0.2) rev = true; if (p.buttons[0]?.pressed) brake = true;
   }
-  if (padSteer !== null) car.steerTarget = padSteer;
+  if (devSteer !== null) car.steerTarget = devSteer;
+  else if (padSteer !== null) car.steerTarget = padSteer;
   else if (steerKey) { car.steerTarget = clamp(car.steerTarget + steerKey * dt * 1.25, -1, 1); touchWheelDeg = car.steerTarget * WHEEL_LOCK; }
   else if (isTouch) car.steerTarget = touchWheelDeg / WHEEL_LOCK;
   else car.steerTarget = Math.sign(car.steerTarget) * Math.max(0, Math.abs(car.steerTarget) - dt * 1.1); // keyboard: wheel drifts back to centre
@@ -1148,12 +1225,15 @@ function readInput(dt) {
    physics: kinematic bicycle model around the rear axle
    ========================================================= */
 function stepCar(dt, inp) {
-  const VF = 3.2, VR = 2.0;
+  const VF = mode === 'exam' ? 4.5 : 3.2, VR = 2.0;
+  const grade = L.grade ? L.grade(car.x, car.z, car.h) : 0;
   if (inp.brake) car.v = Math.sign(car.v) * Math.max(0, Math.abs(car.v) - 7 * dt);
   else if (inp.fwd && !inp.rev) car.v = car.v < -0.05 ? car.v + 7 * dt : Math.min(VF, car.v + 1.7 * dt);
   else if (inp.rev && !inp.fwd) car.v = car.v > 0.05 ? car.v - 7 * dt : Math.max(-VR, car.v - 1.3 * dt);
-  else car.v = Math.sign(car.v) * Math.max(0, Math.abs(car.v) - 2.2 * dt);
-  car.gear = inp.rev || car.v < -0.05 ? 'R' : inp.fwd || car.v > 0.05 ? 'D' : 'N';
+  else car.v = Math.sign(car.v) * Math.max(0, Math.abs(car.v) - (Math.abs(grade) > 0.02 ? 0.25 : 2.2) * dt);
+  if (grade && !inp.brake && !inp.fwd && !inp.rev) car.v -= 9.8 * grade * 0.55 * dt; // an automatic still rolls back on a hill if you sit off the brake
+  car.lastDir = inp.rev ? -1 : inp.fwd ? 1 : (car.lastDir || 0);
+  car.gear = inp.rev ? 'R' : inp.fwd ? 'D' : Math.abs(car.v) < 0.05 ? 'N' : car.lastDir < 0 ? 'R' : 'D'; // rolling back on a hill in D still reads D
   car.steer += clamp(car.steerTarget - car.steer, -2.2 * dt, 2.2 * dt);
   const delta = car.steer * V.maxD;
   let rx = car.x - Math.sin(car.h) * V.rear, rz = car.z - Math.cos(car.h) * V.rear;
@@ -1165,7 +1245,7 @@ function stepCar(dt, inp) {
 function collides(x, z, h, movers = true) {
   const cr = carRect(x, z, h);
   for (const o of L.solids) if (overlap(cr, o.r)) return '撞到' + o.label;
-  if (movers) for (const o of L.movers) if (overlap(cr, o.r)) return '撞到' + o.label;
+  if (movers) for (const o of L.movers) if (!o.off && overlap(cr, o.r)) return '撞到' + o.label;
   const tr = tireRects(x, z, h);
   for (const o of L.tire) for (const t of tr) if (overlap(t, o.r)) return o.label;
   return null;
@@ -1217,8 +1297,8 @@ function updateCamera(dt) {
   } else if (state === 'result' && lastSuccess) {
     celebrateT += dt; const a = car.h + Math.PI + celebrateT * 0.6, r = 7.5 - Math.min(celebrateT, 1.5);
     camera.up.set(0, 1, 0); camera.position.set(car.x + Math.sin(a) * r, 2.6 + Math.min(celebrateT, 1.5) * 0.8, car.z + Math.cos(a) * r); camera.lookAt(car.x, 0.6, car.z); camera.fov = 50;
-  } else if (state === 'intro' || state === 'levels' || state === 'title') {
-    introT += dt * 0.25; const t = L.target, r = 15;
+  } else if (state === 'intro' || state === 'levels' || state === 'title' || state === 'examMenu' || state === 'report' || state === 'between') {
+    introT += dt * 0.25; const t = mode === 'exam' ? { cx: car.x, cz: car.z + 8 } : L.target, r = 15;
     camera.up.set(0, 1, 0); camera.position.set(t.cx + Math.cos(introT) * r, 9, t.cz + Math.sin(introT) * r); camera.lookAt(t.cx, 0, t.cz); camera.fov = 50;
   } else if (camMode === 0) {
     camera.up.set(0, 1, 0);
@@ -1226,7 +1306,8 @@ function updateCamera(dt) {
     const tgt = camClip(new THREE.Vector3(car.x - F[0] * dist, hgt, car.z - F[1] * dist));
     if (cc.bounds) { tgt.x = clamp(tgt.x, cc.bounds[0], cc.bounds[1]); tgt.z = clamp(tgt.z, cc.bounds[2], cc.bounds[3]); }
     if (snapCam) camPos.copy(tgt); else camPos.lerp(tgt, 1 - Math.exp(-4 * dt));
-    camera.position.copy(camPos); camera.lookAt(car.x + F[0] * 1.2, 0.6, car.z + F[1] * 1.2); camera.fov = 55;
+    const gy = L.groundY ? L.groundY(car.x, car.z) : 0;
+    camera.position.set(camPos.x, camPos.y + gy, camPos.z); camera.lookAt(car.x + F[0] * 1.2, 0.6 + gy, car.z + F[1] * 1.2); camera.fov = 55;
   } else if (camMode === 1) {
     camera.up.set(0, 0, 1);
     const tgt = new THREE.Vector3(car.x, 21, car.z - 0.01);
@@ -1235,8 +1316,9 @@ function updateCamera(dt) {
   } else {
     camera.up.set(0, 1, 0);
     const c = Math.cos(car.h), s = Math.sin(car.h), u = V.hw * 0.35, v = V.id === 'truck' ? 1.55 : -0.1; // Taiwan: driver sits on the left
-    camera.position.set(car.x + c * u + s * v, V.eye, car.z - s * u + c * v);
-    camera.lookAt(car.x + F[0] * 12, 0.7, car.z + F[1] * 12); camera.fov = 68;
+    const gy = L.groundY ? L.groundY(car.x, car.z) : 0, ly = car.h + lookYaw;
+    camera.position.set(car.x + c * u + s * v, V.eye + gy, car.z - s * u + c * v);
+    camera.lookAt(car.x + Math.sin(ly) * 12, 0.7 + gy, car.z + Math.cos(ly) * 12); camera.fov = 68;
   }
   snapCam = false;
   camera.updateProjectionMatrix();
@@ -1300,7 +1382,7 @@ const totalStars = () => LEVELS.reduce((a, _, i) => a + starsOf(i), 0);
 const failsOf = i => store.get('fails2', {})[LEVELS[i].id] || 0;
 function unlocked(i) { if (i === 0) return true; return starsOf(i - 1) > 0 || failsOf(i - 1) >= 3 || starsOf(i) > 0; }
 const canUse = (lv, v) => !(lv.noVeh || []).includes(v.id);
-function show(id) { for (const s of ['title', 'garage', 'levelsScreen', 'intro', 'result', 'pause']) $(s).hidden = s !== id; }
+function show(id) { for (const s of ['title', 'garage', 'levelsScreen', 'intro', 'result', 'pause', 'examMenu', 'report']) $(s).hidden = s !== id; }
 function renderLevels() {
   let tot = 0;
   $('levels').innerHTML = '';
@@ -1518,6 +1600,374 @@ function updateConfetti(dt) {
   for (let i = 0; i < CONF_N; i++) { const o = i * 3; confVel[o + 1] -= 9 * dt; confVel[o] *= 0.985; confVel[o + 2] *= 0.985; confPos[o] += confVel[o] * dt; confPos[o + 1] = Math.max(0.03, confPos[o + 1] + confVel[o + 1] * dt); confPos[o + 2] += confVel[o + 2] * dt; }
   confGeo.attributes.position.needsUpdate = true;
 }
+
+/* =========================================================
+   driving-test mode (小型車場考): stations, deductions, score sheet
+   Deductions follow the Highway Bureau small-car course-test sheet incl. the 2026-03-31 additions;
+   rules marked sim are this game's own simplifications.
+   ========================================================= */
+let mode = 'game', lookYaw = 0, lookAnim = 0;
+const X = { sig: 0, belt: false, t: 0, lookT: { L: -99, R: -99 }, score: 100, log: [], idx: 0, full: true, S: null, moved: false, prevVeh: null };
+const lookedWithin = (sec, side) => (side ? X.lookT[side] : Math.max(X.lookT.L, X.lookT.R)) >= X.t - sec;
+const frontPt = () => [car.x + Math.sin(car.h) * V.hl, car.z + Math.cos(car.h) * V.hl];
+function deduct(pts, reason, key, sim = false) {
+  const S = X.S; if (key) { if (S.once[key]) return; S.once[key] = 1; }
+  X.score -= pts; X.log.push({ item: EXAM[S.i].name, reason, pts, sim });
+  const d = document.createElement('div'); d.textContent = `−${pts}　${reason}${sim ? '（模擬）' : ''}`; $('exLog').prepend(d); while ($('exLog').children.length > 4) $('exLog').lastChild.remove(); setTimeout(() => d.remove(), 6000);
+  $('exScore').textContent = Math.max(0, X.score); $('exScore').classList.toggle('low', X.score < 70);
+  audio.tone(330, 0.18, 0.12, 'sawtooth'); audio.tone(247, 0.25, 0.12, 'sawtooth', 0.16);
+}
+function setSignal(dir) {
+  if (state !== 'play' || mode !== 'exam') return;
+  X.sig = X.sig === dir ? 0 : dir;
+  if (X.sig && !lookedWithin(5)) deduct(32, '打方向燈前未轉頭查看照後鏡、死角（2026 新制）', 'siglook');
+  X.sigH = car.h; paintExamBar();
+}
+function look(side) {
+  if (state !== 'play' || mode !== 'exam') return;
+  X.lookT[side] = X.t; lookAnim = 0.9; lookYaw = side === 'L' ? 1.35 : -1.35;
+  const b = $(side === 'L' ? 'ebLookL' : 'ebLookR'); b.classList.add('flash'); setTimeout(() => b.classList.remove('flash'), 600);
+  toast(side === 'L' ? '轉頭看左後方' : '轉頭看右後方');
+}
+function toggleBelt() { if (state !== 'play' || mode !== 'exam') return; X.belt = !X.belt; audio.tone(X.belt ? 900 : 500, 0.08, 0.1, 'triangle'); paintExamBar(); }
+function paintExamBar() {
+  $('ebBelt').classList.toggle('on', X.belt); $('ebBelt').classList.toggle('warn', !X.belt);
+  $('ebSigL').classList.toggle('blink', X.sig === -1); $('ebSigR').classList.toggle('blink', X.sig === 1);
+}
+// moving off after a stop or from the start: seat belt, turn signal and a look over the shoulder
+function checkMoveOff(needSide) {
+  if (!X.belt) deduct(32, '未繫安全帶', 'belt');
+  if (needSide !== undefined && X.sig === 0) deduct(32, '起駛前未依規定顯示方向燈', 'msig');
+  if (!lookedWithin(6)) deduct(32, '起步前未轉頭查看照後鏡、確認死角（2026 新制）', 'mlook');
+}
+function examRoad(K, { z0 = -24, z1 = 70, half = 4, curbs = true, scenery = true, x = 0 } = {}) {
+  K.ground(220, 220, new THREE.MeshStandardMaterial({ color: 0x6aa13a, roughness: 1 }), x, 20, -0.02);
+  const r = K.ground(half * 2, z1 - z0, new THREE.MeshStandardMaterial({ map: asphaltTex.clone(), roughness: 0.9 }), x, (z0 + z1) / 2, 0); r.material.map.needsUpdate = true; r.material.map.repeat.set(2, (z1 - z0) / 8);
+  K.line(x - half + 0.25, z0, x - half + 0.25, z1, { w: 0.12 }); K.line(x + half - 0.25, z0, x + half - 0.25, z1, { w: 0.12 });
+  K.line(x - 0.09, z0, x - 0.09, z1, { mat: MAT.yellow, w: 0.1 }); K.line(x + 0.09, z0, x + 0.09, z1, { mat: MAT.yellow, w: 0.1 });
+  if (curbs) for (const sd of [-1, 1]) K.curb(x + sd * (half + 0.15), z0, x + sd * (half + 0.15), z1);
+  if (scenery) for (let z = z0 + 4; z < z1; z += 9) for (const sd of [-1, 1]) K.tree(x + sd * (half + 3.5 + rand() * 2), z + rand() * 3, 0.9, rand() < 0.25);
+}
+function finishLine(K, z, x0 = -4, x1 = 4) { for (let x = x0; x < x1; x += 0.5) K.line(x, z, x + 0.25, z, { w: 0.5, mat: (Math.round(x * 2) % 2) ? MAT.white : MAT.dark }); }
+function person(K) {
+  const g = new THREE.Group(), shirt = new THREE.MeshStandardMaterial({ color: 0xd9534f, roughness: 0.8 });
+  const b = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.18, 0.75, 10), shirt); b.position.y = 1.05; b.castShadow = true;
+  const legs = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.12, 0.7, 8), new THREE.MeshStandardMaterial({ color: 0x2b3442 })); legs.position.y = 0.35; legs.castShadow = true;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 10), new THREE.MeshStandardMaterial({ color: 0xe0b391 })); head.position.y = 1.58;
+  g.add(b, legs, head); K.g.add(g); return g;
+}
+const EXAM = [
+  {
+    id: 'start', name: '起駛', rules: [[32, '未繫安全帶'], [32, '起駛前未依規定顯示方向燈'], [32, '起步前未轉頭查看照後鏡、死角（2026 新制）'], [32, '打方向燈前未轉頭查看（2026 新制）']],
+    tips: ['順序：繫安全帶 → 轉頭看左後方 → 打左方向燈 → 起步。', '前方路邊有一台車，要往左繞出去。'],
+    desc: '從右側路邊起步，繞過前方停著的車，開過終點線。', limit: 120, failPts: 32,
+    build(K) { examRoad(K, { half: 4.6 }); K.car(-3.45, 15, 0, '#c9c9cf'); finishLine(K, 34, 0, 4.6); return { start: [-3.4, -1.5, 0] }; },
+    update(S) { if (!S.off && Math.abs(car.v) > 0.05) { S.off = true; checkMoveOff(-1); } if (frontPt()[1] > 34) return true; }
+  },
+  {
+    id: 'cross', name: '行人穿越道', rules: [[32, '不減速慢行'], [32, '不暫停讓行人優先通行（2026 新制）'], [32, '停車時前懸超越停止線'], [32, '碰撞行人']],
+    tips: ['看到行人穿越道就先放慢，時速 10 公里以下。', '行人走在斑馬線上或正要走上來，車頭不能過停止線。'],
+    desc: '沒有號誌的行人穿越道，行人會走出來。減速、在停止線前停讓，等行人走過再走。', limit: 120, failPts: 32,
+    build(K) {
+      examRoad(K, { z0: -16 }); K.line(-4, 20, 0, 20, { w: 0.35 });
+      for (let x = -3.6; x <= 3.6; x += 0.9) K.line(x, 22, x, 26.5, { w: 0.45 });
+      const p = person(K); p.position.set(5.6, 0, 24.2);
+      K.movers.push({ r: Rect(5.6, 24.2, 0.3, 0.3), label: '行人', off: false, t: 0, update() {} });
+      K.g.userData.ped = p; finishLine(K, 40, -4, 0);
+      return { start: [-2, -6, 0] };
+    },
+    init(S) { S.ped = { x: 5.6, walking: false, done: false }; S.pm = L.movers[0]; S.pg = L.g.userData.ped; },
+    update(S, dt) {
+      const P = S.ped, [, fz] = frontPt();
+      if (!P.walking && !P.done && fz > 6) P.walking = true;
+      if (P.walking) { P.x -= 1.25 * dt; if (P.x < -5.6) { P.walking = false; P.done = true; } }
+      S.pm.r.cx = P.x; S.pg.position.x = P.x; S.pg.rotation.y = -Math.PI / 2;
+      const active = (P.walking || (!P.done && fz > 6)) && P.x > -4.6;
+      if (fz > 12 && fz < 20 && Math.abs(car.v) > 3.0) deduct(32, '接近行人穿越道不減速慢行', 'slow');
+      if (active && S.prevFz <= 20 && fz > 20) deduct(32, '未暫停讓行人優先通行', 'yield');
+      if (active && Math.abs(car.v) < 0.05 && fz > 20.05 && fz < 26) deduct(32, '停車時前懸超越停止線', 'over');
+      S.prevFz = fz;
+      if (fz > 40) return true;
+    }
+  },
+  {
+    id: 'signal', name: '號誌路口・右轉', rules: [[32, '闖紅燈（模擬）'], [16, '轉彎未顯示方向燈（模擬）'], [32, '打方向燈前未轉頭查看（2026 新制）'], [16, '車輪壓上路緣（模擬）']],
+    tips: ['接近路口時燈號會轉黃再轉紅，在停止線前停下。', '綠燈後右轉：先轉頭看右後方、打右方向燈，彎要轉大一點，後輪才不會壓到路緣。'],
+    desc: '號誌化路口，紅燈停在停止線前，綠燈後右轉，開到右邊道路的終點線。', limit: 150, failPts: 32,
+    build(K) {
+      K.ground(220, 220, new THREE.MeshStandardMaterial({ color: 0x6aa13a, roughness: 1 }), 0, 20, -0.02);
+      const asph = () => { const m = new THREE.MeshStandardMaterial({ map: asphaltTex.clone(), roughness: 0.9 }); m.map.needsUpdate = true; return m; };
+      K.ground(8, 70, asph(), 0, 18).material.map.repeat.set(2, 9); K.ground(90, 10, asph(), -20, 25).material.map.repeat.set(11, 2);
+      K.curb(-4.15, -17, -4.15, 17); K.curb(-4.15, 17, -7, 19.85); K.curb(4.15, -17, 4.15, 20); for (const sd of [-1, 1]) K.curb(sd * 4.15, 30, sd * 4.15, 53);
+      K.curb(-65, 19.85, -7, 19.85);
+      { const ch = new THREE.Mesh(new THREE.PlaneGeometry(4.03, 4.03), asph()); ch.rotation.set(-Math.PI / 2, Math.PI / 4, 0, 'YXZ'); ch.position.set(-4.15, 0.001, 19.85); K.g.add(ch); } // rounded corner for the right turn K.curb(4.15, 19.85, 25, 19.85); K.curb(-65, 30.15, -4.15, 30.15); K.curb(4.15, 30.15, 25, 30.15);
+      K.line(-0.09, -17, -0.09, 20, { mat: MAT.yellow, w: 0.1 }); K.line(0.09, -17, 0.09, 20, { mat: MAT.yellow, w: 0.1 });
+      K.line(-65, 24.91, -6, 24.91, { mat: MAT.yellow, w: 0.1 }); K.line(-65, 25.09, -6, 25.09, { mat: MAT.yellow, w: 0.1 });
+      K.line(-4, 19.4, 0, 19.4, { w: 0.4 });
+      for (let x = -3.6; x <= 3.6; x += 0.9) K.line(x, 30.6, x, 33, { w: 0.4 });
+      const lamps = [];
+      for (const [x, z, rot] of [[-5.3, 18.5, Math.PI], [5.3, 31.5, Math.PI]]) {
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.1, 4.6, 8), MAT.steel); pole.position.set(x, 2.3, z); K.g.add(pole);
+        const box_ = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.2, 0.3), MAT.dark); box_.position.set(x, 4.2, z); K.g.add(box_);
+        const set = ['#ff2a2a', '#ffb21a', '#2aff7a'].map((c, k) => { const m = new THREE.MeshBasicMaterial({ color: new THREE.Color(c), toneMapped: false }); const l = new THREE.Mesh(new THREE.CircleGeometry(0.13, 16), m); l.position.set(x, 4.58 - k * 0.38, z - 0.16); l.rotation.y = rot; K.g.add(l); return { m, c: new THREE.Color(c) }; });
+        lamps.push(set);
+        K.solids.push({ r: Rect(x, z, 0.12, 0.12), label: '號誌桿' });
+      }
+      K._lamps = lamps;
+      for (let z = 20.2; z < 29.8; z += 0.5) K.line(-40, z, -40, z + 0.25, { w: 0.5, mat: (Math.round(z * 2) % 2) ? MAT.white : MAT.dark });
+      K.houses([{ x: 16, z: 8, w: 18, d: 18, h: 10 }, { x: -20, z: 8, w: 22, d: 16, h: 8 }, { x: -20, z: 44, w: 30, d: 16, h: 12 }, { x: 16, z: 44, w: 18, d: 18, h: 9 }]);
+      return { start: [-2, -10, 0] };
+    },
+    init(S) { S.light = 'green'; S.lt = 0; S.lamps = L.g.userData.lamps; },
+    update(S, dt) {
+      const [, fz] = frontPt();
+      if (S.light === 'green' && !S.cycled && fz > 4) { S.light = 'yellow'; S.lt = 0; S.cycled = true; }
+      S.lt += dt;
+      if (S.light === 'yellow' && S.lt > 3) { S.light = 'red'; S.lt = 0; }
+      if (S.light === 'red' && S.lt > 7) { S.light = 'green'; S.lt = 0; }
+      for (const set of S.lamps) set.forEach((l, k) => l.m.color.copy(l.c).multiplyScalar((['red', 'yellow', 'green'][k] === S.light ? 2.2 : 0.12)));
+      if (S.light === 'red' && S.prevFz <= 19.4 && fz > 19.4) deduct(32, '闖紅燈', 'red', true);
+      S.prevFz = fz;
+      if (!S.turnSeen && wrapAngle(car.h) < -0.45) { S.turnSeen = true; if (X.sig !== 1) deduct(16, '右轉未顯示方向燈', 'turnsig', true); } // judged as the turn starts
+      if (car.x < -40 && Math.abs(wrapAngle(car.h + Math.PI / 2)) < 0.6) return true;
+    }
+  },
+  {
+    id: 'rail', name: '鐵路平交道', rules: [[32, '不停車察看（停、看、聽）'], [32, '停車時前輪超越停止線'], [32, '警示燈閃、柵欄放下仍強行闖越'], [32, '在平交道內停車（模擬）']],
+    tips: ['停止線前一定要完全停下來。', '停下後轉頭左看、右看（Z、X），確認沒有火車。', '警鈴響、柵欄放下時等火車過去，柵欄升起再走。'],
+    desc: '平交道前停車、左右察看，等火車通過、柵欄升起後通過，開到終點線。', limit: 150, failPts: 32,
+    build(K) {
+      examRoad(K, { z0: -16 }); K.line(-4, 16, 0, 16, { w: 0.35 });
+      const rail = new THREE.MeshStandardMaterial({ color: 0x8a8a90, roughness: 0.4, metalness: 0.8 }), wood = new THREE.MeshStandardMaterial({ color: 0x5a4636, roughness: 1 });
+      for (let x = -60; x <= 60; x += 0.8) { const sl = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.08, 2.6), wood); sl.position.set(x, 0.04, 22.7); K.g.add(sl); }
+      for (const z of [22.0, 23.4]) { const r = new THREE.Mesh(new THREE.BoxGeometry(120, 0.1, 0.08), rail); r.position.set(0, 0.1, z); K.g.add(r); }
+      const red = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.02, 0.02), toneMapped: false }), red2 = red.clone();
+      for (const [x, z] of [[-4.9, 19.4], [4.9, 26]]) {
+        const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 3.4, 8), MAT.steel); post.position.set(x, 1.7, z); K.g.add(post);
+        const xb = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.22), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide })); xb.position.set(x, 3.1, z); xb.rotation.z = 0.6; K.g.add(xb); const xb2 = xb.clone(); xb2.rotation.z = -0.6; K.g.add(xb2);
+        for (const [dx, m] of [[-0.22, red], [0.22, red2]]) { const l = new THREE.Mesh(new THREE.CircleGeometry(0.14, 14), m); l.position.set(x + dx, 2.4, z + (z < 22 ? -0.06 : 0.06)); if (z < 22) l.rotation.y = Math.PI; K.g.add(l); }
+        K.solids.push({ r: Rect(x, z, 0.1, 0.1), label: '警示柱' });
+      }
+      const arms = [];
+      for (const [hx, z, dir] of [[-4.5, 19.6, 1], [4.5, 25.8, -1]]) {
+        const pivot = new THREE.Group(); pivot.position.set(hx, 1.0, z); K.g.add(pivot);
+        const arm = new THREE.Mesh(new THREE.BoxGeometry(4.3, 0.12, 0.1), new THREE.MeshStandardMaterial({ map: stripeTex('#d8352a', '#f4f1ea', 8), roughness: 0.6 })); arm.position.set(dir * 2.15, 0, 0); pivot.add(arm); pivot.rotation.z = dir * Math.PI / 2 * 0.98;
+        arms.push({ pivot, dir, mv: { r: Rect(hx + dir * 2.15, z, 2.15, 0.08), label: '平交道柵欄', off: true, t: 0, update() {} } });
+      }
+      const train = new THREE.Group(); const tm = new THREE.MeshStandardMaterial({ color: 0xf2f0ea, roughness: 0.5 }), stripe = new THREE.MeshStandardMaterial({ color: 0x1f63c9, roughness: 0.5 });
+      for (let k = 0; k < 3; k++) { const c = new THREE.Mesh(new THREE.BoxGeometry(18, 3.4, 3), tm); c.position.set(k * 18.6, 2.0, 0); c.castShadow = true; train.add(c); const st = new THREE.Mesh(new THREE.BoxGeometry(18, 0.4, 3.05), stripe); st.position.set(k * 18.6, 1.5, 0); train.add(st); }
+      train.position.set(-200, 0, 22.7); K.g.add(train);
+      const tmv = { r: Rect(-200, 22.7, 28, 1.6), label: '火車', off: true, t: 0, update() {} };
+      K.movers.push(...arms.map(a => a.mv), tmv);
+      K.g.userData.rail = { red, red2, arms, train, tmv };
+      finishLine(K, 40, -4, 0);
+      return { start: [-2, -6, 0] };
+    },
+    init(S) { S.R = L.g.userData.rail; S.phase = 'approach'; S.pt = 0; S.stopT = 0; },
+    update(S, dt) {
+      const R_ = S.R, [, fz] = frontPt(), stopped = Math.abs(car.v) < 0.05;
+      if (S.phase === 'approach') {
+        if (stopped && fz <= 16.05 && fz > 9) { S.stopT += dt; if (S.stopT > 0.6) { S.phase = 'stopped'; S.pt = 0; S.lookL = S.lookR = false; } } else S.stopT = 0;
+        if (stopped && fz > 16.05 && fz < 21) deduct(32, '停車時前輪超越停止線', 'over');
+        if (S.prevFz <= 16 && fz > 16) deduct(32, '不停車察看（停、看、聽）', 'nostop');
+      }
+      if (S.phase !== 'approach') {
+        S.pt += dt; const t = S.pt;
+        if (lookedWithin(t + 0.01, 'L')) S.lookL = true; if (lookedWithin(t + 0.01, 'R')) S.lookR = true;
+        const flashing = t > 1.5 && t < 13.5, down = t > 2.5 && t < 12.5;
+        const f = flashing && Math.floor(t * 2.5) % 2 === 0;
+        R_.red.color.setRGB(flashing && f ? 3 : 0.2, 0.02, 0.02); R_.red2.color.setRGB(flashing && !f ? 3 : 0.2, 0.02, 0.02);
+        const ang = down ? Math.min(1, (t - 2.5) / 1.2) : t < 2.5 ? 0 : Math.max(0, 1 - (t - 12.5) / 1.0);
+        for (const a of R_.arms) { a.pivot.rotation.z = a.dir * (1 - ang) * Math.PI / 2 * 0.98; a.mv.off = ang < 0.5; }
+        const tx = -90 + (t - 4) * 22; R_.train.position.x = t > 4 && t < 12 ? tx : -300; R_.tmv.r.cx = R_.train.position.x + 18.6; R_.tmv.off = !(t > 4 && t < 12);
+        if (flashing && S.prevFz <= 21.2 && fz > 21.2) deduct(32, '警示燈閃、柵欄放下時強行闖越', 'run');
+        if (S.prevFz <= 16 && fz > 16 && !(S.lookL && S.lookR)) deduct(32, '停車後未左右察看（停、看、聽）', 'look');
+        if (S.prevFz <= 16 && fz > 16 && t < 1.2) deduct(32, '不停車察看（停、看、聽）', 'nostop');
+        if (flashing && Math.floor(t * 4) !== S.bell) { S.bell = Math.floor(t * 4); audio.tone(S.bell % 2 ? 1250 : 1050, 0.12, 0.05, 'square'); }
+      }
+      const onTrack = corners(carRect()).some(([x, z]) => z > 21.3 && z < 24.1);
+      if (onTrack && stopped) { S.trackT = (S.trackT || 0) + dt; if (S.trackT > 1.2) deduct(32, '在平交道內停車', 'ontrack', true); } else S.trackT = 0;
+      S.prevFz = fz;
+      if (fz > 40) return true;
+    }
+  },
+  {
+    id: 'hill', name: '上坡起步', rules: [[16, '車輪壓線'], [16, '上坡倒退 15 公分以上'], [16, '未在坡道停車區內停車（模擬）']],
+    tips: ['車頭停在坡道上兩條白線之間，停穩 2 秒。', '起步時從煞車換到油門要快，放開煞車車子會往後滑。'],
+    desc: '在上坡道的停車區內停穩，再起步上坡，不能往後滑超過 15 公分。', limit: 120, failPts: 16,
+    build(K) {
+      examRoad(K, { z0: -16, curbs: false });
+      const Y = z => z < 10 ? 0 : z < 22 ? (z - 10) * 0.1 : z < 30 ? 1.2 : z < 42 ? 1.2 - (z - 30) * 0.1 : 0;
+      L.groundY = (x, z) => Math.abs(x) < 4.4 ? Y(z) : 0;
+      L.grade = (x, z, h) => { const d = 0.5, a = Y(z + Math.cos(h) * d) - Y(z - Math.cos(h) * d); return a / (2 * d); };
+      const geo = new THREE.PlaneGeometry(8, 40, 1, 80); geo.rotateX(-Math.PI / 2); const pos = geo.attributes.position;
+      for (let i = 0; i < pos.count; i++) pos.setY(i, Y(pos.getZ(i) + 26) + 0.02); geo.computeVertexNormals();
+      const ramp = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x55555c, roughness: 0.9 })); ramp.position.set(0, 0, 26); ramp.receiveShadow = true; K.g.add(ramp);
+      for (const sd of [-1, 1]) { for (let z = 10; z < 42; z += 1) { const w = new THREE.Mesh(new THREE.BoxGeometry(0.3, Y(z + 0.5) + 0.35, 1.02), MAT.concrete); w.position.set(sd * 4.25, (Y(z + 0.5) + 0.35) / 2, z + 0.5); K.g.add(w); } }
+      for (let z = 6; z < 46; z += 1) { const y = Y(z + 0.5); K.line(-3.9, z, -3.9, z + 1, { y: y + 0.03, w: 0.15, fail: true, label: '車輪壓線', pts: 16 }); K.line(-0.1, z, -0.1, z + 1, { y: y + 0.03, w: 0.15, mat: MAT.yellow, fail: true, label: '車輪壓線', pts: 16 }); }
+      for (const z of [15, 18.5]) K.line(-3.9, z, -0.1, z, { y: Y(z) + 0.03, w: 0.2 });
+      finishLine(K, 48, -4, 0);
+      return { start: [-2, -4, 0] };
+    },
+    init(S) { S.phase = 'approach'; S.hold = 0; },
+    update(S, dt) {
+      const [, fz] = frontPt(), stopped = Math.abs(car.v) < 0.03;
+      if (S.phase === 'approach') {
+        if (stopped && fz >= 15 && fz <= 18.5) { S.hold += dt; setStatus(`停穩中 ${Math.min(2, S.hold).toFixed(1)} / 2 秒`, 'ok', S.hold / 2); if (S.hold >= 2) { S.phase = 'restart'; S.z0 = car.z; toast('可以起步了'); } }
+        else S.hold = 0;
+        if (fz > 18.5) { deduct(16, '未在坡道停車區內停車', 'zone', true); S.phase = 'restart'; S.z0 = car.z; }
+      } else if (S.phase === 'restart') {
+        if (car.z < S.z0 - 0.15) { deduct(16, '上坡倒退 15 公分以上', null); S.z0 = car.z; } // continuous: every further 15 cm counts again
+        if (car.z > S.z0) S.z0 = car.z;
+        if (fz > 24) S.phase = 'done';
+      }
+      if (fz > 48) return true;
+    }
+  },
+  {
+    id: 'parallel', name: '平行路邊停車', rules: [[16, '車輪壓線'], [16, '未停入規定範圍'], [32, '起駛前未依規定顯示方向燈'], [32, '起步前未轉頭查看照後鏡、死角（2026 新制）'], [32, '撞及桿子']],
+    tips: ['車子開到前方紅白桿旁、間隔約半個車身再停，右打到底倒車。', '停好後駛出：先轉頭看左後方，再打左方向燈。'],
+    desc: '倒車停進右側路邊停車格，停穩後打方向燈駛出。', limit: 210, failPts: 16,
+    build(K) { const spec = LEVELS.find(l => l.id === 'parallel').build(K); for (const t of K.tire) t.pts = 16; finishLine(K, 24, -3.4, 3.1); return { start: spec.start, target: { ...spec.target, tol: 8 } }; },
+    update(S, dt) { return parkThenLeave(S, dt, () => frontPt()[1] > 24); }
+  },
+  {
+    id: 'bay', name: '倒車入庫', rules: [[16, '車輪壓線'], [16, '未停入規定範圍'], [32, '起駛前未依規定顯示方向燈'], [32, '起步前未轉頭查看照後鏡、死角（2026 新制）']],
+    tips: ['先往前開過車庫，車尾過車庫一點再停，方向盤打到底倒車。', '入庫停好後往前駛出右轉，記得轉頭查看再打右方向燈。'],
+    desc: '倒車停進車庫（車頭朝外），停穩後駛出開到終點。', limit: 210, failPts: 16,
+    build(K) { const spec = LEVELS.find(l => l.id === 'bay').build(K); for (const t of K.tire) t.pts = 16; for (let z = -2.4; z < 3.6; z += 0.5) K.line(14, z, 14, z + 0.25, { w: 0.5, mat: (Math.round(z * 2) % 2) ? MAT.white : MAT.dark }); return { start: spec.start, target: { ...spec.target, tol: 8 } }; },
+    update(S, dt) { return parkThenLeave(S, dt, () => car.x > 13 && car.z < 3.7); }
+  },
+  {
+    id: 'curve', name: '曲線前進・後退', rules: [[32, '前進時車輪壓線'], [8, '後退時往前修正（每次）'], [8, '中途停車（最多 2 次）'], [0, '普小後退時壓線不扣分']],
+    tips: ['前進：車頭沿外側線走，內側後輪才不會壓線。', '到出口綠框停好，再一路倒車退回起點綠框。後退壓線不扣分，但往前修正一次扣 8 分。'],
+    desc: '先沿 S 型彎道開到出口，停好後倒車退回起點。', limit: 240, failPts: 32,
+    build(K) { testYard(K, 15); sCurve(K); for (const t of K.tire) t.pts = 32; return { start: [0, -6.2, 0], target: { cx: 30, cz: 5.6, w: 3.3, l: 6.2, rot: 0, tol: 12, label: '出口' } }; },
+    update(S, dt) {
+      const stopped = Math.abs(car.v) < 0.03;
+      if (!S.phase) S.phase = 'fwd';
+      if (S.phase === 'fwd') {
+        if (goalAt(car.x, car.z, car.h) && stopped) { S.hold = (S.hold || 0) + dt; if (S.hold > 1) { S.phase = 'rev'; for (const t of L.tire) t.pts = 0; S.stops = 0; S.lastV = 0; moveTarget({ cx: 0, cz: -4.6, w: 3.3, l: 6.2, rot: 0, tol: 12, label: '起點' }); toast('倒車退回起點'); } }
+        else S.hold = 0;
+      } else {
+        if (car.v > 0.12 && S.lastV <= 0.12) deduct(8, '後退時往前修正', null);
+        if (stopped && !goalAt(car.x, car.z, car.h) && car.z > -1) { S.st = (S.st || 0) + dt; if (S.st > 1.2 && !S.stopCounted) { S.stopCounted = true; if (S.stops < 2) { S.stops++; deduct(8, '後退途中停車', null); } } } else { S.st = 0; if (Math.abs(car.v) > 0.1) S.stopCounted = false; }
+        S.lastV = car.v;
+        if (goalAt(car.x, car.z, car.h) && stopped) { S.hold2 = (S.hold2 || 0) + dt; if (S.hold2 > 1) return true; } else S.hold2 = 0;
+      }
+    }
+  }
+];
+function moveTarget(t) { scene.remove(tgtMeshes.mesh); L.target = t; setTarget(L, t); }
+function parkThenLeave(S, dt, outDone) {
+  const stopped = Math.abs(car.v) < 0.03;
+  if (!S.phase) S.phase = 'park';
+  if (S.phase === 'park') {
+    if (goalAt(car.x, car.z, car.h) && stopped) { S.hold = (S.hold || 0) + dt; setStatus(`停穩中 ${S.hold.toFixed(1)} / 1 秒`, 'ok', S.hold); if (S.hold > 1) { S.phase = 'leave'; X.sig = 0; paintExamBar(); toast('停好了，準備駛出'); setStatus('駛出：轉頭查看 → 打方向燈 → 起步', null, null); scene.remove(tgtMeshes.mesh); } }
+    else S.hold = 0;
+  } else if (S.phase === 'leave') {
+    if (Math.abs(car.v) > 0.05 && !S.left) { S.left = true; checkMoveOff(0); }
+    if (outDone()) return true;
+  }
+}
+// ---------- exam flow ----------
+function renderExamMenu() {
+  $('exList').innerHTML = '';
+  EXAM.forEach((st, i) => { const b = document.createElement('button'); b.className = 'exam-item'; b.innerHTML = `<span class="n">${i + 1}</span><span><span class="t"></span><br><span class="d">單項練習</span></span>`; b.querySelector('.t').textContent = st.name; b.onclick = () => startExam(i, false); $('exList').append(b); });
+  const best = store.get('examBest', null); $('examBest').textContent = best == null ? '最佳 —' : `最佳 ${best} 分`;
+}
+function openExamMenu() { state = 'examMenu'; mode = 'game'; renderExamMenu(); show('examMenu'); }
+function startExam(i, full) {
+  if (mode !== 'exam') X.prevVeh = V;
+  mode = 'exam'; document.body.classList.add('exam'); $('hud').classList.add('exam');
+  Object.assign(X, { score: 100, log: [], idx: i, full, belt: false, sig: 0, moved: false, lookT: { L: -99, R: -99 }, t: 0 });
+  mountVehicle(VEH.find(v => v.id === 'school'));
+  $('exScore').textContent = 100; $('exScore').classList.remove('low'); $('exLog').innerHTML = '';
+  openStation(i);
+}
+function openStation(i) {
+  X.idx = i; const st = EXAM[i];
+  rand = mulberry32(500 + i * 31);
+  L = newLevel(); L.groundY = null; L.grade = null;
+  const spec = st.build(L); L.start = spec.start; L.cam = null;
+  if (spec.target) { L.target = spec.target; setTarget(L, L.target); } else { L.target = { cx: 0, cz: 999, w: 1, l: 1, rot: 0, tol: 1 }; L.target.rect = Rect(0, 999, 0.5, 0.5); tgtMeshes.mesh = null; }
+  if (st.id === 'signal') L.g.userData.lamps = L._lamps;
+  setLight('day'); winUniform.value = 0.25;
+  clearHint(); resetCar();
+  X.S = { i, once: {}, t: 0, contacts: new Set(), hits: new Set(), prevFz: -99 }; if (st.init) st.init(X.S);
+  if (i > 0 || X.moved) X.moved = i > 0; X.sig = 0;
+  $('inNo').textContent = `${X.full ? '完整模擬考' : '單項練習'} · 第 ${i + 1} / ${EXAM.length} 項`; $('inName').textContent = st.name; $('inDesc').textContent = st.desc;
+  $('inRules').innerHTML = ''; for (const [p, r] of st.rules) { const c = document.createElement('span'); c.className = 'chip' + (p >= 32 ? ' red' : ''); c.textContent = p ? `−${p} ${r}` : r; $('inRules').append(c); }
+  $('inTips').innerHTML = ''; for (const t of st.tips) { const li = document.createElement('li'); li.textContent = t; $('inTips').append(li); }
+  $('inVeh').textContent = `鍵盤：B 安全帶・Z/X 轉頭看左/右後方・Q/E 左/右方向燈・W 前進・S 倒車・空白鍵 煞車`;
+  $('inGo').disabled = false; $('inGo').style.opacity = ''; $('inGarage').hidden = true;
+  state = 'intro'; show('intro'); $('hud').hidden = true; $('touch').classList.remove('on'); $('inGo').focus();
+}
+function beginStation() {
+  audio.init(); state = 'play'; ended = false; snapCam = true; history.length = 0;
+  show(null); $('hud').hidden = false; $('touch').classList.add('on');
+  for (const id of ['exScoreBox', 'exLog', 'exBar', 'hGiveUp']) $(id).hidden = false;
+  $('hLv').textContent = `${X.idx + 1}/${EXAM.length}`; $('hName').textContent = EXAM[X.idx].name; $('hRules').innerHTML = '';
+  setStatus(EXAM[X.idx].desc, null, null); paintExamBar(); $('pip').hidden = true;
+}
+function endStation(gaveUp) {
+  const st = EXAM[X.idx];
+  if (gaveUp) deduct(st.failPts, gaveUp === 'time' ? '超過時間未完成' : '未完成本項', 'giveup');
+  if (X.full && X.idx < EXAM.length - 1) { toast('下一項'); state = 'between'; setTimeout(() => openStation(X.idx + 1), 900); }
+  else showReport();
+}
+function showReport() {
+  state = 'report'; $('hud').hidden = true; $('touch').classList.remove('on');
+  const score = Math.max(0, X.score), pass = score >= 70;
+  if (X.full) { const b = store.get('examBest', null); if (b == null || score > b) store.set('examBest', score); }
+  $('repTitle').textContent = X.full ? '完整模擬考 · 場考成績' : `單項練習 · ${EXAM[X.idx].name}`;
+  $('repScore').textContent = score; $('repScore').className = 'bigscore ' + (pass ? 'pass' : 'fail');
+  $('repVerdict').textContent = pass ? '及格' : '不及格'; $('repCard').classList.toggle('fail', !pass);
+  $('repMsg').textContent = X.log.length === 0 ? '零扣分，可以去報名考試了。' : pass ? `扣了 ${100 - score} 分，及格。把下面扣分的地方再練熟。` : '低於 70 分不及格。一次 32 分的項目扣到三次就一定不及格，先把下面紅色的步驟練起來。';
+  $('repRows').innerHTML = X.log.length ? '' : '<tr><td colspan="3">沒有扣分</td></tr>';
+  for (const e of X.log) { const tr = document.createElement('tr'); tr.innerHTML = '<td></td><td></td><td class="pts"></td>'; tr.children[0].textContent = e.item; tr.children[1].textContent = e.reason; if (e.sim) { const t = document.createElement('span'); t.className = 'tag'; t.textContent = '模擬'; tr.children[1].append(t); } tr.children[2].textContent = '−' + e.pts; $('repRows').append(tr); }
+  if (pass) confettiBurst();
+  show('report'); $('repAgain').focus();
+}
+function leaveExam() {
+  mode = 'game'; document.body.classList.remove('exam'); $('hud').classList.remove('exam');
+  for (const id of ['exScoreBox', 'exLog', 'exBar', 'hGiveUp']) $(id).hidden = true; $('inGarage').hidden = false;
+  mountVehicle(X.prevVeh && !X.prevVeh.hidden ? X.prevVeh : VEH[1]); setLivery(liv);
+}
+function examFrame(dt) {
+  const st = EXAM[X.idx], S = X.S, inp = readInput(dt);
+  X.t += dt; S.t += dt;
+  for (let k = 0; k < 3; k++) {
+    const px = car.x, pz = car.z, ph = car.h;
+    stepCar(dt / 3, inp);
+    for (const m of L.movers) m.update(dt / 3);
+    const cr = carRect(); let hit = null;
+    for (const o of L.solids.concat(L.movers.filter(m => !m.off))) if (overlap(cr, o.r)) { hit = o; break; }
+    if (hit) { Object.assign(car, { x: px, z: pz, h: ph, v: 0 }); if (!S.hits.has(hit.label)) { S.hits.add(hit.label); deduct(32, '車身碰撞' + hit.label.replace(/^撞到/, ''), 'hit:' + hit.label); audio.crash(); } break; }
+    const tr = tireRects(), now = new Set();
+    for (const o of L.tire) for (const t of tr) if (overlap(t, o.r)) { now.add(o); break; }
+    for (const o of now) if (!S.contacts.has(o)) { const pts = o.pts ?? 16; if (pts > 0) deduct(pts, o.label === '輪胎撞到路緣' ? '車輪壓上路緣' : o.label === '壓線' ? '車輪壓線' : o.label, null, o.label === '輪胎撞到路緣'); }
+    S.contacts = now;
+  }
+  if (!X.moved && Math.abs(car.v) > 0.05) { X.moved = true; if (!X.belt) deduct(32, '未繫安全帶', 'belt'); }
+  if (X.sig && Math.abs(wrapAngle(car.h - (X.sigH ?? car.h))) > 1.1 && Math.abs(car.steer) < 0.15) { X.sig = 0; paintExamBar(); }
+  if (lookAnim > 0) { lookAnim -= dt; if (lookAnim <= 0) lookYaw = 0; } else lookYaw = damp(lookYaw, 0, 6, dt);
+  const done = st.update(S, dt);
+  if (done) { audio.tone(988, 0.1, 0.12, 'triangle'); audio.tone(1319, 0.2, 0.12, 'triangle', 0.1); return endStation(false); }
+  if (S.t > st.limit) return endStation('time');
+  $('hSpeed').textContent = Math.round(Math.abs(car.v) * 3.6); $('hGear').textContent = car.gear; $('hGear').classList.toggle('r', car.gear === 'R');
+  const wdeg = car.steer * WHEEL_LOCK; $('miniWheel').style.transform = `rotate(${wdeg.toFixed(0)}deg)`; $('wheelG').setAttribute('transform', `rotate(${(isTouch ? touchWheelDeg : wdeg).toFixed(1)})`);
+  $('wheelDeg').textContent = `${Math.abs(Math.round(isTouch ? touchWheelDeg : wdeg))}° ${Math.abs(wdeg) < 8 ? '' : wdeg < 0 ? '左' : '右'}`;
+  audio.update(dt, 820 + Math.abs(car.v) * 520 + (inp.fwd || inp.rev ? 450 : 0), inp.fwd || inp.rev ? 0.35 : 0.05, 9);
+}
+$('toExam').onclick = () => { audio.init(); openExamMenu(); };
+$('exBack').onclick = () => { state = 'title'; show('title'); };
+$('exFull').onclick = () => startExam(0, true);
+$('repAgain').onclick = () => startExam(X.full ? 0 : X.idx, X.full);
+$('repMenu').onclick = () => { leaveExam(); openExamMenu(); };
+$('hGiveUp').onclick = () => { if (state === 'play' && mode === 'exam') endStation('giveup'); };
+const tap = (id, fn) => $(id).addEventListener('pointerdown', e => { e.preventDefault(); fn(); });
+tap('ebBelt', toggleBelt); tap('ebSigL', () => setSignal(-1)); tap('ebSigR', () => setSignal(1)); tap('ebLookL', () => look('L')); tap('ebLookR', () => look('R'));
 /* =========================================================
    menus
    ========================================================= */
@@ -1525,6 +1975,7 @@ function setLivery(i) { liv = i; store.set('liv', i); player.paint.color.set(LIV
 function renderGarage() {
   const tot = totalStars(); $('garageStars').textContent = `★ ${tot}`; $('vehs').innerHTML = '';
   for (const v of VEH) {
+    if (v.hidden) continue;
     const locked = tot < v.need, b = document.createElement('button'); b.className = 'veh'; b.disabled = locked; b.setAttribute('aria-pressed', v === V);
     b.innerHTML = '<span class="en"></span><span class="t"></span><span class="d"></span><span class="spec"></span>' + (locked ? `<span class="lock">🔒 需要 ★ ${v.need}</span>` : '');
     b.querySelector('.en').textContent = v.en; b.querySelector('.t').textContent = v.name; b.querySelector('.d').textContent = v.desc;
@@ -1545,16 +1996,16 @@ LIVERIES.forEach((hex, i) => { const b = document.createElement('button'); b.cla
 setLivery(liv);
 $('toLevels').onclick = () => { audio.init(); state = 'levels'; renderLevels(); show('levelsScreen'); };
 $('backTitle').onclick = () => { state = 'title'; show('title'); };
-$('inGo').onclick = beginDrive;
+$('inGo').onclick = () => (mode === 'exam' ? beginStation() : beginDrive());
 $('inBack').onclick = () => { state = 'levels'; renderLevels(); show('levelsScreen'); };
 $('resRetry').onclick = () => startLevel(curLevel);
 $('resNext').onclick = () => openIntro(curLevel + 1);
 $('resList').onclick = () => { state = 'levels'; renderLevels(); show('levelsScreen'); };
 $('pResume').onclick = () => pause(false);
-$('pRetry').onclick = () => startLevel(curLevel);
-$('pList').onclick = () => { state = 'levels'; renderLevels(); show('levelsScreen'); $('hud').hidden = true; $('touch').classList.remove('on'); };
+$('pRetry').onclick = () => (mode === 'exam' ? openStation(X.idx) : startLevel(curLevel));
+$('pList').onclick = () => { $('hud').hidden = true; $('touch').classList.remove('on'); if (mode === 'exam') { leaveExam(); openExamMenu(); } else { state = 'levels'; renderLevels(); show('levelsScreen'); } };
 $('pSound').onclick = () => audio.setOn(!audio.on); audio.setOn(audio.on);
-$('hCam').onclick = cycleCam; $('hRetry').onclick = () => startLevel(curLevel); $('hPause').onclick = () => pause(true);
+$('hCam').onclick = cycleCam; $('hRetry').onclick = () => (mode === 'exam' ? openStation(X.idx) : startLevel(curLevel)); $('hPause').onclick = () => pause(true);
 
 /* =========================================================
    loop
@@ -1565,7 +2016,8 @@ const eul = new THREE.Euler(0, 0, 0, 'YXZ');
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 1 / 20);
-  if (state === 'play' && searching) { stepSearch(); }
+  if (state === 'play' && mode === 'exam') { examFrame(dt); }
+  else if (state === 'play' && searching) { stepSearch(); }
   else if (state === 'play') {
     const inp = readInput(dt);
     recordHistory();
@@ -1587,7 +2039,9 @@ function frame() {
     audio.update(dt, 800, 0.02, 9);
   } else if (L) { for (const m of L.movers) m.update(dt); }
   // visuals
-  player.root.position.set(car.x, 0, car.z); player.root.rotation.set(0, car.h, 0);
+  const gy = L && L.groundY ? L.groundY(car.x, car.z) : 0, pitch = L && L.grade ? Math.atan(L.grade(car.x, car.z, car.h)) : 0;
+  player.root.position.set(car.x, gy, car.z); player.root.rotation.set(-pitch, car.h, 0, 'YXZ');
+  if (player.sig) { const on = Math.floor(performance.now() / 380) % 2 === 0; player.sig.L.forEach(m => m.visible = X.sig === -1 && on); player.sig.R.forEach(m => m.visible = X.sig === 1 && on); }
   for (const w of player.wheels) { w.spin.rotation.x = car.spin; if (w.front) w.pivot.rotation.y = -car.steer * V.maxD; }
   const braking = state === 'play' && (keys.Space || pedal.brake);
   player.tailMat.color.setRGB(braking ? 5 : 2.2, braking ? 0.15 : 0.08, braking ? 0.2 : 0.12);
@@ -1613,7 +2067,8 @@ if (location.hash === '#dev') window.dev = {
   place(x, z, h) { Object.assign(car, { x, z, h, v: 0 }); }, finish: () => finish(true), get state() { return state; }, get L() { return L; },
   setCam: m => { camMode = m; snapCam = true; },
   hintNow() { const g = fullSearch(car.x, car.z, car.h); let r; do { r = g.next(); } while (!r.done); if (r.value) drawHint(r.value); return !!r.value; },
-  garage: () => openGarage('title'),
+  garage: () => openGarage('title'), keys, steer: v => { devSteer = v; },
+  ex: { planTo(t) { const keep = L.target; L.target = { ...t, rect: Rect(t.cx, t.cz, t.w / 2, t.l / 2, t.rot) }; const r = this.plan(); L.target = keep; return r; }, X, EXAM, startExam, beginStation, setSignal, look, toggleBelt, frame: dt => examFrame(dt), get state() { return state; }, plan() { const g = fullSearch(car.x, car.z, car.h); let r; do { r = g.next(); } while (!r.done); return r.value && r.value.path.map(n => [n.x, n.z, n.h, n.dir]); } },
   solve(i, vid) { mountVehicle(VEH.find(v => v.id === vid)); loadLevel(i); const g = fullSearch(...L.start); let r; do { r = g.next(); } while (!r.done); return r.value ? { ok: true, switches: r.value.switches, exp: r.value.exp } : { ok: false }; }
 };
 loadLevel(0);
