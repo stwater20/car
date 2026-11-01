@@ -220,7 +220,7 @@ body.is-touch .hb{font-size:15px;padding:10px 14px;min-height:46px;min-width:58p
 body.is-touch #hRetry,body.is-touch #hGiveUp{display:none}
 body.is-touch .hb.hint{min-width:96px}
 body.is-touch .eb{min-width:70px;min-height:52px;font-size:16px;padding:6px 10px;border-radius:10px;white-space:nowrap}
-body.is-touch #inVeh{display:none}
+body.is-touch #inVeh,body.is-touch .kbhelp{display:none}
 body.is-touch .exam #exLog{right:auto;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 60px);bottom:auto;align-items:flex-start}
 body.is-touch .eb small{font-size:0}
 body.is-touch .lvchip .a{font-size:17px}
@@ -277,6 +277,46 @@ body.is-touch .note{font-size:13px}
   body.is-touch .legend{top:calc(env(safe-area-inset-top,0px) + 112px)}
   .card{padding:18px 18px}
 }
+/* ---------- phone type scale: nothing under 15 px, things you read while driving at 17-20 px ---------- */
+body.is-touch{font-size:17px}
+body.is-touch .status{font-size:18px;font-weight:800;line-height:1.4}
+body.is-touch .ck{font-size:16px;padding:5px 12px}
+body.is-touch .lvchip .a{font-size:19px}
+body.is-touch .eb{font-size:17px}
+@media (orientation:portrait){body.is-touch .eb{font-size:16px;letter-spacing:-.02em;padding:6px 1px;white-space:nowrap}}
+body.is-touch .hb{font-size:16px}
+body.is-touch .tb{font-size:24px}
+body.is-touch .tb small{font-size:13px!important;letter-spacing:.06em;opacity:.85}
+body.is-touch .center{font-size:17px}
+body.is-touch .wheel .deg{font-size:18px}
+body.is-touch .exam-score span{font-size:15px}
+body.is-touch .exam-log div{font-size:17px;padding:7px 12px}
+body.is-touch .timer span{font-size:15px}
+body.is-touch .legend{font-size:15px}
+body.is-touch .pip span{font-size:14px}
+body.is-touch .toast{font-size:clamp(30px,9vw,52px)}
+body.is-touch .eyebrow{font-size:15px}
+body.is-touch .card h2{font-size:30px}
+body.is-touch .card p{font-size:17px;line-height:1.7}
+body.is-touch .card ul{font-size:17px;line-height:1.7}
+body.is-touch .chip{font-size:15px;padding:5px 10px}
+body.is-touch .small{font-size:16px;line-height:1.7}
+body.is-touch #title p{font-size:17px}
+body.is-touch .lv .t{font-size:20px}
+body.is-touch .lv .d{font-size:15px}
+body.is-touch .lv .diff,body.is-touch .lv .lock{font-size:14px}
+body.is-touch .exam-item .t{font-size:19px}
+body.is-touch .exam-item .d{font-size:15px}
+body.is-touch .veh .t{font-size:22px}
+body.is-touch .veh .d,body.is-touch .veh .spec{font-size:15px}
+body.is-touch .note{font-size:15px}
+body.is-touch .sheet{font-size:16px}
+body.is-touch .stat span{font-size:14px}
+body.is-touch .assist{font-size:16px}
+body.is-touch .rec{font-size:16px}
+.rec{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:8px}
+.rec b{color:var(--sky)}
+.rec:hover,.rec:focus-visible{border-color:var(--sky);color:var(--paper)}
 @media (max-height:440px){ body.is-touch .screen{align-items:flex-start} body.is-touch #title h1{font-size:clamp(44px,15vh,80px)} }
 </style>
 
@@ -294,7 +334,8 @@ body.is-touch .note{font-size:13px}
     <div class="en">PARK FORMOSA</div>
     <p>從駕訓班的倒車入庫、路邊停車、曲線進退，到加油站、夜市巷口、斷崖觀景台、地下三樓、透天厝車庫。輪胎壓到線、車身擦到任何東西，這關就重來。四台車，從小車到發財車。</p>
     <div class="row"><button class="btn primary" id="toLevels"><span>選擇關卡</span></button><button class="btn" id="toGarage"><span>車庫 · <span id="curVeh">跑車</span></span></button><button class="btn" id="toExam" style="background:var(--warn);color:var(--ink)"><span>考照模擬 · 場考</span></button></div>
-    <p class="small">電腦：<kbd>W</kbd> 前進 <kbd>S</kbd> 倒車 <kbd>A</kbd><kbd>D</kbd> 方向盤 <kbd>空白鍵</kbd> 煞車 <kbd>C</kbd> 視角 <kbd>R</kbd> 重來　手機：直拿、橫拿都可以，左下轉方向盤、右下踩踏板。</p>
+    <a class="rec" href="https://sectools.tw/" target="_blank" rel="noopener">推薦網站 <b>sectools.tw</b> ↗</a>
+    <p class="small kbhelp">電腦：<kbd>W</kbd> 前進 <kbd>S</kbd> 倒車 <kbd>A</kbd><kbd>D</kbd> 方向盤 <kbd>空白鍵</kbd> 煞車 <kbd>C</kbd> 視角 <kbd>R</kbd> 重來　手機：直拿、橫拿都可以，左下轉方向盤、右下踩踏板。</p>
   </div>
 </div>
 
@@ -327,6 +368,7 @@ body.is-touch .note{font-size:13px}
     <p id="repMsg"></p>
     <div class="sheet-wrap"><table class="sheet"><thead><tr><th>考驗項目</th><th>扣分原因</th><th style="text-align:right">扣分</th></tr></thead><tbody id="repRows"></tbody></table></div>
     <div class="row"><button class="btn primary" id="repAgain"><span>再考一次</span></button><button class="btn" id="repMenu"><span>考照選單</span></button></div>
+    <a class="rec" href="https://sectools.tw/" target="_blank" rel="noopener">推薦網站 <b>sectools.tw</b> ↗</a>
   </div>
 </div>
 
@@ -1732,7 +1774,7 @@ function look(side) {
 }
 function toggleBelt() { if (state !== 'play' || mode !== 'exam') return; X.belt = !X.belt; audio.tone(X.belt ? 900 : 500, 0.08, 0.1, 'triangle'); paintExamBar(); }
 function paintExamBar() {
-  $('ebBelt').classList.toggle('on', X.belt); $('ebBelt').classList.toggle('warn', !X.belt); $('ebBelt').firstChild.textContent = X.belt ? '✓ 安全帶' : '安全帶';
+  $('ebBelt').classList.toggle('on', X.belt); $('ebBelt').classList.toggle('warn', !X.belt); $('ebBelt').firstChild.textContent = X.belt ? '✓安全帶' : '安全帶';
   $('ebSigL').classList.toggle('blink', X.sig === -1); $('ebSigR').classList.toggle('blink', X.sig === 1);
 }
 // moving off after a stop or from the start: seat belt, turn signal and a look over the shoulder
