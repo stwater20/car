@@ -214,12 +214,6 @@ body.is-touch .exam .status{top:calc(env(safe-area-inset-top,0px) + 62px)}
 .coach .tag small{display:block;font-weight:600;font-size:14px;color:#3b3d48;margin-top:2px}
 .coach .ok{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) skewX(-10deg)}
 /* ---------- portrait blocker while driving on a phone ---------- */
-.rotateblock{display:none;position:fixed;inset:0;z-index:20;background:var(--ink);flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;font-weight:900;font-size:24px;line-height:1.4}
-.rotateblock i{font-style:normal;font-size:64px;display:inline-block;animation:tilt 1.6s ease-in-out infinite}
-.rotateblock small{font-size:16px;font-weight:600;color:var(--mute)}
-@keyframes tilt{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
-@media (orientation:portrait){body.is-touch.playing .rotateblock{display:flex}}
-@media (prefers-reduced-motion:reduce){.rotateblock i{animation:none}}
 .status{font-size:16px}
 /* ---------- touch-first sizing: every target ≥ 44 px, text ≥ 14 px ---------- */
 body.is-touch .hb{font-size:15px;padding:10px 14px;min-height:46px;min-width:58px;border-radius:10px;border-width:2px}
@@ -253,13 +247,43 @@ body.is-touch .sheet{font-size:15px}
 body.is-touch .veh .d{font-size:14px}
 body.is-touch .sw{width:44px;height:44px}
 body.is-touch .note{font-size:13px}
+/* ---------- portrait phone: controls in the bottom third, buttons along the top ---------- */
+@media (orientation:portrait){
+  body.is-touch .wheel{width:min(46vw,210px);height:min(46vw,210px);bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}
+  body.is-touch .center{left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px + min(46vw,210px) + 8px);padding:10px 12px}
+  body.is-touch .pedals{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"rev fwd" "brk brk";gap:10px;width:min(46vw,220px);bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}
+  body.is-touch .tb[data-k="rev"]{grid-area:rev;width:100%;height:min(30vw,130px)}
+  body.is-touch .tb[data-k="fwd"]{grid-area:fwd;width:100%;height:min(30vw,130px)}
+  body.is-touch .tb[data-k="brake"]{grid-area:brk;width:100%;height:60px;border-radius:16px}
+  body.is-touch .lvchip{max-width:60vw}
+  body.is-touch .timer{top:calc(env(safe-area-inset-top,0px) + 10px)}
+  body.is-touch .timer b{font-size:28px}
+  body.is-touch .exam-score{top:calc(env(safe-area-inset-top,0px) + 8px);padding:4px 10px}
+  body.is-touch .exam-score b{font-size:26px}
+  body.is-touch .exam-score span:last-child{display:none}
+  body.is-touch .exam-bar{left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));transform:none;top:calc(env(safe-area-inset-top,0px) + 58px);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+  body.is-touch .eb{min-width:0;width:100%;font-size:14px;padding:6px 2px;min-height:50px;white-space:normal;line-height:1.15}
+  body.is-touch .status{left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));transform:none;max-width:none;top:calc(env(safe-area-inset-top,0px) + 58px);bottom:auto;font-size:15px}
+  body.is-touch .exam .status{top:calc(env(safe-area-inset-top,0px) + 116px)}
+  body.is-touch .hudbtns{top:auto;right:max(10px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 14px + min(30vw,130px) + 60px + 20px);flex-direction:row;gap:6px}
+  body.is-touch .exam .hudbtns{top:auto}
+  body.is-touch .hb{min-height:44px;padding:8px 10px;font-size:14px;white-space:nowrap}
+  body.is-touch .hudbtns{left:96px;justify-content:flex-end}
+  body.is-touch .tb small{font-size:.5em;letter-spacing:.04em}
+  body.is-touch .sensors{top:calc(env(safe-area-inset-top,0px) + 150px);width:44px}
+  body.is-touch .pip{width:min(54vw,260px);top:calc(env(safe-area-inset-top,0px) + 104px);bottom:auto;left:auto;right:max(10px,env(safe-area-inset-right,0px));transform:none}
+  body.is-touch .exam-log{left:max(10px,env(safe-area-inset-left,0px));right:auto;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 14px + min(46vw,210px) + 66px);align-items:flex-start}
+  body.is-touch .exam #exLog{top:auto}
+  body.is-touch .legend{top:calc(env(safe-area-inset-top,0px) + 112px)}
+  .card{padding:18px 18px}
+}
 @media (max-height:440px){ body.is-touch .screen{align-items:flex-start} body.is-touch #title h1{font-size:clamp(44px,15vh,80px)} }
 </style>
 
 <canvas id="gl"></canvas>
 <div class="flash" id="flash"></div>
 <div class="coach" id="coach" hidden></div>
-<div class="rotateblock" id="rotateBlock" role="alert"><i aria-hidden="true">📱</i>請把手機橫放<small>方向盤在左、踏板在右，橫著拿比較好開</small></div>
+
 <div class="toast" id="toast"></div>
 
 <!-- title -->
@@ -270,7 +294,7 @@ body.is-touch .note{font-size:13px}
     <div class="en">PARK FORMOSA</div>
     <p>從駕訓班的倒車入庫、路邊停車、曲線進退，到加油站、夜市巷口、斷崖觀景台、地下三樓、透天厝車庫。輪胎壓到線、車身擦到任何東西，這關就重來。四台車，從小車到發財車。</p>
     <div class="row"><button class="btn primary" id="toLevels"><span>選擇關卡</span></button><button class="btn" id="toGarage"><span>車庫 · <span id="curVeh">跑車</span></span></button><button class="btn" id="toExam" style="background:var(--warn);color:var(--ink)"><span>考照模擬 · 場考</span></button></div>
-    <p class="small">電腦：<kbd>W</kbd> 前進 <kbd>S</kbd> 倒車 <kbd>A</kbd><kbd>D</kbd> 方向盤 <kbd>空白鍵</kbd> 煞車 <kbd>C</kbd> 視角 <kbd>R</kbd> 重來　手機：橫放，左邊轉方向盤、右邊踩踏板。</p>
+    <p class="small">電腦：<kbd>W</kbd> 前進 <kbd>S</kbd> 倒車 <kbd>A</kbd><kbd>D</kbd> 方向盤 <kbd>空白鍵</kbd> 煞車 <kbd>C</kbd> 視角 <kbd>R</kbd> 重來　手機：直拿、橫拿都可以，左下轉方向盤、右下踩踏板。</p>
   </div>
 </div>
 
@@ -1340,7 +1364,7 @@ function updateSensors() {
 const CAMS = ['追車', '俯視', '駕駛座'];
 let camMode = store.get('cam', 0); if (!CAMS[camMode]) camMode = 0;
 const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
-function cycleCam() { camMode = (camMode + 1) % CAMS.length; store.set('cam', camMode); $('hCam').textContent = '視角：' + CAMS[camMode]; toast(CAMS[camMode] + '視角'); snapCam = true; }
+function cycleCam() { camMode = (camMode + 1) % CAMS.length; store.set('cam', camMode); $('hCam').textContent = (narrow() ? '' : '視角：') + CAMS[camMode]; toast(CAMS[camMode] + '視角'); snapCam = true; }
 let snapCam = true, introT = 0, camYawOff = 0, lookDrag = null;
 // desktop free-look: drag the scene with the mouse to look around the car in chase view
 $('gl').addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || state !== 'play') return; lookDrag = e.clientX; });
@@ -1367,7 +1391,7 @@ function updateCamera(dt) {
     camera.up.set(0, 1, 0); camera.position.set(t.cx + Math.cos(introT) * r, 9, t.cz + Math.sin(introT) * r); camera.lookAt(t.cx, 0, t.cz); camera.fov = 50;
   } else if (camMode === 0) {
     camera.up.set(0, 1, 0);
-    const cc = L.cam || {}, dist = cc.dist ?? 7.4, hgt = cc.h ?? 4.6;
+    const cc = L.cam || {}, pk = innerHeight > innerWidth ? 1.15 : 1, dist = (cc.dist ?? 7.4) * pk, hgt = (cc.h ?? 4.6) * pk;
     const tgt = camClip(new THREE.Vector3(car.x - F[0] * dist, hgt, car.z - F[1] * dist));
     if (cc.bounds) { tgt.x = clamp(tgt.x, cc.bounds[0], cc.bounds[1]); tgt.z = clamp(tgt.z, cc.bounds[2], cc.bounds[3]); }
     if (snapCam) camPos.copy(tgt); else camPos.lerp(tgt, 1 - Math.exp(-4 * dt));
@@ -1386,6 +1410,10 @@ function updateCamera(dt) {
     camera.lookAt(car.x + Math.sin(ly) * 12, 0.7 + gy, car.z + Math.cos(ly) * 12); camera.fov = 68;
   }
   snapCam = false;
+  // portrait phones: widen the view and push the image up so the car sits above the on-screen controls
+  const portrait = innerHeight > innerWidth;
+  if (portrait) { camera.fov = Math.min(80, camera.fov * 1.32); if (state === 'play' || state === 'pause') camera.setViewOffset(innerWidth, innerHeight, 0, innerHeight * 0.14, innerWidth, innerHeight); else camera.clearViewOffset(); }
+  else camera.clearViewOffset();
   camera.updateProjectionMatrix();
   // rear camera on the boot lid
   const c = Math.cos(car.h), s = Math.sin(car.h);
@@ -1492,7 +1520,7 @@ function beginDrive() {
   show(null); $('hud').hidden = false; $('touch').classList.add('on');
   $('hLv').textContent = 'LV' + (curLevel + 1); $('hName').textContent = lv.name;
   $('hRules').innerHTML = ''; for (const r of lv.rules) { const c = document.createElement('span'); c.className = 'chip red'; c.textContent = r; $('hRules').append(c); }
-  $('hPar').textContent = `目標 ${fmtT(lv.par)} · 上限 ${fmtT(lv.time)}`; $('hCam').textContent = '視角：' + CAMS[camMode]; updateHintBtn();
+  $('hPar').textContent = `目標 ${fmtT(lv.par)} · 上限 ${fmtT(lv.time)}`; $('hCam').textContent = (narrow() ? '' : '視角：') + CAMS[camMode]; updateHintBtn();
   setStatus(L.target.rev ? '倒車入庫：把車倒進綠色框，車頭朝外' : '把車停進綠色框', null, null);
   setTimeout(() => $('keys').classList.add('fade'), 8000);
   maybeCoach(); renderChecklist(null);
@@ -1566,7 +1594,8 @@ function evaluate(dt) {
    assists: route hint (hybrid A* with the game's own kinematics), rewind, confetti
    ========================================================= */
 const hintsLeft = () => store.get('hints', 3);
-function updateHintBtn() { $('hHint').textContent = searching ? '規劃中…' : `提示路線 ×${hintsLeft()}`; }
+const narrow = () => innerWidth < 430;
+function updateHintBtn() { $('hHint').textContent = searching ? '規劃中…' : `${narrow() ? '提示' : '提示路線'} ×${hintsLeft()}`; }
 let searching = null, hintMesh = null;
 function clearHint() { if (hintMesh) { scene.remove(hintMesh); hintMesh = null; } $('legend').hidden = true; searching = null; }
 function* routeSearch(sx, sz, sh, plain = false, maxExp = 240000, steers = [-1, -0.66, -0.33, 0, 0.33, 0.66, 1]) {
