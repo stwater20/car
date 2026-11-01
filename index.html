@@ -131,17 +131,35 @@ body.is-touch .touch.on{display:block}
 .tb[data-k="fwd"]{width:clamp(90px,26vh,124px);height:clamp(110px,34vh,160px);border-color:var(--go)}
 .tb.act{background:rgba(255,255,255,.35)}
 body.is-touch .keys,body.is-touch .dash{display:none}
-body.is-touch .hudbtns{left:auto;right:max(16px,env(safe-area-inset-right,0px));bottom:auto;top:calc(env(safe-area-inset-top,0px) + 70px)}
-body.is-touch .sensors{top:calc(env(safe-area-inset-top,0px) + 116px);width:64px}
+body.is-touch .hudbtns{left:auto;right:max(16px,env(safe-area-inset-right,0px));bottom:auto;top:calc(env(safe-area-inset-top,0px) + 58px);flex-direction:column;align-items:flex-end;gap:6px}
+body.is-touch .hb{font-size:12px;padding:6px 9px}
+body.is-touch .sensors{right:auto;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 80px);width:52px}
 body.is-touch .status{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 12px + min(200px,32vw) * 9 / 16 + 12px);font-size:13px;padding:6px 12px}
 body.is-touch .pip{width:min(200px,32vw)}
 body.is-touch .timer b{font-size:32px}
 
+.vehs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.veh{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:14px;border:1px solid var(--line);background:rgba(11,12,28,.72);cursor:pointer;min-height:170px}
+.veh[aria-pressed="true"]{border-color:var(--go);box-shadow:inset 0 0 0 1px var(--go)}
+.veh[disabled]{opacity:.45;cursor:not-allowed}
+.veh .en{font-family:var(--f-display);font-weight:800;font-style:italic;font-size:13px;letter-spacing:.18em;color:var(--go)}
+.veh .t{font-weight:900;font-size:22px}
+.veh .d{font-size:13px;color:var(--mute);line-height:1.5}
+.veh .spec{margin-top:auto;font-family:var(--f-display);font-weight:700;font-size:14px;color:rgba(255,248,242,.85);font-variant-numeric:tabular-nums}
+.veh .lock{font-size:13px;color:var(--warn)}
+.bigstars span{display:inline-block;color:rgba(255,255,255,.2)}
+.bigstars span.on{color:var(--warn);animation:starpop .55s cubic-bezier(.2,1.6,.3,1) both}
+@keyframes starpop{from{transform:scale(0) rotate(-50deg);opacity:0}to{transform:none;opacity:1}}
+.assist{font-size:13px;color:var(--warn)}
+.hb.hint{border-color:var(--warn);color:var(--warn)}
+.legend{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translateX(-50%);background:var(--ink-2);padding:6px 12px;font-size:13px;font-weight:700;display:flex;gap:12px;align-items:center}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
 @media (max-width:760px){
+  .vehs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .levels{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-@media (prefers-reduced-motion:reduce){.btn,.lv{transition:none}}
+@media (prefers-reduced-motion:reduce){.btn,.lv{transition:none}.bigstars span.on{animation:none}}
 </style>
 
 <canvas id="gl"></canvas>
@@ -151,22 +169,31 @@ body.is-touch .timer b{font-size:32px}
 <!-- title -->
 <div class="screen" id="title">
   <div class="panel">
-    <div class="eyebrow">HARDCORE PARKING · 台灣 8 個車位</div>
+    <div class="eyebrow">HARDCORE PARKING · 台灣 12 個車位</div>
     <h1><span class="pmark">P</span>停好<em>停滿</em></h1>
     <div class="en">PARK FORMOSA</div>
-    <p>從駕訓班的倒車入庫、路邊停車、曲線進退，到夜市巷口、地下三樓、透天厝車庫。輪胎壓到線、車身擦到任何東西，這關就重來。</p>
-    <div class="row"><span class="small">車色</span><div class="swatches" id="swatches"></div></div>
-    <div class="row"><button class="btn primary" id="toLevels"><span>選擇關卡</span></button></div>
+    <p>從駕訓班的倒車入庫、路邊停車、曲線進退，到加油站、夜市巷口、斷崖觀景台、地下三樓、透天厝車庫。輪胎壓到線、車身擦到任何東西，這關就重來。四台車，從小車到發財車。</p>
+    <div class="row"><button class="btn primary" id="toLevels"><span>選擇關卡</span></button><button class="btn" id="toGarage"><span>車庫 · <span id="curVeh">跑車</span></span></button></div>
     <p class="small">電腦：<kbd>W</kbd> 前進 <kbd>S</kbd> 倒車 <kbd>A</kbd><kbd>D</kbd> 方向盤 <kbd>空白鍵</kbd> 煞車 <kbd>C</kbd> 視角 <kbd>R</kbd> 重來　手機：橫放，左邊轉方向盤、右邊踩踏板。</p>
+  </div>
+</div>
+
+<!-- garage -->
+<div class="screen" id="garage" hidden>
+  <div class="panel">
+    <div class="head"><div><div class="eyebrow">GARAGE</div><h2>車庫</h2></div><div class="total" id="garageStars">★ 0</div></div>
+    <div class="vehs" id="vehs"></div>
+    <div class="row"><span class="small">車色</span><div class="swatches" id="swatches"></div></div>
+    <div class="row"><button class="btn primary" id="garageDone"><span>好了</span></button><span class="small">大車用星星解鎖。車越大越難停，有些車位大車根本停不進去。</span></div>
   </div>
 </div>
 
 <!-- level select -->
 <div class="screen" id="levelsScreen" hidden>
   <div class="panel">
-    <div class="head"><div><div class="eyebrow">SELECT LEVEL</div><h2>選擇關卡</h2></div><div class="total" id="totalStars">★ 0 / 24</div></div>
+    <div class="head"><div><div class="eyebrow">SELECT LEVEL</div><h2>選擇關卡</h2></div><div class="total" id="totalStars">★ 0 / 36</div></div>
     <div class="levels" id="levels"></div>
-    <div class="row"><button class="btn" id="backTitle"><span>← 返回</span></button><span class="small">每關三顆星：完成、在目標時間內、停得夠正（偏移 15 公分、角度 1.5° 以內）。同一關失敗 3 次可以先跳到下一關。</span></div>
+    <div class="row"><button class="btn" id="backTitle"><span>← 返回</span></button><span class="small">每關三顆星：完成、在目標時間內、停得夠正（偏移 15 公分、角度 1.5° 以內）。用了提示或倒帶最多兩顆星。同一關失敗 3 次可以先跳到下一關。</span></div>
   </div>
 </div>
 
@@ -178,7 +205,8 @@ body.is-touch .timer b{font-size:32px}
     <p id="inDesc"></p>
     <div class="rules" id="inRules"></div>
     <ul id="inTips"></ul>
-    <div class="row"><button class="btn primary" id="inGo"><span>開始</span></button><button class="btn" id="inBack"><span>關卡列表</span></button></div>
+    <p class="small" id="inVeh"></p>
+    <div class="row"><button class="btn primary" id="inGo"><span>開始</span></button><button class="btn" id="inGarage"><span>換車</span></button><button class="btn" id="inBack"><span>關卡列表</span></button></div>
   </div>
 </div>
 
@@ -189,8 +217,9 @@ body.is-touch .timer b{font-size:32px}
     <h2 id="resTitle">停好了！</h2>
     <div class="bigstars" id="resStars"></div>
     <p id="resMsg"></p>
+    <p class="assist" id="resAssist" hidden></p>
     <div class="stats" id="resStats"></div>
-    <div class="row"><button class="btn primary" id="resNext"><span>下一關 →</span></button><button class="btn" id="resRetry"><span>重來 R</span></button><button class="btn" id="resList"><span>關卡列表</span></button></div>
+    <div class="row"><button class="btn primary" id="resRewind" hidden><span>倒帶 3 秒</span></button><button class="btn primary" id="resNext"><span>下一關 →</span></button><button class="btn" id="resRetry"><span>重來 R</span></button><button class="btn" id="resList"><span>關卡列表</span></button></div>
   </div>
 </div>
 
@@ -215,11 +244,12 @@ body.is-touch .timer b{font-size:32px}
       <g id="sR" fill="none" stroke-width="7" stroke-linecap="round"></g>
     </svg>
   </div>
+  <div class="legend" id="legend" hidden><span><i style="background:#2fe08a"></i>前進</span><span><i style="background:#3fe0ff"></i>倒車</span><span><i style="background:#ffc23a"></i>換檔點</span></div>
   <div class="pip" id="pip" hidden><span>REAR CAM 後方顯影</span><canvas id="guides"></canvas></div>
   <div class="status" id="status"><svg class="ring" id="ring" viewBox="0 0 22 22" hidden><circle cx="11" cy="11" r="9" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="3"/><circle id="ringArc" cx="11" cy="11" r="9" fill="none" stroke="#2fe08a" stroke-width="3" stroke-dasharray="0 57" transform="rotate(-90 11 11)"/></svg><span id="statusTxt">把車停進綠色框</span></div>
   <div class="keys" id="keys"><span><kbd>W</kbd>前進</span><span><kbd>S</kbd>倒車</span><span><kbd>A</kbd><kbd>D</kbd>方向盤</span><span><kbd>空白鍵</kbd>煞車</span><span><kbd>C</kbd>換視角</span><span><kbd>R</kbd>重來</span><span><kbd>Esc</kbd>暫停</span></div>
   <div class="dash"><svg class="mini-wheel" id="miniWheel" viewBox="-30 -30 60 60"><circle r="26" fill="none" stroke="#fff8f2" stroke-width="5"/><circle r="7" fill="#fff8f2"/><path d="M-24 0 H24 M0 0 V24" stroke="#fff8f2" stroke-width="5"/><circle cy="-26" r="4" fill="#ff2e6a"/></svg><div class="sp"><span id="hSpeed">0</span><small>KM/H</small></div><div class="gear" id="hGear">N</div></div>
-  <div class="hudbtns"><button class="hb" id="hCam">視角 C</button><button class="hb" id="hRetry">重來 R</button><button class="hb" id="hPause">暫停</button></div>
+  <div class="hudbtns"><button class="hb hint" id="hHint">提示路線</button><button class="hb" id="hCam">視角 C</button><button class="hb" id="hRetry">重來 R</button><button class="hb" id="hPause">暫停</button></div>
 </div>
 
 <!-- touch -->
@@ -538,15 +568,62 @@ function setLight(key) {
    player car
    ========================================================= */
 const LIVERIES = ['#1f63c9', '#d9301f', '#f2b10f', '#1f9a72', '#eceae4', '#ff2e6a', '#202329'];
-const player = buildCar(LIVERIES[0], { caliper: 0xffc21a });
-scene.add(player.root);
-const headSpot = new THREE.SpotLight(0xfff1dd, 0, 60, 0.6, 0.5, 1.4); headSpot.position.set(0, 0.8, 2.2); headSpot.target.position.set(0, 0, 14); player.body.add(headSpot, headSpot.target);
-const revLight = new THREE.PointLight(0xffffff, 0, 6, 2); revLight.position.set(0, 0.7, -2.6); player.body.add(revLight);
-const WB = 2.74, REAR = 1.32, HW = 1.03, HL = 2.3, MAX_DELTA = 0.58;
-const TIRES = [[0.88, 1.42], [-0.88, 1.42], [0.88, -1.32], [-0.88, -1.32]];
+let liv = store.get('liv', 0); if (!LIVERIES[liv]) liv = 0;
+// 發財車: cab-over light truck with a drop-side bed, the workhorse of Taiwanese streets
+function buildTruck(hex) {
+  const root = new THREE.Group(), body = new THREE.Group(); root.add(body);
+  const paint = new THREE.MeshPhysicalMaterial({ color: hex, roughness: 0.35, metalness: 0.35, clearcoat: 0.8 });
+  const bed = new THREE.MeshStandardMaterial({ color: 0xb9bec6, roughness: 0.45, metalness: 0.6 });
+  const add = (w, h, d, mat, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = true; body.add(m); return m; };
+  add(1.5, 0.22, 4.5, darkMat, 0, 0.42, 0);                       // chassis
+  add(1.74, 1.45, 1.5, paint, 0, 1.3, 1.58);                      // cab
+  add(1.62, 0.62, 0.06, glassMat, 0, 1.62, 2.34);                 // windscreen
+  for (const s of [-1, 1]) { add(0.04, 0.5, 0.9, glassMat, s * 0.875, 1.66, 1.62); add(0.06, 0.14, 0.24, darkMat, s * 0.98, 1.6, 2.2); }
+  add(1.76, 0.24, 0.12, darkMat, 0, 0.62, 2.35);                  // bumper
+  for (const s of [-1, 1]) { const h = add(0.32, 0.14, 0.05, headMat, s * 0.62, 0.86, 2.34); h.castShadow = false; }
+  add(1.78, 0.1, 2.95, bed, 0, 0.78, -0.82);                      // bed floor
+  for (const s of [-1, 1]) add(0.05, 0.42, 2.95, bed, s * 0.87, 1.04, -0.82);
+  add(1.78, 0.42, 0.05, bed, 0, 1.04, -2.29); add(1.78, 0.7, 0.06, bed, 0, 1.18, 0.65);
+  const tailMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 0.08, 0.12), toneMapped: false });
+  for (const s of [-1, 1]) { const t = add(0.22, 0.12, 0.05, tailMat, s * 0.7, 0.62, -2.33); t.castShadow = false; }
+  const sh = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 5.2), shadowMat); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; root.add(sh);
+  const wheels = [];
+  for (const [z, front] of [[1.5, true], [-1.45, false]]) for (const s of [-1, 1]) {
+    const pivot = new THREE.Group(); pivot.position.set(s * 0.72, 0.3, z); root.add(pivot);
+    const spin = new THREE.Group(); pivot.add(spin); spin.scale.setScalar(0.88);
+    const t = new THREE.Mesh(tyreGeo, tyreMat); t.castShadow = true; spin.add(t);
+    const r = new THREE.Mesh(rimGeo, rimMat); r.position.x = s * 0.1; spin.add(r);
+    wheels.push({ pivot, spin, front });
+  }
+  return { root, body, wheels, paint, tailMat };
+}
+// vehicle specs: body half-extents, wheelbase, centre-to-rear-axle, steering lock, tyre layout, wheel radius, eye height
+const VEH = [
+  { id: 'kei', name: '小車', en: 'KEI CAR', need: 0, desc: '車身最短最窄，迴轉也最小。卡關時的救星。', hw: 0.91, hl: 1.94, wb: 2.3, rear: 1.11, maxD: 0.62, tx: 0.77, fz: 1.19, rz: -1.11, wr: 0.29, eye: 1.08,
+    build: c => { const m = buildCar(c, { caliper: 0xffc21a }); m.root.scale.set(0.88, 0.95, 0.84); return m; } },
+  { id: 'gt', name: '跑車', en: 'TW-9 GT', need: 0, desc: '標準尺寸的雙門跑車，視野低。', hw: 1.03, hl: 2.3, wb: 2.74, rear: 1.32, maxD: 0.58, tx: 0.88, fz: 1.42, rz: -1.32, wr: 0.34, eye: 1.18,
+    build: c => buildCar(c, { caliper: 0xffc21a }) },
+  { id: 'suv', name: '休旅車', en: 'SUV', need: 10, desc: '又寬又長，地下停車場的噩夢。', hw: 1.1, hl: 2.46, wb: 2.93, rear: 1.41, maxD: 0.56, tx: 0.94, fz: 1.52, rz: -1.41, wr: 0.36, eye: 1.45,
+    build: c => { const m = buildCar(c, { sedan: true, caliper: 0x333333 }); m.root.scale.set(1.07, 1.22, 1.07); return m; } },
+  { id: 'truck', name: '發財車', en: 'LIGHT TRUCK', need: 20, desc: '台灣街頭最常見的小貨車。軸距長、車斗後懸很長。', hw: 0.9, hl: 2.38, wb: 2.95, rear: 1.45, maxD: 0.6, tx: 0.72, fz: 1.5, rz: -1.45, wr: 0.3, eye: 1.75,
+    build: c => buildTruck(c) }
+];
+const turnRadius = v => { const R = v.wb / Math.tan(v.maxD); return Math.hypot(R + v.hw, v.rear + v.hl); };
+let V = VEH[1], player = null;
+const headSpot = new THREE.SpotLight(0xfff1dd, 0, 60, 0.6, 0.5, 1.4); headSpot.target.position.set(0, 0, 14);
+const revLight = new THREE.PointLight(0xffffff, 0, 6, 2);
+function mountVehicle(v) {
+  if (player) scene.remove(player.root);
+  V = v; store.set('veh', v.id);
+  player = v.build(LIVERIES[liv]); scene.add(player.root);
+  headSpot.position.set(0, 0.8, v.hl - 0.1); revLight.position.set(0, 0.7, -v.hl - 0.3);
+  player.body.add(headSpot, headSpot.target, revLight);
+  $('curVeh').textContent = v.name;
+}
+const WHEEL_LOCK_DEG = 540;
 const car = { x: 0, z: 0, h: 0, v: 0, steer: 0, steerTarget: 0, gear: 'N', spin: 0, flash: 0 };
-const carRect = () => Rect(car.x, car.z, HW, HL, car.h);
-function tireRects() { const c = Math.cos(car.h), s = Math.sin(car.h); return TIRES.map(([u, v]) => Rect(car.x + c * u + s * v, car.z - s * u + c * v, 0.13, 0.2, car.h)); }
+const carRect = (x = car.x, z = car.z, h = car.h) => Rect(x, z, V.hw, V.hl, h);
+function tireRects(x = car.x, z = car.z, h = car.h) { const c = Math.cos(h), s = Math.sin(h); return [[V.tx, V.fz], [-V.tx, V.fz], [V.tx, V.rz], [-V.tx, V.rz]].map(([u, v]) => Rect(x + c * u + s * v, z - s * u + c * v, 0.13, 0.2, h)); }
 
 /* =========================================================
    level construction kit
@@ -564,6 +641,9 @@ const MAT = {
   pole: new THREE.MeshStandardMaterial({ map: stripeTex('#d8352a', '#f4f1ea', 8), roughness: 0.5 }),
   cone: new THREE.MeshStandardMaterial({ color: 0xff6a1a, roughness: 0.6 }),
   trunk: new THREE.MeshStandardMaterial({ color: 0x5a4032, roughness: 1, flatShading: true }),
+  rock: new THREE.MeshStandardMaterial({ color: 0x8a8378, roughness: 1, flatShading: true }),
+  island: new THREE.MeshStandardMaterial({ color: 0xd8d4cc, roughness: 0.8 }),
+  sea: new THREE.MeshStandardMaterial({ color: 0x0d4f86, roughness: 0.12, metalness: 0.3 }),
   leaf: new THREE.MeshStandardMaterial({ color: 0x4c8f36, roughness: 0.85, flatShading: true }),
   flame: new THREE.MeshStandardMaterial({ color: 0xe8452c, roughness: 0.85, flatShading: true })
 };
@@ -615,7 +695,7 @@ function newLevel() {
       const c = buildCar(color ?? pick(['#f2f0ea', '#c9c9cf', '#20222b', '#3a6ea5', '#8c1c22', '#7a8f9c', '#e8e2d0', '#f6c518']), { sedan: true, caliper: 0x333333, taxi: o.taxi });
       if (o.suv) c.root.scale.set(1.07, 1.22, 1.07);
       c.root.position.set(x, 0, z); c.root.rotation.y = rot; g.add(c.root);
-      K.solids.push({ r: Rect(x, z, o.suv ? 1.1 : HW, o.suv ? 2.46 : HL, rot), label: o.suv ? '休旅車' : '別人的車' });
+      K.solids.push({ r: Rect(x, z, o.suv ? 1.1 : 1.03, o.suv ? 2.46 : 2.3, rot), label: o.suv ? '休旅車' : '別人的車' });
       return c;
     },
     scooter(x, z, rot, label = '機車') {
@@ -666,7 +746,7 @@ function setTarget(K, t) {
 const RV = { rev: true };
 const LEVELS = [
   {
-    name: '新手上路', place: '大賣場停車場', diff: '★',
+    id: 'mall', name: '新手上路', place: '大賣場停車場', diff: '★',
     desc: '把車開進兩台車中間的綠色車位，車頭朝內。撞到任何東西都算失敗。',
     tips: ['先開到車位正前方再轉進去，太早轉會擦到旁邊的車。', `${isTouch ? '右上角「視角」' : '按 C'} 可以切換俯視角度，比較好對位。`],
     rules: ['擦撞即失敗'], time: 75, par: 30, light: 'day',
@@ -689,7 +769,7 @@ const LEVELS = [
     }
   },
   {
-    name: '倒車入庫', place: '駕訓班 · 路考場', diff: '★★',
+    id: 'bay', name: '倒車入庫', place: '駕訓班 · 路考場', diff: '★★',
     desc: '路考經典項目。先往前開過車庫，再倒車停進去，車頭朝外。輪胎壓到黃線就失敗。',
     tips: ['往前開到車尾超過車庫一點再停。', '方向盤打到底慢慢倒，看後方顯影的導引線對準車庫。', '車身快正時把方向盤回正，再直直倒到底。'],
     rules: ['壓線即失敗', '擦撞即失敗'], time: 120, par: 50, light: 'day',
@@ -705,7 +785,7 @@ const LEVELS = [
     }
   },
   {
-    name: '路邊停車', place: '駕訓班 · 路考場', diff: '★★',
+    id: 'parallel', name: '路邊停車', place: '駕訓班 · 路考場', diff: '★★',
     desc: '倒車停進右邊的路邊停車格。前後線、紅白桿都不能碰，輪胎也不能撞到路緣。',
     tips: ['開到車子和前方紅白桿並排、間隔約半個車身寬時停下。', '方向盤右打到底倒車，車身斜 45 度左右回正。', '車尾快進格子時方向盤左打到底，把車頭擺進來。'],
     rules: ['壓線即失敗', '撞路緣即失敗', '擦撞即失敗'], time: 120, par: 55, light: 'day',
@@ -723,21 +803,21 @@ const LEVELS = [
     }
   },
   {
-    name: '曲線前進', place: '駕訓班 · 路考場', diff: '★★★',
+    id: 'scurve', name: '曲線前進', place: '駕訓班 · 路考場', diff: '★★★',
     desc: '沿著 S 型彎道往前開到出口的綠框。車道寬 3.3 公尺，兩側黃線一壓到就失敗。',
     tips: ['過彎時車頭要貼外側線走，內側後輪才不會切到內線。', '速度越慢越好修正，不要急。'],
     rules: ['壓線即失敗', '擦撞即失敗'], time: 100, par: 45, light: 'day',
     build(K) { testYard(K, 15); sCurve(K); return { start: [0, -6.2, 0], target: { cx: 30, cz: 5.6, w: 3.3, l: 6.2, rot: 0, tol: 10, label: '出口' } }; }
   },
   {
-    name: '曲線後退', place: '駕訓班 · 路考場', diff: '★★★★',
+    id: 'screv', name: '曲線後退', place: '駕訓班 · 路考場', diff: '★★★★',
     desc: '整條 S 型彎道用倒車退回起點。路考最多人在這裡被當。',
     tips: ['倒車時想讓車尾往哪邊走，方向盤就往哪邊打。', '看後方顯影：彎曲的導引線要一直落在兩條黃線中間。'],
     rules: ['壓線即失敗', '擦撞即失敗'], time: 140, par: 70, light: 'sunset',
     build(K) { testYard(K, 15); sCurve(K); return { start: [30, 5.6, 0], target: { cx: 0, cz: -4.6, w: 3.3, l: 6.2, rot: 0, tol: 10, label: '終點' } }; }
   },
   {
-    name: '夜市巷口', place: '花蓮 · 自強夜市旁', diff: '★★★★',
+    id: 'night', noVeh: ['suv'], name: '夜市巷口', place: '花蓮 · 自強夜市旁', diff: '★★★★',
     desc: '晚上的夜市巷口，在兩台車中間路邊停車，空位只比車身長 1.6 公尺。左邊停滿機車，還會有機車從旁邊騎過去。',
     tips: ['有機車經過就先煞車等它過。', '空間很小，通常要倒進去、往前修正、再倒一次。'],
     rules: ['擦撞即失敗', '撞路緣即失敗'], time: 110, par: 55, light: 'night',
@@ -764,7 +844,7 @@ const LEVELS = [
     }
   },
   {
-    name: '地下停車場', place: 'B3 · 百貨地下室', diff: '★★★★',
+    id: 'b3', noVeh: ['suv'], name: '地下停車場', place: 'B3 · 百貨地下室', diff: '★★★★',
     desc: '左邊是一台大休旅，車位右前角還有一根柱子。倒車入位，車頭朝外，車位只比車寬多 45 公分。',
     tips: ['柱子在車位右前方，太早打方向盤一定會擦到。', '倒車雷達變紅就停，往前修正再退。'],
     rules: ['擦撞即失敗'], time: 130, par: 65, light: 'indoor',
@@ -792,7 +872,7 @@ const LEVELS = [
     }
   },
   {
-    name: '透天厝車庫', place: '花蓮 · 巷弄', diff: '★★★★★',
+    id: 'house', name: '透天厝車庫', place: '花蓮 · 巷弄', diff: '★★★★★',
     desc: '巷子只有 5 公尺寬，對面停了一排機車。把車倒進只比車寬多 70 公分的自家車庫，車頭朝外。',
     tips: ['先把車頭往對面斜開，讓車尾對準車庫口。', '這關通常要來回 5、6 次，時間比較多，慢慢來。'],
     rules: ['擦撞即失敗'], time: 170, par: 90, light: 'sunset',
@@ -820,6 +900,102 @@ const LEVELS = [
     }
   }
 ];
+
+const NEW_LEVELS = {
+  angle: {
+    id: 'angle', name: '斜角停車', place: '觀光區停車場', diff: '★',
+    desc: '沿著單行道往前，把車斜斜地開進右邊的斜角車位，車頭朝內。',
+    tips: ['斜角車位只要轉 60 度，比直角車位好進。', '車頭對準車位再轉，後輪會走在前輪內側，小心右後方擦到旁邊的車。'],
+    rules: ['擦撞即失敗'], time: 70, par: 25, light: 'day',
+    build(K) {
+      K.ground(140, 140, new THREE.MeshStandardMaterial({ map: asphaltTex, roughness: 0.9 })).material.map.repeat.set(30, 30);
+      const A = -Math.PI / 3, dx = Math.sin(A), dz = Math.cos(A), px = Math.cos(A), pz = -Math.sin(A), ex = -2.4;
+      let target = null;
+      for (let k = -4; k <= 4; k++) {
+        const ez = k * 3.233, cx = ex + dx * 2.75, cz = ez + dz * 2.75;
+        for (const sd of k === 4 ? [-1, 1] : [-1]) { const lx = ex + px * 1.4 * sd, lz = ez + pz * 1.4 * sd; K.line(lx, lz, lx + dx * 5.5, lz + dz * 5.5); }
+        if (k === 0) target = { cx, cz, w: 2.8, l: 5.5, rot: A, tol: 6, label: '車頭朝內' };
+        else if (Math.abs(k) === 1 || rand() < 0.7) K.car(cx + dx * 0.1, cz + dz * 0.1, A + (rand() - 0.5) * 0.03);
+      }
+      K.line(ex, -17, ex, 17, { w: 0.12, mat: MAT.yellow });
+      K.solid(Rect(4.4, 0, 0.35, 17.5), '花台', 0.55, MAT.concrete);
+      for (let z = -15; z <= 15; z += 5) K.tree(4.4, z, 0.8, z === 0);
+      K.solid(Rect(0, 17.6, 9, 0.25), '圍牆', 0.9, MAT.concrete); K.solid(Rect(0, -17.6, 9, 0.25), '圍牆', 0.9, MAT.concrete);
+      K.houses([{ x: -14, z: 0, w: 6, d: 36, h: 7, color: '#efe6d4' }]);
+      K.sign(6.5, 0, -Math.PI / 2, '觀光停車場', 'VISITOR PARKING', '#1d4fa0', '#ffffff', 4.4, 1.1, 2.6);
+      return { start: [1.4, -13, 0], target };
+    }
+  },
+  gas: {
+    id: 'gas', name: '加油站', place: '省道旁加油站', diff: '★★',
+    desc: '開進兩座加油島中間的車道，停在左手邊的加油機旁。兩邊各只有 27 公分的空間。',
+    tips: ['入口就要對正，進到加油島中間之後幾乎沒有修正空間。', '黃色防撞桿在加油島的頭尾，車頭過去之前不要打方向盤。'],
+    rules: ['擦撞即失敗'], time: 80, par: 32, light: 'day',
+    build(K) {
+      K.ground(140, 140, new THREE.MeshStandardMaterial({ color: 0x6aa13a, roughness: 1 }), 0, 0, -0.01);
+      K.ground(30, 40, new THREE.MeshStandardMaterial({ map: concreteTex, roughness: 0.85 })).material.map.repeat.set(6, 8);
+      const yellow = new THREE.MeshStandardMaterial({ color: 0xffcc1a, roughness: 0.5 });
+      for (const ix of [-4.6, 0, 4.6]) {
+        K.solid(Rect(ix, 0, 0.6, 3.2), '加油島', 0.25, MAT.island);
+        for (const pz of [-1.4, 1.4]) { const pm = new THREE.Mesh(new THREE.BoxGeometry(0.55, 1.7, 0.75), new THREE.MeshStandardMaterial({ color: 0xf2f0ea, roughness: 0.5 })); pm.position.set(ix, 1.1, pz); pm.castShadow = true; K.g.add(pm); const scr = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.35, 0.4), glow('#3fe0ff', 1.2)); scr.position.set(ix, 1.55, pz); K.g.add(scr); }
+        for (const bz of [-3.55, 3.55]) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.0, 12), yellow); b.position.set(ix, 0.5, bz); b.castShadow = true; K.g.add(b); K.solids.push({ r: Rect(ix, bz, 0.13, 0.13), label: '防撞桿' }); }
+      }
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(16, 0.5, 12), new THREE.MeshStandardMaterial({ color: 0xf4f4f0, roughness: 0.6 })); roof.position.set(0, 5.4, 0); roof.castShadow = true; K.g.add(roof);
+      const band = new THREE.Mesh(new THREE.BoxGeometry(16.1, 0.5, 12.1), glow('#1fae6b', 1)); band.position.set(0, 5.0, 0); K.g.add(band);
+      for (const cx of [-7.4, 7.4]) for (const cz of [-4.8, 4.8]) K.solid(Rect(cx, cz, 0.25, 0.25), '柱子', 5.2, MAT.wall);
+      K.car(2.3, 0.4, 0); K.car(-2.3, 8.6, 0, '#f6c518', { taxi: true }); K.car(2.3, -9.5, 0);
+      K.sign(0, -6.05, Math.PI, '加油站', 'FUEL', '#1fae6b', '#ffffff', 5, 1.2, 4.6);
+      const price = canvasTex(256, 384, (g, w, h) => { g.fillStyle = '#16181f'; g.fillRect(0, 0, w, h); g.textBaseline = 'middle'; [['92 無鉛', '30.1'], ['95 無鉛', '31.6'], ['98 無鉛', '33.6'], ['超級柴油', '28.9']].forEach(([a, b], k) => { const y = 60 + k * 85; g.fillStyle = '#ffffff'; g.font = `900 34px ${ZH}`; g.textAlign = 'left'; g.fillText(a, 18, y); g.fillStyle = '#ffd23f'; g.font = 'italic 900 52px "Barlow Condensed", sans-serif'; g.textAlign = 'right'; g.fillText(b, w - 16, y); }); });
+      const pb = new THREE.Mesh(new THREE.PlaneGeometry(2, 3), new THREE.MeshBasicMaterial({ map: price })); pb.position.set(10, 4, -8); pb.rotation.y = Math.PI; K.g.add(pb);
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 6, 8), MAT.steel); pole.position.set(10, 3, -7.8); K.g.add(pole);
+      for (const [x, z] of [[-14, -14], [14, 12], [-13, 15]]) K.tree(x, z, 1.1, x > 0);
+      return { start: [-2.3, -14, 0], target: { cx: -2.3, cz: 0, w: 2.6, l: 5.6, rot: 0, tol: 5, label: '加油位' } };
+    }
+  },
+  uturn: {
+    id: 'uturn', name: '三點迴轉', place: '花蓮 · 窄巷', diff: '★★★',
+    desc: '在 6.4 公尺寬的巷子裡掉頭，停到對向車道的綠框，車頭朝後。輪胎不能碰到兩邊的路緣，路邊還停著機車。',
+    tips: ['方向盤左打到底往前，前輪快碰到對面路緣就停。', '右打到底倒車，再左打到底往前，三次就能轉過來。', '人行道上的機車也要注意：車頭和車尾會懸到路緣外面。'],
+    rules: ['撞路緣即失敗', '擦撞即失敗'], time: 90, par: 40, light: 'sunset',
+    build(K) {
+      K.ground(120, 120, new THREE.MeshStandardMaterial({ map: asphaltTex, roughness: 0.9 })).material.map.repeat.set(26, 26);
+      for (const sd of [-1, 1]) { K.curb(sd * 3.2, -21, sd * 3.2, 21); K.ground(2.2, 42, new THREE.MeshStandardMaterial({ map: tileTex, roughness: 0.9 }), sd * 4.45, 0, 0.16); }
+      K.line(0, -21, 0, 21, { mat: MAT.yellow, w: 0.12 });
+      const H = []; for (let z = -22; z <= 22; z += 6.6) for (const sd of [-1, 1]) H.push({ x: sd * 10.6, z, w: 10.8, d: 6.4, h: 10 + Math.floor(rand() * 3) * 3.3 });
+      K.houses(H);
+      for (const z of [-15, -13.9, -9, 6, 7.1, 12.5]) K.scooter(4.45, z, Math.PI / 2 + (rand() - 0.5) * 0.12);
+      for (const z of [-11, 3.4, 4.5, 14]) K.scooter(-4.45, z, -Math.PI / 2 + (rand() - 0.5) * 0.12);
+      K.solid(Rect(0, 20.6, 3.2, 0.25), '施工圍籬', 1.0, MAT.hazard); K.solid(Rect(0, -20.6, 3.2, 0.25), '施工圍籬', 1.0, MAT.hazard);
+      K.vsign(-5.6, 5.4, 9, 0, 3); K.vsign(5.6, 5.4, -4, 0, 7);
+      return { start: [-1.6, -4.5, 0], target: { cx: 1.6, cz: -4.5, w: 3.0, l: 6.2, rot: Math.PI, tol: 8, label: '掉頭停這' } };
+    }
+  },
+  lookout: {
+    id: 'lookout', name: '斷崖觀景台', place: '蘇花公路 · 清水斷崖', diff: '★★★★',
+    desc: '公路旁的觀景台，車頭朝海停進兩台車中間。前面就是護欄，車頭離護欄不到 40 公分。',
+    tips: ['先開到車位前方偏左一點，再右轉切進去。', '進去之後慢慢往前，前方雷達變紅就停。'],
+    rules: ['擦撞即失敗'], time: 90, par: 40, light: 'sunset',
+    build(K) {
+      K.ground(80, 15, new THREE.MeshStandardMaterial({ map: asphaltTex, roughness: 0.9 }), 0, 0).material.map.repeat.set(16, 3);
+      K.ground(1200, 1200, MAT.sea, 0, 600, -60);
+      K.solid(Rect(0, -9.2, 40, 1.6), '山壁', 26, MAT.rock);
+      for (const [x, h] of [[-30, 120], [-8, 90], [16, 140], [36, 100]]) { const c = new THREE.Mesh(new THREE.ConeGeometry(28, h, 7), MAT.rock); c.position.set(x, h / 2 - 2, -30); K.g.add(c); }
+      const cliff = new THREE.Mesh(new THREE.BoxGeometry(80, 60, 2), MAT.rock); cliff.position.set(0, -30.2, 8.4); K.g.add(cliff);
+      K.line(-20, 0, -9.2, 0, { mat: MAT.white, w: 0.12 }); K.line(9.2, 0, 20, 0, { mat: MAT.white, w: 0.12 });
+      K.line(-20, -3.6, 20, -3.6, { mat: MAT.yellow, w: 0.12 });
+      for (const x of [-6.75, -4.05, -1.35, 1.35, 4.05, 6.75]) K.line(x, 1.6, x, 6.8);
+      K.solid(Rect(0, 7.1, 9.2, 0.06), '護欄', 0.85, MAT.steel);
+      for (let x = -9; x <= 9; x += 1.5) { const pst = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.85, 0.12), MAT.steel); pst.position.set(x, 0.42, 7.2); K.g.add(pst); }
+      K.solid(Rect(-9.4, 3.5, 0.2, 3.6), '矮牆', 0.6, MAT.concrete); K.solid(Rect(9.4, 3.5, 0.2, 3.6), '矮牆', 0.6, MAT.concrete);
+      K.car(-2.7, 4.35, 0); K.car(2.7, 4.3, 0, '#eceae4'); K.car(-5.4, 4.3, 0, '#20222b');
+      K.sign(-7.5, -0.7, 0, '觀景台', 'LOOKOUT', '#6b3a1d', '#ffffff', 3, 0.8, 2.2);
+      return { start: [-14, -1.8, Math.PI / 2], target: { cx: 0, cz: 4.25, w: 2.7, l: 5.0, rot: 0, tol: 5, label: '車頭朝海' } };
+    }
+  }
+};
+{ const order = ['mall', 'angle', 'bay', 'parallel', 'gas', 'scurve', 'uturn', 'screv', 'night', 'lookout', 'b3', 'house'];
+  const byId = Object.fromEntries(LEVELS.map(l => [l.id, l])); Object.assign(byId, NEW_LEVELS);
+  LEVELS.length = 0; for (const id of order) LEVELS.push(byId[id]); }
 function testYard(K, extra = 0) {
   K.ground(160, 160, new THREE.MeshStandardMaterial({ color: 0x6aa13a, roughness: 1 }), 0, 0, -0.01);
   const pad = K.ground(46 + extra * 2, 36 + extra, new THREE.MeshStandardMaterial({ map: concreteTex, roughness: 0.85 }), extra, extra / 3, 0.0); pad.material.map.repeat.set(8, 6);
@@ -916,7 +1092,7 @@ const audio = {
    ========================================================= */
 const keys = {}, pedal = { fwd: 0, rev: 0, brake: 0 };
 let touchWheelDeg = 0, wheelHeld = false;
-const WHEEL_LOCK = 540; // degrees lock-to-lock / 2, like a real car
+const WHEEL_LOCK = WHEEL_LOCK_DEG; // degrees lock-to-lock / 2, like a real car
 addEventListener('keydown', e => {
   keys[e.code] = true;
   if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
@@ -926,8 +1102,10 @@ addEventListener('keydown', e => {
     if (e.code === 'KeyR') startLevel(curLevel);
     if (e.code === 'Escape' || e.code === 'KeyP') pause(true);
     if (e.code === 'KeyM') audio.setOn(!audio.on);
+    if (e.code === 'KeyH') useHint();
   } else if (state === 'pause' && (e.code === 'Escape' || e.code === 'KeyP')) pause(false);
   else if ((state === 'result') && e.code === 'KeyR') startLevel(curLevel);
+  else if (state === 'result' && e.code === 'KeyB' && !$('resRewind').hidden) rewind();
   else if (state === 'intro' && e.code === 'Enter') beginDrive();
 });
 addEventListener('keyup', e => { keys[e.code] = false; });
@@ -977,28 +1155,30 @@ function stepCar(dt, inp) {
   else car.v = Math.sign(car.v) * Math.max(0, Math.abs(car.v) - 2.2 * dt);
   car.gear = inp.rev || car.v < -0.05 ? 'R' : inp.fwd || car.v > 0.05 ? 'D' : 'N';
   car.steer += clamp(car.steerTarget - car.steer, -2.2 * dt, 2.2 * dt);
-  const delta = car.steer * MAX_DELTA;
-  let rx = car.x - Math.sin(car.h) * REAR, rz = car.z - Math.cos(car.h) * REAR;
-  car.h -= car.v / WB * Math.tan(delta) * dt;
+  const delta = car.steer * V.maxD;
+  let rx = car.x - Math.sin(car.h) * V.rear, rz = car.z - Math.cos(car.h) * V.rear;
+  car.h -= car.v / V.wb * Math.tan(delta) * dt;
   rx += Math.sin(car.h) * car.v * dt; rz += Math.cos(car.h) * car.v * dt;
-  car.x = rx + Math.sin(car.h) * REAR; car.z = rz + Math.cos(car.h) * REAR;
-  car.spin += car.v / 0.34 * dt;
+  car.x = rx + Math.sin(car.h) * V.rear; car.z = rz + Math.cos(car.h) * V.rear;
+  car.spin += car.v / V.wr * dt;
 }
-function hitCheck() {
-  const cr = carRect();
+function collides(x, z, h, movers = true) {
+  const cr = carRect(x, z, h);
   for (const o of L.solids) if (overlap(cr, o.r)) return '撞到' + o.label;
-  for (const o of L.movers) if (overlap(cr, o.r)) return '撞到' + o.label;
-  const tr = tireRects();
+  if (movers) for (const o of L.movers) if (overlap(cr, o.r)) return '撞到' + o.label;
+  const tr = tireRects(x, z, h);
   for (const o of L.tire) for (const t of tr) if (overlap(t, o.r)) return o.label;
   return null;
 }
-const SENS = [[-0.75, 2.25], [0, 2.32], [0.75, 2.25], [-0.75, -2.25], [0, -2.32], [0.75, -2.25]];
+const hitCheck = () => collides(car.x, car.z, car.h);
+function goalAt(x, z, h) { const t = L.target.rect; return corners(carRect(x, z, h)).every(([px, pz]) => inRect(t, px, pz)) && Math.abs(wrapAngle(h - t.rot)) / DEG <= L.target.tol; }
+const SENS = () => { const a = V.hw * 0.73; return [[-a, V.hl - 0.05], [0, V.hl + 0.02], [a, V.hl - 0.05], [-a, -V.hl + 0.05], [0, -V.hl - 0.02], [a, -V.hl + 0.05]]; };
 const sensorD = new Float32Array(6);
 function updateSensors() {
   const c = Math.cos(car.h), s = Math.sin(car.h), Fx = s, Fz = c;
-  const all = L.solids.concat(L.movers);
+  const all = L.solids.concat(L.movers), S = SENS();
   for (let k = 0; k < 6; k++) {
-    const [u, v] = SENS[k], px = car.x + c * u + s * v, pz = car.z - s * u + c * v, sign = v > 0 ? 1 : -1;
+    const [u, v] = S[k], px = car.x + c * u + s * v, pz = car.z - s * u + c * v, sign = v > 0 ? 1 : -1;
     let best = 9;
     for (const o of all) {
       const dx0 = o.r.cx - px, dz0 = o.r.cz - pz; if (dx0 * dx0 + dz0 * dz0 > 30) continue;
@@ -1016,7 +1196,11 @@ const CAMS = ['追車', '俯視', '駕駛座'];
 let camMode = store.get('cam', 0); if (!CAMS[camMode]) camMode = 0;
 const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
 function cycleCam() { camMode = (camMode + 1) % CAMS.length; store.set('cam', camMode); $('hCam').textContent = '視角：' + CAMS[camMode]; toast(CAMS[camMode] + '視角'); snapCam = true; }
-let snapCam = true, introT = 0;
+let snapCam = true, introT = 0, camYawOff = 0, lookDrag = null;
+// desktop free-look: drag the scene with the mouse to look around the car in chase view
+$('gl').addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || state !== 'play') return; lookDrag = e.clientX; });
+addEventListener('pointermove', e => { if (lookDrag === null) return; camYawOff = clamp(camYawOff - (e.clientX - lookDrag) * 0.007, -Math.PI, Math.PI); lookDrag = e.clientX; });
+addEventListener('pointerup', () => { lookDrag = null; });
 function camClip(to) { // pull the chase camera toward the car when a building or wall is in the way
   const n = 24;
   for (let i = 1; i <= n; i++) {
@@ -1026,8 +1210,14 @@ function camClip(to) { // pull the chase camera toward the car when a building o
   return to;
 }
 function updateCamera(dt) {
-  const F = [Math.sin(car.h), Math.cos(car.h)];
-  if (state === 'intro' || state === 'levels' || state === 'title') {
+  if (!lookDrag) camYawOff = damp(camYawOff, 0, 2.2, dt);
+  const F = [Math.sin(car.h + (camMode === 0 ? camYawOff : 0)), Math.cos(car.h + (camMode === 0 ? camYawOff : 0))];
+  if (state === 'garage') {
+    introT += dt * 0.35; camera.up.set(0, 1, 0); camera.position.set(car.x + Math.cos(introT) * 7, 2.4, car.z + Math.sin(introT) * 7); camera.lookAt(car.x, 0.7, car.z); camera.fov = 45;
+  } else if (state === 'result' && lastSuccess) {
+    celebrateT += dt; const a = car.h + Math.PI + celebrateT * 0.6, r = 7.5 - Math.min(celebrateT, 1.5);
+    camera.up.set(0, 1, 0); camera.position.set(car.x + Math.sin(a) * r, 2.6 + Math.min(celebrateT, 1.5) * 0.8, car.z + Math.cos(a) * r); camera.lookAt(car.x, 0.6, car.z); camera.fov = 50;
+  } else if (state === 'intro' || state === 'levels' || state === 'title') {
     introT += dt * 0.25; const t = L.target, r = 15;
     camera.up.set(0, 1, 0); camera.position.set(t.cx + Math.cos(introT) * r, 9, t.cz + Math.sin(introT) * r); camera.lookAt(t.cx, 0, t.cz); camera.fov = 50;
   } else if (camMode === 0) {
@@ -1044,15 +1234,15 @@ function updateCamera(dt) {
     camera.position.copy(camPos); camera.lookAt(camPos.x, 0, camPos.z + 0.01); camera.fov = 50;
   } else {
     camera.up.set(0, 1, 0);
-    const c = Math.cos(car.h), s = Math.sin(car.h), u = 0.36, v = -0.1; // Taiwan: driver sits on the left
-    camera.position.set(car.x + c * u + s * v, 1.18, car.z - s * u + c * v);
+    const c = Math.cos(car.h), s = Math.sin(car.h), u = V.hw * 0.35, v = V.id === 'truck' ? 1.55 : -0.1; // Taiwan: driver sits on the left
+    camera.position.set(car.x + c * u + s * v, V.eye, car.z - s * u + c * v);
     camera.lookAt(car.x + F[0] * 12, 0.7, car.z + F[1] * 12); camera.fov = 68;
   }
   snapCam = false;
   camera.updateProjectionMatrix();
   // rear camera on the boot lid
   const c = Math.cos(car.h), s = Math.sin(car.h);
-  rearCam.position.set(car.x - s * 2.2, 0.95, car.z - c * 2.2);
+  rearCam.position.set(car.x - s * (V.hl - 0.1), 0.95, car.z - c * (V.hl - 0.1));
   rearCam.lookAt(car.x - s * 6.5, 0, car.z - c * 6.5);
 }
 
@@ -1079,11 +1269,11 @@ function drawGuides(rect) {
   gctx.clearRect(0, 0, w, h);
   const proj = new THREE.Vector3(), P = (x, z) => { proj.set(x, 0.02, z).project(rearCam); return [(proj.x * 0.5 + 0.5) * w, (-proj.y * 0.5 + 0.5) * h, proj.z]; };
   // predicted reverse path from the current wheel angle, swept from the rear axle
-  const delta = car.steer * MAX_DELTA, pts = [[], []]; let hh = car.h, rx = car.x - Math.sin(car.h) * REAR, rz = car.z - Math.cos(car.h) * REAR;
+  const delta = car.steer * V.maxD, pts = [[], []], hw = V.hw * 0.92; let hh = car.h, rx = car.x - Math.sin(car.h) * V.rear, rz = car.z - Math.cos(car.h) * V.rear;
   for (let d = 0; d <= 5.2; d += 0.2) {
-    const bx = rx - Math.sin(hh) * (HL - REAR), bz = rz - Math.cos(hh) * (HL - REAR), c = Math.cos(hh), s = Math.sin(hh);
-    pts[0].push([P(bx + c * 0.95, bz - s * 0.95), d]); pts[1].push([P(bx - c * 0.95, bz + s * 0.95), d]);
-    hh -= -0.2 / WB * Math.tan(delta); rx -= Math.sin(hh) * 0.2; rz -= Math.cos(hh) * 0.2;
+    const bx = rx - Math.sin(hh) * (V.hl - V.rear), bz = rz - Math.cos(hh) * (V.hl - V.rear), c = Math.cos(hh), s = Math.sin(hh);
+    pts[0].push([P(bx + c * hw, bz - s * hw), d]); pts[1].push([P(bx - c * hw, bz + s * hw), d]);
+    hh -= -0.2 / V.wb * Math.tan(delta); rx -= Math.sin(hh) * 0.2; rz -= Math.cos(hh) * 0.2;
   }
   gctx.lineWidth = 3; gctx.lineCap = 'round';
   for (const side of pts) for (let i = 1; i < side.length; i++) {
@@ -1102,16 +1292,20 @@ function setStatus(txt, kind, prog) {
 /* =========================================================
    game flow
    ========================================================= */
-let state = 'title', curLevel = 0, runT = 0, holdT = 0, ended = false;
-const progress = () => store.get('stars', []);
-const failsOf = i => store.get('fails', {})[i] || 0;
-function unlocked(i) { const st = progress(); if (i === 0) return true; return (st[i - 1] || 0) > 0 || failsOf(i - 1) >= 3 || (st[i] || 0) > 0; }
-function show(id) { for (const s of ['title', 'levelsScreen', 'intro', 'result', 'pause']) $(s).hidden = s !== id; }
+let state = 'title', curLevel = 0, runT = 0, holdT = 0, ended = false, lastSuccess = false;
+let assisted = false, rewindsLeft = 2, failT = 0;
+const starMap = () => store.get('stars2', {});
+const starsOf = i => starMap()[LEVELS[i].id] || 0;
+const totalStars = () => LEVELS.reduce((a, _, i) => a + starsOf(i), 0);
+const failsOf = i => store.get('fails2', {})[LEVELS[i].id] || 0;
+function unlocked(i) { if (i === 0) return true; return starsOf(i - 1) > 0 || failsOf(i - 1) >= 3 || starsOf(i) > 0; }
+const canUse = (lv, v) => !(lv.noVeh || []).includes(v.id);
+function show(id) { for (const s of ['title', 'garage', 'levelsScreen', 'intro', 'result', 'pause']) $(s).hidden = s !== id; }
 function renderLevels() {
-  const st = progress(); let tot = 0;
+  let tot = 0;
   $('levels').innerHTML = '';
   LEVELS.forEach((lv, i) => {
-    const n = st[i] || 0; tot += n; const ok = unlocked(i);
+    const n = starsOf(i); tot += n; const ok = unlocked(i);
     const b = document.createElement('button'); b.className = 'lv'; b.disabled = !ok;
     b.innerHTML = `<span class="n">${String(i + 1).padStart(2, '0')}</span><span class="t"></span><span class="d"></span><span class="st"><b>${'★'.repeat(n)}</b>${'★'.repeat(3 - n)}</span>` + (ok ? `<span class="diff">${lv.diff}</span>` : '<span class="lock">🔒 上一關過關後解鎖</span>');
     b.querySelector('.t').textContent = lv.name; b.querySelector('.d').textContent = lv.place;
@@ -1126,7 +1320,7 @@ function loadLevel(i) {
   const spec = lv.build(L);
   L.target = spec.target; L.start = spec.start; L.cam = spec.cam; setTarget(L, L.target);
   setLight(lv.light); winUniform.value = lv.light === 'night' ? 1.1 : lv.light === 'sunset' ? 0.8 : 0.25;
-  resetCar();
+  clearHint(); resetCar();
 }
 function resetCar() {
   const [x, z, h] = L.start; Object.assign(car, { x, z, h, v: 0, steer: 0, steerTarget: 0, gear: 'N' }); touchWheelDeg = 0;
@@ -1137,17 +1331,21 @@ function openIntro(i) {
   $('inNo').textContent = `LEVEL ${i + 1} · ${lv.place}`; $('inName').textContent = lv.name; $('inDesc').textContent = lv.desc;
   $('inRules').innerHTML = ''; for (const r of [...lv.rules, `上限 ${fmtT(lv.time)}`, `目標 ${fmtT(lv.par)}`]) { const c = document.createElement('span'); c.className = 'chip' + (r.includes('失敗') ? ' red' : ''); c.textContent = r; $('inRules').append(c); }
   $('inTips').innerHTML = ''; for (const t of lv.tips) { const li = document.createElement('li'); li.textContent = t; $('inTips').append(li); }
+  const ok = canUse(lv, V);
+  $('inVeh').textContent = ok ? `使用車輛：${V.name}（長 ${(V.hl * 2).toFixed(1)} m・寬 ${(V.hw * 2).toFixed(1)} m・迴轉半徑 ${turnRadius(V).toFixed(1)} m）` : `${V.name}停不進這一格（車太大），請先換車。`;
+  $('inGo').disabled = !ok; $('inGo').style.opacity = ok ? '' : '.4';
   state = 'intro'; show('intro'); $('hud').hidden = true; $('touch').classList.remove('on');
   $('inGo').focus();
 }
 function beginDrive() {
   audio.init();
   const lv = LEVELS[curLevel];
-  state = 'play'; ended = false; runT = 0; holdT = 0; snapCam = true;
+  if (!canUse(lv, V)) return;
+  state = 'play'; ended = false; runT = 0; holdT = 0; snapCam = true; assisted = false; rewindsLeft = 2; history.length = 0; lastSuccess = false; clearHint();
   show(null); $('hud').hidden = false; $('touch').classList.add('on');
   $('hLv').textContent = 'LV' + (curLevel + 1); $('hName').textContent = lv.name;
   $('hRules').innerHTML = ''; for (const r of lv.rules) { const c = document.createElement('span'); c.className = 'chip red'; c.textContent = r; $('hRules').append(c); }
-  $('hPar').textContent = `目標 ${fmtT(lv.par)} · 上限 ${fmtT(lv.time)}`; $('hCam').textContent = '視角：' + CAMS[camMode];
+  $('hPar').textContent = `目標 ${fmtT(lv.par)} · 上限 ${fmtT(lv.time)}`; $('hCam').textContent = '視角：' + CAMS[camMode]; updateHintBtn();
   setStatus(L.target.rev ? '倒車入庫：把車倒進綠色框，車頭朝外' : '把車停進綠色框', null, null);
   setTimeout(() => $('keys').classList.add('fade'), 8000);
 }
@@ -1157,18 +1355,31 @@ function pause(on) {
   else if (!on && state === 'pause') { state = 'play'; show(null); }
 }
 function finish(success, reason) {
-  if (ended) return; ended = true; state = 'result';
+  if (ended) return; ended = true; state = 'result'; lastSuccess = success; failT = runT; searching = null;
   const lv = LEVELS[curLevel], t = L.target.rect;
   const [u] = toLocal(t, car.x, car.z), angErr = Math.abs(wrapAngle(car.h - t.rot)) / DEG;
   let stars = 0;
-  if (success) { stars = 1 + (runT <= lv.par ? 1 : 0) + (runT <= lv.par && Math.abs(u) <= 0.15 && angErr <= 1.5 ? 1 : 0); const st = progress(); st[curLevel] = Math.max(st[curLevel] || 0, stars); store.set('stars', st); const bt = store.get('best', {}); if (!bt[curLevel] || runT < bt[curLevel]) { bt[curLevel] = runT; store.set('best', bt); } audio.tone(784, 0.12, 0.14, 'triangle'); audio.tone(988, 0.12, 0.14, 'triangle', 0.12); audio.tone(1319, 0.3, 0.14, 'triangle', 0.24); }
-  else { const f = store.get('fails', {}); f[curLevel] = (f[curLevel] || 0) + 1; store.set('fails', f); if (reason !== '時間到') { audio.crash(); car.flash = 1; $('flash').classList.add('on'); setTimeout(() => $('flash').classList.remove('on'), 500); } }
+  let gained = 0;
+  if (success) {
+    stars = 1 + (runT <= lv.par ? 1 : 0) + (runT <= lv.par && Math.abs(u) <= 0.15 && angErr <= 1.5 ? 1 : 0); if (assisted) stars = Math.min(stars, 2);
+    const st = starMap(), before = st[lv.id] || 0; st[lv.id] = Math.max(before, stars); store.set('stars2', st); gained = st[lv.id] - before;
+    if (gained > 0) store.set('hints', Math.min(9, hintsLeft() + gained));
+    const bt = store.get('best2', {}); if (!bt[lv.id] || runT < bt[lv.id]) { bt[lv.id] = runT; store.set('best2', bt); }
+    audio.tone(784, 0.12, 0.14, 'triangle'); audio.tone(988, 0.12, 0.14, 'triangle', 0.12); audio.tone(1319, 0.3, 0.14, 'triangle', 0.24);
+    confettiBurst(); celebrateT = 0;
+  }
+  else { const f = store.get('fails2', {}); f[lv.id] = (f[lv.id] || 0) + 1; store.set('fails2', f); if (reason !== '時間到') { audio.crash(); car.flash = 1; $('flash').classList.add('on'); setTimeout(() => $('flash').classList.remove('on'), 500); } }
+  const canRewind = !success && reason !== '時間到' && rewindsLeft > 0 && history.length > 0;
+  $('resRewind').hidden = !canRewind; if (canRewind) $('resRewind').firstElementChild.textContent = `倒帶 3 秒（剩 ${rewindsLeft} 次）`;
+  $('resAssist').hidden = !(assisted || canRewind);
+  $('resAssist').textContent = success ? (assisted ? '這次用了提示或倒帶，最多兩顆星。' : '') : (canRewind ? '倒帶可以回到 3 秒前接著停，但這次最多只能拿兩顆星。' : '');
+  if (success && assisted) $('resAssist').hidden = false; else if (success) $('resAssist').hidden = true;
   const card = $('resCard'); card.classList.toggle('fail', !success);
   $('resNo').textContent = `LEVEL ${curLevel + 1} · ${lv.name}`;
   $('resTitle').textContent = success ? (stars === 3 ? '完美入庫！' : '停好了！') : reason + '！';
-  $('resStars').innerHTML = success ? `<b>${'★'.repeat(stars)}</b>${'★'.repeat(3 - stars)}` : '';
+  $('resStars').innerHTML = success ? [0, 1, 2].map(k => `<span class="${k < stars ? 'on' : ''}" style="animation-delay:${(0.2 + k * 0.2).toFixed(1)}s">★</span>`).join('') : '';
   const fails = failsOf(curLevel);
-  $('resMsg').textContent = success ? (stars < 3 ? (runT > lv.par ? `再快一點：目標 ${fmtT(lv.par)} 內。` : '時間有到，再停正一點就三顆星（偏移 15 公分、角度 1.5° 內）。') : '三顆星，停車停到可以去當教練了。')
+  $('resMsg').textContent = success ? (gained > 0 ? `新拿到 ${gained} 顆星，提示次數 +${gained}。` : '') + (stars < 3 ? (runT > lv.par ? `再快一點：目標 ${fmtT(lv.par)} 內。` : '時間有到，再停正一點就三顆星（偏移 15 公分、角度 1.5° 內）。') : '三顆星，停車停到可以去當教練了。')
     : (reason === '時間到' ? '時間用完了。可以先看俯視角度規劃路線。' : '這關的規則是碰到就失敗。') + (fails >= 3 && curLevel < LEVELS.length - 1 ? ' 已經失敗 3 次，下一關先幫你解鎖了。' : '');
   $('resStats').innerHTML = '';
   const add = (v, l) => { const d = document.createElement('div'); d.className = 'stat'; d.innerHTML = '<b></b><span></span>'; d.firstChild.textContent = v; d.lastChild.textContent = l; $('resStats').append(d); };
@@ -1177,7 +1388,7 @@ function finish(success, reason) {
   add(success ? angErr.toFixed(1) + '°' : '—', '角度誤差');
   const hasNext = curLevel < LEVELS.length - 1 && unlocked(curLevel + 1);
   $('resNext').hidden = !hasNext;
-  setTimeout(() => { if (state === 'result') { show('result'); $('hud').hidden = true; $('touch').classList.remove('on'); (hasNext && success ? $('resNext') : $('resRetry')).focus(); } }, success ? 900 : 1100);
+  setTimeout(() => { if (state === 'result' && ended) { show('result'); $('hud').hidden = true; $('touch').classList.remove('on'); (canRewind ? $('resRewind') : hasNext && success ? $('resNext') : $('resRetry')).focus(); } }, success ? 1600 : 1100);
 }
 function evaluate(dt) {
   const t = L.target.rect, inside = corners(carRect()).every(([x, z]) => inRect(t, x, z));
@@ -1196,11 +1407,140 @@ function evaluate(dt) {
   }
 }
 
+
+/* =========================================================
+   assists: route hint (hybrid A* with the game's own kinematics), rewind, confetti
+   ========================================================= */
+const hintsLeft = () => store.get('hints', 3);
+function updateHintBtn() { $('hHint').textContent = searching ? '規劃中…' : `提示路線 ×${hintsLeft()}`; }
+let searching = null, hintMesh = null;
+function clearHint() { if (hintMesh) { scene.remove(hintMesh); hintMesh = null; } $('legend').hidden = true; searching = null; }
+function* routeSearch(sx, sz, sh, plain = false, maxExp = 240000, steers = [-1, -0.66, -0.33, 0, 0.33, 0.66, 1]) {
+  const tg = L.target, STEP = 0.5, SUB = 5, res = 0.35, ares = 5 * DEG;
+  const obst = L.tire.concat(L.solids);
+  const xs = [sx, tg.cx], zs = [sz, tg.cz]; for (const o of obst) { xs.push(o.r.cx); zs.push(o.r.cz); }
+  const GR = 0.5, x0 = Math.min(...xs) - 12, z0 = Math.min(...zs) - 12, NX = Math.ceil((Math.max(...xs) + 12 - x0) / GR), NZ = Math.ceil((Math.max(...zs) + 12 - z0) / GR);
+  const dist = new Float32Array(NX * NZ).fill(1e9);
+  if (!plain) { // obstacle-aware distance field from the bay, so the search doesn't chase a straight line into walls
+    const blocked = new Uint8Array(NX * NZ), q = [];
+    for (let a = 0; a < NX; a++) for (let c = 0; c < NZ; c++) {
+      const px = x0 + a * GR, pz = z0 + c * GR;
+      if (inRect(tg.rect, px, pz)) { dist[a * NZ + c] = 0; q.push(a * NZ + c); continue; }
+      for (const o of obst) { const [u, v] = toLocal(o.r, px, pz); if (Math.abs(u) < o.r.hw + 0.35 && Math.abs(v) < o.r.hl + 0.35) { blocked[a * NZ + c] = 1; break; } }
+    }
+    for (let qi = 0; qi < q.length; qi++) { const id = q[qi], a = Math.floor(id / NZ), c = id % NZ; for (const [da, dc] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const na = a + da, nc = c + dc; if (na < 0 || nc < 0 || na >= NX || nc >= NZ) continue; const nid = na * NZ + nc; if (blocked[nid] || dist[nid] < 1e9) continue; dist[nid] = dist[id] + GR; q.push(nid); } }
+    yield null;
+  }
+  const gridH = (x, z) => { const a = Math.round((x - x0) / GR), c = Math.round((z - z0) / GR); if (plain || a < 0 || c < 0 || a >= NX || c >= NZ) return 0; const d = dist[a * NZ + c]; return d < 1e9 ? d : 0; };
+  const H = (x, z, h) => Math.max(Math.hypot(x - tg.cx, z - tg.cz), gridH(x, z)) + Math.abs(wrapAngle(h - tg.rot)) * 2;
+  const key = (x, z, h) => `${Math.round(x / res)},${Math.round(z / res)},${Math.round((((h % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / ares)}`;
+  const heap = [], push = n => { heap.push(n); let k = heap.length - 1; while (k > 0) { const q = (k - 1) >> 1; if (heap[q].f <= heap[k].f) break; [heap[q], heap[k]] = [heap[k], heap[q]]; k = q; } };
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let k = 0; for (;;) { const l = 2 * k + 1, r = l + 1; let m = k; if (l < heap.length && heap[l].f < heap[m].f) m = l; if (r < heap.length && heap[r].f < heap[m].f) m = r; if (m === k) break; [heap[m], heap[k]] = [heap[k], heap[m]]; k = m; } } return top; };
+  const seen = new Map();
+  push({ x: sx, z: sz, h: sh, g: 0, f: H(sx, sz, sh), dir: 0, st: 0, sw: 0, prev: null });
+  let exp = 0;
+  while (heap.length && exp < maxExp) {
+    const n = pop(); exp++;
+    if (exp % 2500 === 0) yield null;
+    const k = key(n.x, n.z, n.h); if (seen.has(k) && seen.get(k) <= n.g) continue; seen.set(k, n.g);
+    if (goalAt(n.x, n.z, n.h)) { const path = []; for (let m = n; m; m = m.prev) path.push(m); path.reverse(); return { path, exp, switches: n.sw }; }
+    for (const dir of [1, -1]) for (const st of steers) {
+      let x = n.x, z = n.z, h = n.h, bad = false;
+      const ds = dir * STEP / SUB, dl = V.maxD * st;
+      for (let i = 0; i < SUB; i++) {
+        let rx = x - Math.sin(h) * V.rear, rz = z - Math.cos(h) * V.rear;
+        h -= ds / V.wb * Math.tan(dl); rx += Math.sin(h) * ds; rz += Math.cos(h) * ds;
+        x = rx + Math.sin(h) * V.rear; z = rz + Math.cos(h) * V.rear;
+        if (collides(x, z, h, false)) { bad = true; break; }
+      }
+      if (bad) continue;
+      const sw = n.sw + (n.dir && n.dir !== dir ? 1 : 0);
+      const g = n.g + STEP * (dir < 0 ? 1.2 : 1) + (n.dir && n.dir !== dir ? 2.5 : 0) + Math.abs(st) * 0.05;
+      push({ x, z, h, g, f: g + H(x, z, h) * 1.4, dir, st, sw, prev: n });
+    }
+  }
+  return null;
+}
+function* fullSearch(sx, sz, sh) { const a = yield* routeSearch(sx, sz, sh, false); if (a) return a; return yield* routeSearch(sx, sz, sh, true, 320000, [-1, -0.5, 0, 0.5, 1]); }
+function drawHint(res) {
+  clearHint();
+  const pts = []; // re-simulate each primitive to get a smooth dotted line
+  for (let i = 1; i < res.path.length; i++) {
+    const a = res.path[i - 1], b = res.path[i]; let x = a.x, z = a.z, h = a.h; const ds = b.dir * 0.1, dl = V.maxD * b.st;
+    for (let k = 0; k < 5; k++) { let rx = x - Math.sin(h) * V.rear, rz = z - Math.cos(h) * V.rear; h -= ds / V.wb * Math.tan(dl); rx += Math.sin(h) * ds; rz += Math.cos(h) * ds; x = rx + Math.sin(h) * V.rear; z = rz + Math.cos(h) * V.rear; if (k === 4 || k === 2) pts.push([x, z, b.dir, a.dir && a.dir !== b.dir && k === 2]); }
+  }
+  const geo = new THREE.CircleGeometry(0.11, 10); geo.rotateX(-Math.PI / 2);
+  const m = new THREE.InstancedMesh(geo, new THREE.MeshBasicMaterial({ toneMapped: false }), pts.length), d = new THREE.Object3D(), col = new THREE.Color();
+  pts.forEach(([x, z, dir, sw], i) => { d.position.set(x, 0.05, z); d.scale.setScalar(sw ? 3 : 1); d.updateMatrix(); m.setMatrixAt(i, d.matrix); m.setColorAt(i, col.set(sw ? '#ffc23a' : dir > 0 ? '#2fe08a' : '#3fe0ff').multiplyScalar(1.4)); });
+  hintMesh = m; scene.add(m); $('legend').hidden = false;
+}
+function useHint() {
+  if (state !== 'play' || searching) return;
+  if (hintsLeft() <= 0) { toast('提示用完了'); setStatus('提示用完了：新拿到的星星會補充提示次數', 'bad', null); return; }
+  car.v = 0; searching = fullSearch(car.x, car.z, car.h); updateHintBtn(); setStatus('規劃路線中…', null, null);
+}
+function stepSearch() { // spend ~10 ms a frame on the planner so the page stays responsive
+  if (!searching) return true;
+  const t0 = performance.now();
+  while (performance.now() - t0 < 10) {
+    const r = searching.next();
+    if (r.done) {
+      searching = null;
+      if (r.value) { store.set('hints', hintsLeft() - 1); assisted = true; drawHint(r.value); toast(`路線找到了，要換檔 ${r.value.switches} 次`); }
+      else { toast('從這裡找不到路線'); setStatus('從目前位置找不到路線：先退到空曠一點的地方再試，不扣提示次數', 'bad', null); }
+      updateHintBtn(); return true;
+    }
+  }
+  return false;
+}
+const history = [];
+function recordHistory() { history.push({ t: runT, x: car.x, z: car.z, h: car.h, steer: car.steer, mv: L.movers.map(m => m.t) }); while (history.length && history[0].t < runT - 6) history.shift(); }
+function rewind() {
+  if (rewindsLeft <= 0 || !history.length) return;
+  const goal = failT - 3; let snap = history[0]; for (const h of history) { if (h.t <= goal) snap = h; else break; }
+  while (history.length && history[history.length - 1].t > snap.t) history.pop();
+  Object.assign(car, { x: snap.x, z: snap.z, h: snap.h, v: 0, steer: snap.steer, steerTarget: snap.steer, gear: 'N' }); touchWheelDeg = snap.steer * WHEEL_LOCK;
+  L.movers.forEach((m, i) => { m.t = snap.mv[i] ?? 0; m.update(0); });
+  runT = snap.t; rewindsLeft--; assisted = true; ended = false; state = 'play'; holdT = 0; snapCam = true;
+  show(null); $('hud').hidden = false; $('touch').classList.add('on'); toast('倒帶 3 秒'); updateHintBtn();
+}
+const CONF_N = 220, confPos = new Float32Array(CONF_N * 3), confVel = new Float32Array(CONF_N * 3), confCol = new Float32Array(CONF_N * 3);
+const confGeo = new THREE.BufferGeometry(); confGeo.setAttribute('position', new THREE.BufferAttribute(confPos, 3)); confGeo.setAttribute('color', new THREE.BufferAttribute(confCol, 3));
+const confetti = new THREE.Points(confGeo, new THREE.PointsMaterial({ size: 0.16, vertexColors: true, toneMapped: false })); confetti.frustumCulled = false; confetti.visible = false; scene.add(confetti);
+let confT = 0, celebrateT = 0;
+function confettiBurst() {
+  const pal = ['#2fe08a', '#ffc23a', '#ff2e6a', '#3fe0ff', '#ffffff'].map(c => new THREE.Color(c));
+  for (let i = 0; i < CONF_N; i++) { confPos.set([car.x + (Math.random() - 0.5) * 1.5, 1.2, car.z + (Math.random() - 0.5) * 2.5], i * 3); const a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 4; confVel.set([Math.cos(a) * sp, 4 + Math.random() * 5, Math.sin(a) * sp], i * 3); const c = pal[i % pal.length]; confCol.set([c.r * 1.5, c.g * 1.5, c.b * 1.5], i * 3); }
+  confGeo.attributes.color.needsUpdate = true; confetti.visible = true; confT = 2.6;
+}
+function updateConfetti(dt) {
+  if (!confetti.visible) return; confT -= dt; if (confT <= 0) { confetti.visible = false; return; }
+  for (let i = 0; i < CONF_N; i++) { const o = i * 3; confVel[o + 1] -= 9 * dt; confVel[o] *= 0.985; confVel[o + 2] *= 0.985; confPos[o] += confVel[o] * dt; confPos[o + 1] = Math.max(0.03, confPos[o + 1] + confVel[o + 1] * dt); confPos[o + 2] += confVel[o + 2] * dt; }
+  confGeo.attributes.position.needsUpdate = true;
+}
 /* =========================================================
    menus
    ========================================================= */
-let liv = store.get('liv', 0); if (!LIVERIES[liv]) liv = 0;
 function setLivery(i) { liv = i; store.set('liv', i); player.paint.color.set(LIVERIES[i]); document.querySelectorAll('.sw').forEach((b, k) => b.setAttribute('aria-pressed', k === i)); }
+function renderGarage() {
+  const tot = totalStars(); $('garageStars').textContent = `★ ${tot}`; $('vehs').innerHTML = '';
+  for (const v of VEH) {
+    const locked = tot < v.need, b = document.createElement('button'); b.className = 'veh'; b.disabled = locked; b.setAttribute('aria-pressed', v === V);
+    b.innerHTML = '<span class="en"></span><span class="t"></span><span class="d"></span><span class="spec"></span>' + (locked ? `<span class="lock">🔒 需要 ★ ${v.need}</span>` : '');
+    b.querySelector('.en').textContent = v.en; b.querySelector('.t').textContent = v.name; b.querySelector('.d').textContent = v.desc;
+    b.querySelector('.spec').textContent = `長 ${(v.hl * 2).toFixed(1)} m・寬 ${(v.hw * 2).toFixed(1)} m・迴轉半徑 ${turnRadius(v).toFixed(1)} m`;
+    b.onclick = () => { mountVehicle(v); setLivery(liv); resetCar(); renderGarage(); };
+    $('vehs').append(b);
+  }
+}
+let garageReturn = 'title';
+function openGarage(from) { garageReturn = from; state = 'garage'; renderGarage(); show('garage'); }
+$('toGarage').onclick = () => openGarage('title');
+$('inGarage').onclick = () => openGarage('intro');
+$('garageDone').onclick = () => { if (garageReturn === 'intro') openIntro(curLevel); else { state = 'title'; show('title'); } };
+$('resRewind').onclick = rewind;
+$('hHint').onclick = useHint;
+{ const saved = VEH.find(v => v.id === store.get('veh', 'gt')); mountVehicle(saved && totalStars() >= saved.need ? saved : VEH[1]); }
 LIVERIES.forEach((hex, i) => { const b = document.createElement('button'); b.className = 'sw'; b.style.background = hex; b.setAttribute('aria-label', '車色 ' + (i + 1)); b.onclick = () => setLivery(i); $('swatches').append(b); });
 setLivery(liv);
 $('toLevels').onclick = () => { audio.init(); state = 'levels'; renderLevels(); show('levelsScreen'); };
@@ -1225,8 +1565,10 @@ const eul = new THREE.Euler(0, 0, 0, 'YXZ');
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 1 / 20);
-  if (state === 'play') {
+  if (state === 'play' && searching) { stepSearch(); }
+  else if (state === 'play') {
     const inp = readInput(dt);
+    recordHistory();
     for (let s = 0; s < 3; s++) {
       stepCar(dt / 3, inp);
       for (const m of L.movers) m.update(dt / 3);
@@ -1246,10 +1588,11 @@ function frame() {
   } else if (L) { for (const m of L.movers) m.update(dt); }
   // visuals
   player.root.position.set(car.x, 0, car.z); player.root.rotation.set(0, car.h, 0);
-  for (const w of player.wheels) { w.spin.rotation.x = car.spin; if (w.front) w.pivot.rotation.y = -car.steer * MAX_DELTA; }
+  for (const w of player.wheels) { w.spin.rotation.x = car.spin; if (w.front) w.pivot.rotation.y = -car.steer * V.maxD; }
   const braking = state === 'play' && (keys.Space || pedal.brake);
   player.tailMat.color.setRGB(braking ? 5 : 2.2, braking ? 0.15 : 0.08, braking ? 0.2 : 0.12);
   revLight.intensity = car.gear === 'R' ? 4 : 0;
+  updateConfetti(dt);
   if (tgtMeshes.mesh) tgtMeshes.mesh.material.opacity = 0.8 + Math.sin(performance.now() / 250) * 0.2;
   if (L) updateCamera(dt);
   sun.position.set(car.x + sunDir.x * 120, Math.max(0.2, sunDir.y) * 120, car.z + sunDir.z * 120); sun.target.position.set(car.x, 0, car.z);
@@ -1265,7 +1608,14 @@ function frame() {
     drawGuides(r);
   }
 }
-if (location.hash === '#dev') window.dev = { car, LEVELS, startLevel, loadLevel, hit: () => hitCheck(), goal() { const t = L.target.rect; return corners(carRect()).every(([x, z]) => inRect(t, x, z)) && Math.abs(wrapAngle(car.h - t.rot)) / DEG <= L.target.tol; }, place(x, z, h) { Object.assign(car, { x, z, h, v: 0 }); }, finish: () => finish(true), get state() { return state; }, get L() { return L; }, setCam: m => { camMode = m; snapCam = true; } };
+if (location.hash === '#dev') window.dev = {
+  car, LEVELS, VEH, startLevel, loadLevel, mountVehicle, hit: () => hitCheck(), goal: () => goalAt(car.x, car.z, car.h),
+  place(x, z, h) { Object.assign(car, { x, z, h, v: 0 }); }, finish: () => finish(true), get state() { return state; }, get L() { return L; },
+  setCam: m => { camMode = m; snapCam = true; },
+  hintNow() { const g = fullSearch(car.x, car.z, car.h); let r; do { r = g.next(); } while (!r.done); if (r.value) drawHint(r.value); return !!r.value; },
+  garage: () => openGarage('title'),
+  solve(i, vid) { mountVehicle(VEH.find(v => v.id === vid)); loadLevel(i); const g = fullSearch(...L.start); let r; do { r = g.next(); } while (!r.done); return r.value ? { ok: true, switches: r.value.switches, exp: r.value.exp } : { ok: false }; }
+};
 loadLevel(0);
 frame();
 </script>
