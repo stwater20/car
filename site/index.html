@@ -7,6 +7,7 @@
 <meta name="description" content="停好停滿是免費、免下載的高難度停車網頁遊戲，也有照監理站小型車場考扣分標準做的考照模擬（含 2026 新制停讓行人、轉頭確認死角）。12 個關卡從駕訓班的倒車入庫、路邊停車、曲線前進與後退、三點迴轉，到加油站、夜市巷口、斷崖觀景台、地下停車場和透天厝車庫。4 台車從小車到發財車，有倒車雷達、後方顯影、提示路線與倒帶。電腦、手機都能玩。">
 <link rel="canonical" href="https://stwater20.github.io/car/">
 <meta name="theme-color" content="#0b0c1c">
+<meta name="author" content="sectools.tw">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="停好停滿 Park Formosa">
@@ -40,7 +41,10 @@
   "inLanguage": ["zh-Hant"],
   "playMode": "SinglePlayer",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" }
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" },
+  "author": { "@type": "Organization", "name": "sectools.tw", "url": "https://sectools.tw/" },
+  "publisher": { "@type": "Organization", "name": "sectools.tw", "url": "https://sectools.tw/" },
+  "maintainer": { "@type": "Organization", "name": "sectools.tw", "url": "https://sectools.tw/" }
 }
 </script>
 <script type="application/ld+json">
@@ -104,6 +108,11 @@ nav.links a:hover,nav.links a:focus-visible{color:var(--paper)}
 .btn.primary:hover{transform:skewX(-10deg) translateY(-2px)}
 .btn.ghost{border:2px solid var(--line);font-size:16px;padding:12px 24px}
 .btn:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.maker-hero{margin-top:18px;font-size:15px;color:var(--mute)}
+.maker-hero a{color:var(--sky);font-weight:800;text-decoration:none}
+.maker-hero a:hover,.maker-hero a:focus-visible{text-decoration:underline}
+footer .maker{color:var(--paper);font-size:15px}
+footer .maker a{color:var(--sky);font-weight:800}
 .facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-size:14px;color:var(--mute)}
 .facts b{color:var(--paper)}
 section{padding-block:72px}
@@ -192,6 +201,7 @@ footer p{margin:0 0 8px;max-width:62em}
         <a class="btn primary" href="play/"><span>開始停車 →</span></a>
         <a class="btn ghost" href="#exam"><span>考照模擬（場考）</span></a>
       </div>
+      <div class="maker-hero">由 <a href="https://sectools.tw/" target="_blank" rel="noopener author">sectools.tw</a> 製作與維護 ↗</div>
       <div class="facts"><span><b>免費</b>・免安裝・免註冊</span><span><b>電腦</b>鍵盤／手把</span><span><b>手機</b>方向盤＋踏板，直拿橫拿都可以</span><span><b>4 台車</b>・每關 3 顆星</span></div>
     </div>
   </div>
@@ -296,13 +306,6 @@ footer p{margin:0 0 8px;max-width:62em}
     </div>
   </section>
 
-  <section id="recommend">
-    <div class="wrap narrow">
-      <h2><small>RECOMMENDED</small>推薦網站</h2>
-      <p class="sub"><a href="https://sectools.tw/" target="_blank" rel="noopener" style="color:var(--sky);font-weight:900;font-size:20px">sectools.tw ↗</a></p>
-    </div>
-  </section>
-
   <section class="final">
     <div class="wrap">
       <h2>先從倒車入庫開始。</h2>
@@ -313,8 +316,7 @@ footer p{margin:0 0 8px;max-width:62em}
 
 <footer>
   <div class="wrap">
-    <p>停好停滿（Park Formosa）是獨立製作的非商業網頁遊戲。車輛、場景與音效都是用程式即時產生的原創內容，沒有使用其他遊戲的模型、圖片、音效或商標，也與任何遊戲公司、駕訓班或監理機關無關。</p>
-    <p>推薦網站：<a href="https://sectools.tw/" target="_blank" rel="noopener">sectools.tw</a></p>
+    <p class="maker">停好停滿（Park Formosa）由 <a href="https://sectools.tw/" target="_blank" rel="noopener author">sectools.tw</a> 製作與維護，是非商業的網頁遊戲。車輛、場景與音效都是用程式即時產生的原創內容，沒有使用其他遊戲的模型、圖片、音效或商標，也與任何遊戲公司、駕訓班或監理機關無關。</p>
     <p>想自由兜風？舊版的開放世界模式「花蓮公路行」還在：<a href="drive/">開放世界模式</a>。</p>
     <p>使用 <a href="https://threejs.org/">three.js</a>（MIT 授權）繪製 3D 畫面，字型為 Google Fonts 的 Barlow Condensed 與 Noto Sans TC（SIL Open Font License）。</p>
   </div>

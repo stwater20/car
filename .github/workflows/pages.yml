@@ -39,6 +39,7 @@ jobs:
               echo "<link rel=\"canonical\" href=\"https://stwater20.github.io/car/$5\">"
               echo '<meta property="og:image" content="https://stwater20.github.io/car/assets/nightmarket.jpg">'
               echo '<meta name="theme-color" content="#0b0c1c">'
+              echo '<meta name="author" content="sectools.tw">'
               echo '</head><body>'
               sed '1{/<title>/d}' "$1"
               echo '</body></html>'
