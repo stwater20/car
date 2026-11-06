@@ -375,7 +375,8 @@ body.is-touch .rec{font-size:16px}
 <!-- level select -->
 <div class="screen" id="levelsScreen" hidden>
   <div class="panel">
-    <div class="head"><div><div class="eyebrow">SELECT LEVEL</div><h2>選擇關卡</h2></div><div class="total" id="totalStars">★ 0 / 36</div></div>
+    <div class="head"><div><div class="eyebrow">SELECT LEVEL</div><h2>選擇關卡</h2></div><div class="row"><button class="btn" id="practiceBtn" aria-pressed="false"><span>練習模式：關</span></button><div class="total" id="totalStars">★ 0 / 36</div></div></div>
+    <p class="small" id="practiceNote">練習模式：擦撞不會失敗，車子停住讓你修正，適合第一次練習；過關只給一顆星。</p>
     <div class="levels" id="levels"></div>
     <div class="row"><button class="btn" id="backTitle"><span>← 返回</span></button><span class="small">每關三顆星：完成、在目標時間內、停得夠正（偏移 15 公分、角度 1.5° 以內）。用了提示或倒帶最多兩顆星。同一關失敗 3 次可以先跳到下一關。</span></div>
   </div>
@@ -536,7 +537,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0xf0b08e, 60, 260);
+scene.fog = new THREE.Fog(0xf0b08e, 110, 480);
 const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 4000);
 const rearCam = new THREE.PerspectiveCamera(92, 16 / 9, 0.05, 200);
 const sky = new Sky(); sky.scale.setScalar(3000); scene.add(sky);
@@ -566,7 +567,35 @@ function canvasTex(w, h, draw, repeat) {
 }
 const ZH = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif';
 function noiseTex(base, amp, size = 256) { return canvasTex(size, size, (g, w, h) => { g.fillStyle = base; g.fillRect(0, 0, w, h); const im = g.getImageData(0, 0, w, h); for (let i = 0; i < im.data.length; i += 4) { const n = (Math.random() - 0.5) * amp; im.data[i] += n; im.data[i + 1] += n; im.data[i + 2] += n; } g.putImageData(im, 0, 0); }, true); }
-const asphaltTex = noiseTex('#3b3b42', 26), concreteTex = noiseTex('#a7a39a', 18), tileTex = noiseTex('#8c8780', 14);
+// procedural surfaces: asphalt with cracks, patches and oil; concrete slabs with joints; grass with clumps
+function speckle(g, w, h, amp) { const im = g.getImageData(0, 0, w, h); for (let i = 0; i < im.data.length; i += 4) { const n = (Math.random() - 0.5) * amp; im.data[i] += n; im.data[i + 1] += n; im.data[i + 2] += n; } g.putImageData(im, 0, 0); }
+function blotch(g, x, y, r, col) { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+const asphaltTex = canvasTex(512, 512, (g, w, h) => {
+  g.fillStyle = '#3c3c43'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 26; i++) blotch(g, Math.random() * w, Math.random() * h, 30 + Math.random() * 90, Math.random() < 0.5 ? 'rgba(20,20,26,.35)' : 'rgba(95,95,100,.22)');
+  for (let i = 0; i < 5; i++) { g.fillStyle = 'rgba(28,28,34,.55)'; g.save(); g.translate(Math.random() * w, Math.random() * h); g.rotate(Math.random()); g.fillRect(-30, -20, 60 + Math.random() * 60, 40 + Math.random() * 40); g.restore(); } // patch repairs
+  for (let i = 0; i < 8; i++) blotch(g, Math.random() * w, Math.random() * h, 8 + Math.random() * 22, 'rgba(8,8,12,.6)'); // oil
+  g.strokeStyle = 'rgba(15,15,18,.7)'; g.lineWidth = 1.4;
+  for (let i = 0; i < 9; i++) { let x = Math.random() * w, y = Math.random() * h; g.beginPath(); g.moveTo(x, y); for (let k = 0; k < 12; k++) { x += (Math.random() - 0.5) * 30; y += (Math.random() - 0.3) * 22; g.lineTo(x, y); } g.stroke(); }
+  speckle(g, w, h, 30);
+}, true);
+const concreteTex = canvasTex(512, 512, (g, w, h) => {
+  g.fillStyle = '#a9a59c'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 30; i++) blotch(g, Math.random() * w, Math.random() * h, 20 + Math.random() * 70, Math.random() < 0.6 ? 'rgba(90,85,78,.18)' : 'rgba(210,205,196,.2)');
+  for (let i = 0; i < 6; i++) blotch(g, Math.random() * w, Math.random() * h, 10 + Math.random() * 20, 'rgba(40,38,34,.35)');
+  g.strokeStyle = 'rgba(70,66,60,.55)'; g.lineWidth = 3; for (const t of [0, w / 2]) { g.beginPath(); g.moveTo(t, 0); g.lineTo(t, h); g.stroke(); g.beginPath(); g.moveTo(0, t); g.lineTo(w, t); g.stroke(); } // slab joints
+  speckle(g, w, h, 20);
+}, true);
+const tileTex = noiseTex('#8c8780', 14);
+const grassTex = canvasTex(512, 512, (g, w, h) => {
+  g.fillStyle = '#5f9a36'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 60; i++) blotch(g, Math.random() * w, Math.random() * h, 20 + Math.random() * 60, ['rgba(120,170,60,.35)', 'rgba(60,110,40,.35)', 'rgba(150,160,70,.25)'][i % 3]);
+  for (let i = 0; i < 2600; i++) { const x = Math.random() * w, y = Math.random() * h; g.strokeStyle = Math.random() < 0.5 ? 'rgba(40,80,25,.5)' : 'rgba(150,200,90,.45)'; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (Math.random() - 0.5) * 3, y - 3 - Math.random() * 4); g.stroke(); }
+}, true);
+// worn road paint: white with speckled alpha, tinted per material
+const paintTex = canvasTex(64, 256, (g, w, h) => { g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); const im = g.getImageData(0, 0, w, h); for (let i = 0; i < im.data.length; i += 4) im.data[i + 3] = Math.random() < 0.16 ? 70 + Math.random() * 90 : 235 + Math.random() * 20; g.putImageData(im, 0, 0); });
+paintTex.colorSpace = THREE.SRGBColorSpace;
+const grassMat = () => { const m = new THREE.MeshStandardMaterial({ map: grassTex, roughness: 1 }); return m; };
 const shadowTex = canvasTex(128, 256, (g, w, h) => { g.translate(w / 2, h / 2); g.scale(1, h / w); const r = g.createRadialGradient(0, 0, 0, 0, 0, w / 2); r.addColorStop(0, 'rgba(0,0,0,.9)'); r.addColorStop(0.55, 'rgba(0,0,0,.7)'); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(-w / 2, -w / 2, w, w); });
 function gateTex(zh, en, bg, fg) {
   return canvasTex(512, 128, (g, w, h) => {
@@ -575,6 +604,7 @@ function gateTex(zh, en, bg, fg) {
     g.font = 'italic 800 26px "Barlow Condensed", Impact, sans-serif'; g.fillText(en, w / 2, h * 0.84);
   });
 }
+let schoolSignTex = null;
 function vSignTex(text, bg, fg, border) {
   return canvasTex(128, 512, (g, w, h) => {
     g.fillStyle = bg; g.fillRect(0, 0, w, h); g.strokeStyle = border; g.lineWidth = 10; g.strokeRect(8, 8, w - 16, h - 16);
@@ -585,6 +615,7 @@ function vSignTex(text, bg, fg, border) {
   });
 }
 const stripeTex = (a, b, n = 6) => canvasTex(64, 256, (g, w, h) => { for (let i = 0; i < n; i++) { g.fillStyle = i % 2 ? b : a; g.fillRect(0, i * h / n, w, h / n); } });
+schoolSignTex = gateTex('教練車', 'DRIVING SCHOOL', '#ffd23f', '#1a1a1a');
 const hazardTex = canvasTex(256, 64, (g, w, h) => { g.fillStyle = '#ffcc1a'; g.fillRect(0, 0, w, h); g.fillStyle = '#16161c'; for (let x = -h; x < w + h; x += 44) { g.beginPath(); g.moveTo(x, h); g.lineTo(x + 22, h); g.lineTo(x + 22 + h, 0); g.lineTo(x + h, 0); g.fill(); } });
 function targetTex(arrowTxt) {
   return canvasTex(256, 512, (g, w, h) => {
@@ -836,8 +867,8 @@ function tireRects(x = car.x, z = car.z, h = car.h) { const c = Math.cos(h), s =
    ========================================================= */
 let L = null; // the live level
 const MAT = {
-  white: new THREE.MeshStandardMaterial({ color: 0xf2efe6, roughness: 0.6, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
-  yellow: new THREE.MeshStandardMaterial({ color: 0xf2b531, roughness: 0.6, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
+  white: new THREE.MeshStandardMaterial({ color: 0xf2efe6, map: paintTex, transparent: true, roughness: 0.55, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
+  yellow: new THREE.MeshStandardMaterial({ color: 0xf2b531, map: paintTex, transparent: true, roughness: 0.55, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
   red: new THREE.MeshStandardMaterial({ color: 0xd8352a, roughness: 0.6, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
   concrete: new THREE.MeshStandardMaterial({ color: 0xb3afa6, roughness: 0.9, map: concreteTex }),
   wall: new THREE.MeshStandardMaterial({ color: 0xd9d4ca, roughness: 0.85 }),
@@ -970,7 +1001,7 @@ const LEVELS = [
       K.houses([{ x: 0, z: 24, w: 40, d: 14, h: 9, color: '#e8e2d6' }, { x: -30, z: 2, w: 12, d: 40, h: 6 }]);
       K.sign(0, 16.6, Math.PI, '量販超市', 'HYPERMARKET', '#c8102e', '#ffffff', 8, 2, 7);
       for (const x of [-16, 16]) for (const z of [-12, 18]) K.tree(x, z, 1.1);
-      K.lamp(-13.5, 3); K.lamp(13.5, 3);
+      for (const x of [-10, 0, 10]) { K.lamp(x, 13.75); K.lamp(x, -7.75); }
       return { start: [-10.5, 2.6, Math.PI / 2], target: { cx: 0, cz: 10, w: 2.8, l: 5.5, rot: 0, tol: 6, label: '車頭朝內' } };
     }
   },
@@ -1138,7 +1169,7 @@ const NEW_LEVELS = {
     tips: ['入口就要對正，進到加油島中間之後幾乎沒有修正空間。', '黃色防撞桿在加油島的頭尾，車頭過去之前不要打方向盤。'],
     rules: ['擦撞即失敗'], time: 80, par: 32, light: 'day',
     build(K) {
-      K.ground(140, 140, new THREE.MeshStandardMaterial({ color: 0x6aa13a, roughness: 1 }), 0, 0, -0.01);
+      K.ground(140, 140, (() => { const m = grassMat(); m.map = grassTex.clone(); m.map.needsUpdate = true; m.map.repeat.set(24, 24); return m; })(), 0, 0, -0.01);
       K.ground(30, 40, new THREE.MeshStandardMaterial({ map: concreteTex, roughness: 0.85 })).material.map.repeat.set(6, 8);
       const yellow = new THREE.MeshStandardMaterial({ color: 0xffcc1a, roughness: 0.5 });
       for (const ix of [-4.6, 0, 4.6]) {
@@ -1203,11 +1234,27 @@ const NEW_LEVELS = {
   const byId = Object.fromEntries(LEVELS.map(l => [l.id, l])); Object.assign(byId, NEW_LEVELS);
   LEVELS.length = 0; for (const id of order) LEVELS.push(byId[id]); }
 function testYard(K, extra = 0) {
-  K.ground(160, 160, new THREE.MeshStandardMaterial({ color: 0x6aa13a, roughness: 1 }), 0, 0, -0.01);
+  K.ground(160, 160, (() => { const m = grassMat(); m.map = grassTex.clone(); m.map.needsUpdate = true; m.map.repeat.set(24, 24); return m; })(), 0, 0, -0.01);
   const pad = K.ground(46 + extra * 2, 36 + extra, new THREE.MeshStandardMaterial({ map: concreteTex, roughness: 0.85 }), extra, extra / 3, 0.0); pad.material.map.repeat.set(8, 6);
-  K.houses([{ x: -26 - extra / 2, z: 18, w: 10, d: 7, h: 4, color: '#f2efe8' }]);
-  K.sign(-20 - extra / 2, 14.2, Math.PI, '路考場', 'DRIVING TEST', '#1d4fa0', '#ffffff', 5, 1.2, 3.2);
-  for (const [x, z] of [[-24, -18], [24, -18], [28 + extra, 14], [-28, 2], [30 + extra * 1.5, -6]]) K.tree(x, z, 1.2, rand() < 0.3);
+  const ox = -26 - extra / 2;
+  K.houses([{ x: ox, z: 19, w: 12, d: 7, h: 4.2, color: '#f2efe8' }, { x: ox + 9, z: 19.5, w: 5, d: 5, h: 3.2, color: '#d9d4ca' }]);
+  const awning = new THREE.Mesh(new THREE.BoxGeometry(12.4, 0.18, 1.6), new THREE.MeshStandardMaterial({ color: 0x1d4fa0, roughness: 0.6 })); awning.position.set(ox, 3.2, 15.3); awning.castShadow = true; K.g.add(awning);
+  K.sign(ox, 15.45, Math.PI, '汽車駕訓班', 'DRIVING SCHOOL', '#1d4fa0', '#ffffff', 6, 1.1, 3.9);
+  K.sign(-20 - extra / 2, 13.2, Math.PI, '路考場', 'DRIVING TEST', '#0b6b3a', '#ffffff', 3.2, 0.9, 2.2);
+  // parked school cars by the office
+  for (let k = 0; k < 3; k++) { const c = buildCar('#f4f3ee', { sedan: true, caliper: 0x333333 }); const sg = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.28, 0.3), new THREE.MeshBasicMaterial({ map: schoolSignTex })); sg.position.set(0, 1.62, -0.2); c.body.add(sg); c.root.position.set(ox - 4 + k * 3, 0, 11.2); c.root.rotation.y = Math.PI; K.g.add(c.root); }
+  // perimeter fence and flags
+  const fx0 = -24 + Math.min(0, extra * 0), fx1 = 24 + extra * 2, fz0 = -19, fz1 = 24;
+  const postGeo = new THREE.BoxGeometry(0.1, 1.2, 0.1), railGeo = new THREE.BoxGeometry(1, 0.06, 0.06), fenceMat = new THREE.MeshStandardMaterial({ color: 0x3f7a4a, roughness: 0.6, metalness: 0.4 });
+  const posts = [], rails = [];
+  for (let x = fx0 - 8; x <= fx1 + 8; x += 2.5) { posts.push([x, fz0 - 4]); }
+  for (let z = fz0 - 4; z <= fz1; z += 2.5) { posts.push([fx1 + 8, z]); }
+  const pm = new THREE.InstancedMesh(postGeo, fenceMat, posts.length), d = new THREE.Object3D();
+  posts.forEach(([x, z], i) => { d.position.set(x, 0.6, z); d.updateMatrix(); pm.setMatrixAt(i, d.matrix); }); K.g.add(pm);
+  for (const y of [0.45, 1.05]) { const r1 = new THREE.Mesh(new THREE.BoxGeometry(fx1 - fx0 + 16, 0.06, 0.06), fenceMat); r1.position.set((fx0 + fx1) / 2, y, fz0 - 4); K.g.add(r1); const r2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, fz1 - fz0 + 4), fenceMat); r2.position.set(fx1 + 8, y, (fz0 - 4 + fz1) / 2); K.g.add(r2); }
+  for (const [x, c] of [[ox - 5, '#c8102e'], [ox - 3.6, '#1d4fa0'], [ox - 2.2, '#ffd23f']]) { const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 6, 8), MAT.steel); pole.position.set(x, 3, 13.4); K.g.add(pole); const fl = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.7), new THREE.MeshStandardMaterial({ color: c, side: THREE.DoubleSide, roughness: 0.8 })); fl.position.set(x + 0.58, 5.55, 13.4); K.g.add(fl); K.movers.push({ r: Rect(999, 999, 0.01, 0.01), label: '', off: true, t: rand() * 6, update(dt) { this.t += dt; fl.rotation.y = Math.sin(this.t * 2.2) * 0.35; fl.scale.x = 0.9 + Math.sin(this.t * 3.1) * 0.1; } }); }
+  for (const [x, z] of [[-24, -18], [24, -18], [28 + extra, 14], [-28, 2], [30 + extra * 1.5, -6], [-30, -10], [-22, 26], [10, 27], [34 + extra * 1.5, 20]]) K.tree(x, z, 1.1 + rand() * 0.4, rand() < 0.3);
+  for (let k = 0; k < 14; k++) { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6 + rand() * 0.4, 0), MAT.leaf); b.position.set(ox - 6 + k * 1.0, 0.35, 15.8 + (k % 2) * 0.2); b.scale.y = 0.6; b.castShadow = true; K.g.add(b); }
 }
 function sCurve(K) {
   const Rc = 7.5, half = 1.65, C = [], step = Math.PI / 40;
@@ -1407,7 +1454,7 @@ const CAMS = ['追車', '俯視', '駕駛座'];
 let camMode = store.get('cam', 0); if (!CAMS[camMode]) camMode = 0;
 const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
 function cycleCam() { camMode = (camMode + 1) % CAMS.length; store.set('cam', camMode); $('hCam').textContent = (narrow() ? '' : '視角：') + CAMS[camMode]; toast(CAMS[camMode] + '視角'); snapCam = true; }
-let snapCam = true, introT = 0, camYawOff = 0, lookDrag = null;
+let shakeT = 0, snapCam = true, introT = 0, camYawOff = 0, lookDrag = null;
 // desktop free-look: drag the scene with the mouse to look around the car in chase view
 $('gl').addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || state !== 'play') return; lookDrag = e.clientX; });
 addEventListener('pointermove', e => { if (lookDrag === null) return; camYawOff = clamp(camYawOff - (e.clientX - lookDrag) * 0.007, -Math.PI, Math.PI); lookDrag = e.clientX; });
@@ -1451,6 +1498,7 @@ function updateCamera(dt) {
     camera.position.set(car.x + c * u + s * v, V.eye + gy, car.z - s * u + c * v);
     camera.lookAt(car.x + Math.sin(ly) * 12, 0.7 + gy, car.z + Math.cos(ly) * 12); camera.fov = 68;
   }
+  if (shakeT > 0) { shakeT = Math.max(0, shakeT - dt); const k = shakeT * 0.6; camera.position.x += (Math.random() - 0.5) * k; camera.position.y += (Math.random() - 0.5) * k; camera.position.z += (Math.random() - 0.5) * k; }
   snapCam = false;
   // portrait phones: widen the view and push the image up so the car sits above the on-screen controls
   const portrait = innerHeight > innerWidth;
@@ -1510,7 +1558,8 @@ function setStatus(txt, kind, prog) {
    game flow
    ========================================================= */
 let state = 'title', curLevel = 0, runT = 0, holdT = 0, ended = false, lastSuccess = false;
-let assisted = false, rewindsLeft = 2, failT = 0;
+let assisted = false, rewindsLeft = 2, failT = 0, bumped = 0, lastBumpT = 0;
+let practice = store.get('practice', false);
 const starMap = () => store.get('stars2', {});
 const starsOf = i => starMap()[LEVELS[i].id] || 0;
 const totalStars = () => LEVELS.reduce((a, _, i) => a + starsOf(i), 0);
@@ -1518,7 +1567,9 @@ const failsOf = i => store.get('fails2', {})[LEVELS[i].id] || 0;
 function unlocked(i) { if (i === 0) return true; return starsOf(i - 1) > 0 || failsOf(i - 1) >= 3 || starsOf(i) > 0; }
 const canUse = (lv, v) => !(lv.noVeh || []).includes(v.id);
 function show(id) { for (const s of ['title', 'garage', 'levelsScreen', 'intro', 'result', 'pause', 'examMenu', 'report']) $(s).hidden = s !== id; document.body.classList.toggle('playing', !id); if (id) $('coach').hidden = true; }
+function paintPractice() { $('practiceBtn').setAttribute('aria-pressed', practice); $('practiceBtn').firstElementChild.textContent = '練習模式：' + (practice ? '開' : '關'); $('practiceBtn').classList.toggle('primary', practice); }
 function renderLevels() {
+  paintPractice();
   let tot = 0;
   $('levels').innerHTML = '';
   LEVELS.forEach((lv, i) => {
@@ -1558,12 +1609,12 @@ function beginDrive() {
   audio.init();
   const lv = LEVELS[curLevel];
   if (!canUse(lv, V)) return;
-  state = 'play'; ended = false; runT = 0; holdT = 0; snapCam = true; assisted = false; rewindsLeft = 2; history.length = 0; lastSuccess = false; clearHint();
+  state = 'play'; ended = false; runT = 0; holdT = 0; snapCam = true; assisted = false; bumped = 0; rewindsLeft = 2; history.length = 0; lastSuccess = false; clearHint();
   show(null); $('hud').hidden = false; $('touch').classList.add('on');
   $('hLv').textContent = 'LV' + (curLevel + 1); $('hName').textContent = lv.name;
-  $('hRules').innerHTML = ''; for (const r of lv.rules) { const c = document.createElement('span'); c.className = 'chip red'; c.textContent = r; $('hRules').append(c); }
+  $('hRules').innerHTML = ''; if (practice) { const c = document.createElement('span'); c.className = 'chip'; c.textContent = '練習模式'; $('hRules').append(c); } for (const r of lv.rules) { const c = document.createElement('span'); c.className = 'chip red'; c.textContent = r; $('hRules').append(c); }
   $('hPar').textContent = `目標 ${fmtT(lv.par)} · 上限 ${fmtT(lv.time)}`; $('hCam').textContent = (narrow() ? '' : '視角：') + CAMS[camMode]; updateHintBtn();
-  setStatus(L.target.rev ? '倒車入庫：把車倒進綠色框，車頭朝外' : '把車停進綠色框', null, null);
+  setStatus((practice ? '練習模式・' : '') + (L.target.rev ? '倒車入庫：把車倒進綠色框，車頭朝外' : '把車停進綠色框'), null, null);
   setTimeout(() => $('keys').classList.add('fade'), 8000);
   maybeCoach(); renderChecklist(null);
 }
@@ -1585,14 +1636,14 @@ function finish(success, reason) {
   let stars = 0;
   let gained = 0;
   if (success) {
-    stars = 1 + (runT <= lv.par ? 1 : 0) + (runT <= lv.par && Math.abs(u) <= 0.15 && angErr <= 1.5 ? 1 : 0); if (assisted) stars = Math.min(stars, 2);
+    stars = 1 + (runT <= lv.par ? 1 : 0) + (runT <= lv.par && Math.abs(u) <= 0.15 && angErr <= 1.5 ? 1 : 0); if (assisted) stars = Math.min(stars, 2); if (bumped) stars = 1;
     const st = starMap(), before = st[lv.id] || 0; st[lv.id] = Math.max(before, stars); store.set('stars2', st); gained = st[lv.id] - before;
     if (gained > 0) store.set('hints', Math.min(9, hintsLeft() + gained));
     const bt = store.get('best2', {}); if (!bt[lv.id] || runT < bt[lv.id]) { bt[lv.id] = runT; store.set('best2', bt); }
     audio.tone(784, 0.12, 0.14, 'triangle'); audio.tone(988, 0.12, 0.14, 'triangle', 0.12); audio.tone(1319, 0.3, 0.14, 'triangle', 0.24);
     confettiBurst(); celebrateT = 0;
   }
-  else { const f = store.get('fails2', {}); f[lv.id] = (f[lv.id] || 0) + 1; store.set('fails2', f); if (reason !== '時間到') { audio.crash(); car.flash = 1; $('flash').classList.add('on'); setTimeout(() => $('flash').classList.remove('on'), 500); } }
+  else { const f = store.get('fails2', {}); f[lv.id] = (f[lv.id] || 0) + 1; store.set('fails2', f); if (reason !== '時間到') { audio.crash(); shakeT = 0.5; car.flash = 1; $('flash').classList.add('on'); setTimeout(() => $('flash').classList.remove('on'), 500); } }
   const canRewind = !success && reason !== '時間到' && rewindsLeft > 0 && history.length > 0;
   $('resRewind').hidden = !canRewind; if (canRewind) $('resRewind').firstElementChild.textContent = `倒帶 3 秒（剩 ${rewindsLeft} 次）`;
   $('resAssist').hidden = !(assisted || canRewind);
@@ -1603,8 +1654,8 @@ function finish(success, reason) {
   $('resTitle').textContent = success ? (stars === 3 ? '完美入庫！' : '停好了！') : reason + '！';
   $('resStars').innerHTML = success ? [0, 1, 2].map(k => `<span class="${k < stars ? 'on' : ''}" style="animation-delay:${(0.2 + k * 0.2).toFixed(1)}s">★</span>`).join('') : '';
   const fails = failsOf(curLevel);
-  $('resMsg').textContent = success ? (gained > 0 ? `新拿到 ${gained} 顆星，提示次數 +${gained}。` : '') + (stars < 3 ? (runT > lv.par ? `再快一點：目標 ${fmtT(lv.par)} 內。` : '時間有到，再停正一點就三顆星（偏移 15 公分、角度 1.5° 內）。') : '三顆星，停車停到可以去當教練了。')
-    : (reason === '時間到' ? '時間用完了。可以先看俯視角度規劃路線。' : '這關的規則是碰到就失敗。') + (fails >= 3 && curLevel < LEVELS.length - 1 ? ' 已經失敗 3 次，下一關先幫你解鎖了。' : '');
+  $('resMsg').textContent = (success && bumped ? `練習模式：擦撞 ${bumped} 次。關掉練習模式、零擦撞停進去才拿得到更多星星。` : '') + (success ? (gained > 0 ? `新拿到 ${gained} 顆星，提示次數 +${gained}。` : '') + (stars < 3 ? (runT > lv.par ? `再快一點：目標 ${fmtT(lv.par)} 內。` : '時間有到，再停正一點就三顆星（偏移 15 公分、角度 1.5° 內）。') : '三顆星，停車停到可以去當教練了。')
+    : (reason === '時間到' ? '時間用完了。可以先看俯視角度規劃路線。' : '這關的規則是碰到就失敗。') + (fails >= 3 && curLevel < LEVELS.length - 1 ? ' 已經失敗 3 次，下一關先幫你解鎖了。' : ''));
   $('resStats').innerHTML = '';
   const add = (v, l) => { const d = document.createElement('div'); d.className = 'stat'; d.innerHTML = '<b></b><span></span>'; d.firstChild.textContent = v; d.lastChild.textContent = l; $('resStats').append(d); };
   add(fmtT(runT) + '.' + String(Math.floor((runT % 1) * 10)), '用時');
@@ -1784,7 +1835,7 @@ function checkMoveOff(needSide) {
   if (!lookedWithin(6)) deduct(32, '起步前未轉頭查看照後鏡、確認死角（2026 新制）', 'mlook');
 }
 function examRoad(K, { z0 = -24, z1 = 70, half = 4, curbs = true, scenery = true, x = 0 } = {}) {
-  K.ground(220, 220, new THREE.MeshStandardMaterial({ color: 0x6aa13a, roughness: 1 }), x, 20, -0.02);
+  K.ground(220, 220, (() => { const m = grassMat(); m.map = grassTex.clone(); m.map.needsUpdate = true; m.map.repeat.set(24, 24); return m; })(), x, 20, -0.02);
   const r = K.ground(half * 2, z1 - z0, new THREE.MeshStandardMaterial({ map: asphaltTex.clone(), roughness: 0.9 }), x, (z0 + z1) / 2, 0); r.material.map.needsUpdate = true; r.material.map.repeat.set(2, (z1 - z0) / 8);
   K.line(x - half + 0.25, z0, x - half + 0.25, z1, { w: 0.12 }); K.line(x + half - 0.25, z0, x + half - 0.25, z1, { w: 0.12 });
   K.line(x - 0.09, z0, x - 0.09, z1, { mat: MAT.yellow, w: 0.1 }); K.line(x + 0.09, z0, x + 0.09, z1, { mat: MAT.yellow, w: 0.1 });
@@ -1838,7 +1889,7 @@ const EXAM = [
     tips: ['接近路口時燈號會轉黃再轉紅，在停止線前停下。', '綠燈後右轉：先轉頭看右後方、打右方向燈，彎要轉大一點，後輪才不會壓到路緣。'],
     desc: '號誌化路口，紅燈停在停止線前，綠燈後右轉，開到右邊道路的終點線。', limit: 150, failPts: 32,
     build(K) {
-      K.ground(220, 220, new THREE.MeshStandardMaterial({ color: 0x6aa13a, roughness: 1 }), 0, 20, -0.02);
+      K.ground(220, 220, (() => { const m = grassMat(); m.map = grassTex.clone(); m.map.needsUpdate = true; m.map.repeat.set(24, 24); return m; })(), 0, 20, -0.02);
       const asph = () => { const m = new THREE.MeshStandardMaterial({ map: asphaltTex.clone(), roughness: 0.9 }); m.map.needsUpdate = true; return m; };
       K.ground(8, 70, asph(), 0, 18).material.map.repeat.set(2, 9); K.ground(90, 10, asph(), -20, 25).material.map.repeat.set(11, 2);
       K.curb(-4.15, -17, -4.15, 17); K.curb(-4.15, 17, -7, 19.85); K.curb(4.15, -17, 4.15, 20); for (const sd of [-1, 1]) K.curb(sd * 4.15, 30, sd * 4.15, 53);
@@ -2087,7 +2138,7 @@ function examFrame(dt) {
     for (const m of L.movers) m.update(dt / 3);
     const cr = carRect(); let hit = null;
     for (const o of L.solids.concat(L.movers.filter(m => !m.off))) if (overlap(cr, o.r)) { hit = o; break; }
-    if (hit) { Object.assign(car, { x: px, z: pz, h: ph, v: 0 }); if (!S.hits.has(hit.label)) { S.hits.add(hit.label); deduct(32, '車身碰撞' + hit.label.replace(/^撞到/, ''), 'hit:' + hit.label); audio.crash(); } break; }
+    if (hit) { Object.assign(car, { x: px, z: pz, h: ph, v: 0 }); if (!S.hits.has(hit.label)) { S.hits.add(hit.label); deduct(32, '車身碰撞' + hit.label.replace(/^撞到/, ''), 'hit:' + hit.label); audio.crash(); shakeT = 0.4; } break; }
     const tr = tireRects(), now = new Set();
     for (const o of L.tire) for (const t of tr) if (overlap(t, o.r)) { now.add(o); break; }
     for (const o of now) if (!S.contacts.has(o)) { const pts = o.pts ?? 16; if (pts > 0) deduct(pts, o.label === '輪胎撞到路緣' ? '車輪壓上路緣' : o.label === '壓線' ? '車輪壓線' : o.label, null, o.label === '輪胎撞到路緣'); }
@@ -2186,6 +2237,7 @@ $('hHint').onclick = useHint;
 { const saved = VEH.find(v => v.id === store.get('veh', 'gt')); mountVehicle(saved && totalStars() >= saved.need ? saved : VEH[1]); }
 LIVERIES.forEach((hex, i) => { const b = document.createElement('button'); b.className = 'sw'; b.style.background = hex; b.setAttribute('aria-label', '車色 ' + (i + 1)); b.onclick = () => setLivery(i); $('swatches').append(b); });
 setLivery(liv);
+$('practiceBtn').onclick = () => { practice = !practice; store.set('practice', practice); paintPractice(); };
 $('toLevels').onclick = () => { audio.init(); state = 'levels'; renderLevels(); show('levelsScreen'); };
 $('backTitle').onclick = () => { state = 'title'; show('title'); };
 $('inGo').onclick = () => (mode === 'exam' ? beginStation() : beginDrive());
@@ -2217,9 +2269,12 @@ function frame() {
     const inp = readInput(dt);
     recordHistory();
     for (let s = 0; s < 3; s++) {
+      const px = car.x, pz = car.z, ph = car.h;
       stepCar(dt / 3, inp);
       for (const m of L.movers) m.update(dt / 3);
-      const hit = hitCheck(); if (hit) { finish(false, hit); break; }
+      const hit = hitCheck();
+      if (hit && practice) { Object.assign(car, { x: px, z: pz, h: ph, v: 0 }); bumped++; assisted = true; if (performance.now() - lastBumpT > 900) { lastBumpT = performance.now(); toast(hit + '！'); audio.crash(); shakeT = 0.35; } break; }
+      if (hit) { finish(false, hit); break; }
     }
     if (!ended) { runT += dt; evaluate(dt); }
     updateSensors(); paintSensors();
@@ -2267,5 +2322,14 @@ if (location.hash === '#dev') window.dev = {
   solve(i, vid) { mountVehicle(VEH.find(v => v.id === vid)); loadLevel(i); const g = fullSearch(...L.start); let r; do { r = g.next(); } while (!r.done); return r.value ? { ok: true, switches: r.value.switches, exp: r.value.exp } : { ok: false }; }
 };
 loadLevel(0);
+// deep links from the guide pages: #lv-<id> opens that level (even if locked), #exam opens the test menu, #exam-<id> one station
+function routeHash() {
+  const h = location.hash.slice(1); if (!h || h === 'dev') return;
+  if (h === 'levels') { state = 'levels'; renderLevels(); show('levelsScreen'); return; }
+  if (h === 'exam') { audio.init(); openExamMenu(); return; }
+  if (h.startsWith('exam-')) { const i = EXAM.findIndex(e => e.id === h.slice(5)); if (i >= 0) startExam(i, false); return; }
+  if (h.startsWith('lv-')) { const i = LEVELS.findIndex(l => l.id === h.slice(3)); if (i >= 0) openIntro(i); }
+}
+routeHash(); addEventListener('hashchange', routeHash);
 frame();
 </script>
