@@ -40,7 +40,9 @@ jobs:
               echo '<meta property="og:image" content="https://stwater20.github.io/car/assets/nightmarket.jpg">'
               echo '<meta name="theme-color" content="#0b0c1c">'
               echo '<meta name="author" content="sectools.tw">'
+              echo '<link rel="icon" href="../favicon.svg" type="image/svg+xml">'
               echo '</head><body>'
+              echo '<noscript><p>停好停滿：免費 3D 停車遊戲與汽車駕照場考模擬，需要開啟 JavaScript。教學：<a href="../guide/reverse-parking/">倒車入庫技巧</a>・<a href="../guide/parallel-parking/">路邊停車技巧</a>・<a href="../guide/driving-test-2026/">場考扣分標準</a>。由 <a href="https://sectools.tw/">sectools.tw</a> 製作與維護。</p></noscript>'
               sed '1{/<title>/d}' "$1"
               echo '</body></html>'
             } > "$2"
